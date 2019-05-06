@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <font size=8><b>Lorem.</b></font> <br>
+    <font size=6><b>Lorem ipsum.</b></font> <br>
+    <font size=4><b>Lorem ipsum dolor.</b></font> <br>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id maxime corrupti, nulla earum possimus vitae omnis
+        odio
+        pariatur officia! Odit ipsa alias labore nostrum sint ex non repellendus, doloremque et.
+    </p>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit quaerat sint commodi est itaque vero,
+        incidunt,
+        quisquam obcaecati iusto minus inventore voluptatum. Consequuntur, at sequi ut nihil fugit amet possimus.
+    </p>
+    <div>
+        <a href="https://www.jd.com/" target="_blank">在新窗口打开京东</a>
+        <a href="mailto:13296679963@163.com">点击给我发邮件</a>
+        <a href="https://jimxhw.github.io/miao/html-basic.html">跳转本页的底部</a>
+        <a download="123.md"
+                 href="笔记.md">点击可以下载一个文件</a><br>
+        <img width="200" height="200"
+            src="https://drscdn.500px.org/photo/229389427/m%3D1170/v2?user_id=7012987&webp=true&sig=196fa0c161aa562478d08571764872f7d69a346c3c0b2e12aa00e2c6414eb28b"
+            alt="图片描述">
+    </div>
+    <hr>
+    <hr>
+    <div>
+        <marquee direction=left> 飘</marquee>
+        <p>
+            这几种强调<b>有什么 区别呢？</b> <u>这个呢？</u> <i>这个呢？</i> <br>
+            &lt;!-- 这段注释需要出现在页面里面 --> </p>
+        <p> html的注释怎么写？</p>
+
+        <p>下面是一段javascript代码，最合适用何种标签表示呢？</p>
+        <pre><code>
+            function a(){
+                        return 8
+                    }
+     </code></pre>
+
+    </div>
+    <hr>
+    <div>
+        <ul>
+            <li>小学
+                <ol>
+                    <li>一年级</li>
+                    <ol>
+                        <li>上学期</li>
+                        <li>下学期</li>
+                    </ol>
+                    <li>二年级</li>
+                    <li>三年级</li>
+
+                </ol>
+            <li>中学</li>
+            <li>大学</li>
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <dl>
+            <dt>班级</dt>
+            <dd>三年二班</dd>
+        </dl>
+        <dl>
+            <dt>老师</dt>
+            <dd>张老师</dd>
+            <dd>李老师</dd>
+            <dd>王老师</dd>
+
+        </dl>
+        <dl>
+            <dt>学生</dt>
+            <dd>小明</dd>
+            <dd>豆豆</dd>
+        </dl>
+    </div>
+    <hr>
+    <div>
+        <form action="https://www.google.com/search" method="get">
+            <p><b> Google搜索</b></p>
+            <input type="text"  name="q"  placeholder="请输入想要搜索的内容" required>
+            <input type="submit"  value="在新窗口打开搜索结果">
+        </form>
+    </div>
+    <hr>
+    <div>
+        <form>
+            <p>个人信息调查表</p>
+            性别<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="sex" value="male">男
+            <input type="radio" name="sex" value="female">女
+        </form>
+        <form>
+            年龄<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <select>
+                <option value="请选择">请选择</option>
+                <optgroup label="少年">
+                    <option value="1-6岁">1-6岁</option>
+                    <option value="6-12岁">6-12岁</option>
+                </optgroup>
+                <optgroup label="青年">
+                    <option value="13-15岁">13-15岁</option>
+                    <option value="16-18岁">16-18岁</option>
+                </optgroup>
+                <optgroup label="壮年">
+                    <option value="18-22岁">18-22岁</option>
+                    <option value="23-30岁">23-30岁</option>
+                </optgroup>
+            </select>
+        </form>
+        <form>
+            生日<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="date" id="date">
+        </form>
+        <form>
+            生辰<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="time" id="time">
+        </form>
+        <form>
+            照片<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="upload">点我上传照片，我比文件上传按钮好看</label>
+            <input hidden type="file" accept="image/*" id="upload">
+        </form>
+        <form>
+            肤色<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="color">
+        </form>
+        <form>
+            自我介绍<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <textarea rows="10" cols="30">&lt;textarea></textarea>
+        </form>
+
+        <fieldset form="A" disabled="disabled">
+            <legend>这里面的全都禁用了</legend>
+            <form>
+                <input type="button" style="height:20px;width:160px">
+                <input type="button" style="height:20px;width:160px">
+                <input type="button" style="height:20px;width:160px">
+                <input type="button" style="height:20px;width:160px">
+            </form>
+        </fieldset>
+        <form action="https://jimxhw.github.io/miao/html-basic.html">
+            <input type="submit" action=><input type="reset">
+        </form>
+    </div>
+
+</body>
+
+</html>
