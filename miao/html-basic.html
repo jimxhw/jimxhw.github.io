@@ -87,74 +87,146 @@
     </div>
     <hr>
     <div>
-        <form action="https://www.google.com/search" method="get">
+        <form action="https://www.google.com/search" target="_blank" method="get">
             <p><b> Google搜索</b></p>
-            <input type="text" name="q" placeholder="请输入想要搜索的内容" required>
+            <input type="text" name="q" autocomplete="off" placeholder="请输入想要搜索的内容" required>
             <input type="submit" value="在新窗口打开搜索结果">
         </form>
     </div>
     <hr>
     <div>
-        <form>
-            <p>个人信息调查表</p>
-            性别<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="sex" value="male">男
-            <input type="radio" name="sex" value="female">女
-        </form>
-        <form>
-            年龄<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <select>
-                <option value="请选择">请选择</option>
-                <optgroup label="少年">
-                    <option value="1-6岁">1-6岁</option>
-                    <option value="6-12岁">6-12岁</option>
-                </optgroup>
-                <optgroup label="青年">
-                    <option value="13-15岁">13-15岁</option>
-                    <option value="16-18岁">16-18岁</option>
-                </optgroup>
-                <optgroup label="壮年">
-                    <option value="18-22岁">18-22岁</option>
-                    <option value="23-30岁">23-30岁</option>
-                </optgroup>
-            </select>
-        </form>
-        <form>
-            生日<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="date" id="date">
-        </form>
-        <form>
-            生辰<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="time" id="time">
-        </form>
-        <form>
-            照片<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <label for="upload">点我上传照片，我比文件上传按钮好看</label>
-            <input hidden type="file" accept="image/*" id="upload">
-        </form>
-        <form>
-            肤色<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="color">
-        </form>
-        <form>
-            自我介绍<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <textarea rows="10" cols="30">&lt;textarea></textarea>
-        </form>
-
-        <fieldset form="A" disabled="disabled">
-            <legend>这里面的全都禁用了</legend>
-            <form>
-                <input type="button" style="height:20px;width:160px">
-                <input type="button" style="height:20px;width:160px">
-                <input type="button" style="height:20px;width:160px">
-                <input type="button" style="height:20px;width:160px">
-            </form>
-        </fieldset>
         <form action="https://jimxhw.github.io/miao/html-basic.html">
+            <p>个人信息调查表</p>
+            <dl>
+                <dt>性别</dt>
+                <dd> <input type="radio" name="sex" value="male">男
+                    <input type="radio" name="sex" value="female">女</dd>
+            </dl>
+            <dl>
+                <dt>年龄</dt>
+                <dd><select>
+                        <option value="请选择">请选择</option>
+                        <optgroup label="少年">
+                            <option value="1-6岁">1-6岁</option>
+                            <option value="6-12岁">6-12岁</option>
+                        </optgroup>
+                        <optgroup label="青年">
+                            <option value="13-15岁">13-15岁</option>
+                            <option value="16-18岁">16-18岁</option>
+                        </optgroup>
+                        <optgroup label="壮年">
+                            <option value="18-22岁">18-22岁</option>
+                            <option value="23-30岁">23-30岁</option>
+                        </optgroup>
+                    </select>
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                    生日</dt>
+                <dd> <input type="date" id="date"></dd>
+            </dl>
+
+            <dl>
+                <dt>生辰</dt>
+                <dd>
+                    <input type="time" id="time"></dd>
+            </dl>
+            </dd>
+            </dl>
+            <dl>
+                <dt>照片</dt>
+                <dd>
+                    <label for="upload">点我上传照片，我比文件上传按钮好看</label>
+                    <input hidden type="file" accept="image/*" id="upload"></dd>
+            </dl>
+
+            <dl>
+                <dt>肤色</dt>
+                <dd>
+                    <input type="color"></dd>
+            </dl>
+
+            <dl>
+                <dt>自我介绍</dt>
+                <dd>
+                    <textarea rows="10" cols="30">&lt;textarea></textarea></dd>
+            </dl>
+
+
+            <fieldset form="A" disabled="disabled">
+                <legend>这里面的全都禁用了</legend>
+                <form>
+                    <input type="button" style="height:20px;width:170px">
+                    <input type="button" style="height:20px;width:170px">
+                    <input type="button" style="height:20px;width:170px">
+                    <input type="button" style="height:20px;width:170px">
+                </form>
+            </fieldset>
             <input id="whoami" type="submit" action=><input type="reset">
         </form>
     </div>
+    <hr>
+    <div>
+        <table border="1" caption="货品列表">
 
+            <tbody>
+                <tr>
+                    <th>编号</th>
+                    <th bgcolor="red">品名</th>
+                    <th>进价</th>
+                    <th>出价</th>
+                </tr>
+                <tr>
+                    <th>001</th>
+                    <td bgcolor="red">苹果</td>
+                    <td rowspan="2">5</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <th>001</th>
+                    <td bgcolor="red">桔子</td>
+                    <td>8</td>
+
+                </tr>
+                <tr>
+                    <th>001</th>
+                    <td bgcolor="red">香蕉</td>
+                    <td>5</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <th>001</th>
+                    <td bgcolor="red">山竹</td>
+                    <td>5</td>
+                    <td>8</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div>
+        <img title="image title"
+            src="https://drscdn.500px.org/photo/174778125/m%3D1170_k%3D1/2841ccf2a3720e8e794a6a6930f6ff2c"
+            usemap="#somemap" width="300 " height="460">
+        <map name="somemap">
+            <area shape="rect" coords="55,108,205,200" href="https://www.mi.com/" alt="ieksoef" title="abc"
+                target="_blank">
+            <area shape="circle" coords="131,262,80" href="https://jimxhw.github.io/miao/html-basic.html" alt="dsa">
+
+        </map>
+    </div>
+    <hr>
+    <div>
+        <a href="https://www.mi.com/" target="xm"><u>点击我会在下面的frame里打开小米商场，但为什么打不开呢？</u></a><br>
+        <iframe name="xm" src="https://www.mi.com/" frameborder="0">
+
+        </iframe><br>
+        <span>怎样</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<span>在这两个字之间空这么大呢？</span>
+        <br>
+        <span>怎样在页面中显示下面的内容呢？</span> <br>
+        &lt;span>&lt;/span>
+    </div>
 </body>
 
 </html>
