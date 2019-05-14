@@ -6,7 +6,7 @@
   <title>Document</title>
   <meta http-equiv="Refresh" content="1" />
   <style>
-    body>p:first-child {
+    body>p:first-of-type {
       color: red;
     }
 
@@ -18,15 +18,15 @@
       color: orange
     }
 
-    a:focus {
+    [tabindex="1"]:focus {
       color: blue;
     }
 
-    a:hover {
+    [tabindex="1"]:hover {
       color: red;
     }
 
-    a:active {
+    [tabindex="1"]:active {
       color: green
     }
 
@@ -77,8 +77,10 @@
     .prime ul li:nth-child(3n):nth-child(n+6) {
       color: red
     }
-
-    .prime ul li:nth-child(10n) {
+    .prime ul li:nth-child(5n):nth-child(n+10){
+      color: red
+    }
+    .prime ul li:nth-child(7n):nth-child(n+14){
       color: red
     }
 
@@ -92,7 +94,7 @@
 <body>
   <p>红色</p>
 
-  <p class="a" tabindex="-1">鼠标悬浮时为红色，按下去时为绿色，获得焦点时为蓝色</p>
+  <p class="a" tabindex="1">鼠标悬浮时为红色，按下去时为绿色，获得焦点时为蓝色</p>
 
   <p class="a c">
     <span>
