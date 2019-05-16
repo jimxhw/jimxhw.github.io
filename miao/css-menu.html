@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        body {
+            margin: 0px;
+        }
+
+        .all {
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+            background-color: gray;
+        }
+
+        ul.navs {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        header {
+            background-color: gray;
+            text-align: left;
+            width: 187px
+        }
+
+        nav {
+            padding: 3px
+        }
+
+        .menu {
+            display: inline;
+            border: 0px;
+            color: white;
+        }
+
+        #fourth {
+            outline: none
+        }
+
+        li:hover,
+        .menu:hover {
+            background-color: lightsteelblue;
+        }
+
+        .menu ul {
+            color: white;
+            list-style-type: none;
+            background-color: gray;
+            width: 180px;
+            text-align: left;
+            margin: 0px;
+            position: absolute;
+            padding: 0px;
+            display: none
+        }
+
+        .chakan {
+            left: 113px;
+            top: 20px;
+       }
+
+        .wz {          
+            left: 179px;
+            top: 63px;
+        }
+
+        .waiguan::after {
+            content: "";
+            position: absolute;
+            border: 6px solid;
+            border-bottom-color: transparent;
+            border-top-color: transparent;
+            border-right-color: white;
+            border-left-color: white;
+            border-right-width: 0px;
+            top: 70px;
+            right: 2px;
+        }
+
+        .menu:nth-child(4):focus .chakan {
+            display: block
+        }
+
+        .waiguan:hover .wz {
+            display: block
+        }
+    </style>
+</head>
+
+<body>
+    <div class="all">
+        <header>
+            <ul class="navs">
+                <li class="menu">文件</li>
+                <li class="menu">编辑</li>
+                <li class="menu">选择</li>
+                <li class="menu"
+                    id="fourth"
+                    tabindex="1">查看
+                    <ul class="chakan">
+                        <li>控制面板</li>
+                        <li>编辑</li>
+                        <li>视图</li>
+                        <li class="waiguan">外观
+                            <ul class="wz">
+                                <li>居中</li>
+                                <li>左对齐</li>
+                                <li>右对齐</li>
+                                <li>上移</li>
+                                <li>下移</li>
+                                <li>左移</li>
+                                <li>右移</li>
+                                <li>展开</li>
+                                <li>平铺</li>
+                            </ul>
+                        </li>
+                        <li>资源管理器</li>
+                        <li>搜索</li>
+                        <li>源代码</li>
+                        <li>控制输出台</li>
+                        <li>调整</li>
+                        <li>问题</li>
+                    </ul>
+
+                </li>
+                <li class="menu">帮助</li>
+            </ul>
+        </header>
+
+    </div>
+</body>
+
+</html>
