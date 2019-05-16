@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=div, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        .slider {
+            margin: 10px;
+            position: relative;
+            width: 1226px;
+            height: 460px;
+
+        }
+
+        .left {
+            width: 43px;
+            height: 70px;
+            position: absolute;
+            top: 180px;
+            left: 0px;
+            margin: 0px;
+            background-color: transparent;
+            z-index: 2;
+        }
+        
+
+        .right {
+            width: 43px;
+            height: 70px;
+            position: absolute;
+            top: 180px;
+            right: 0px;
+            margin: 0px;
+            background-color: transparent;
+            z-index: 2;
+        }
+         
+        .left:hover,
+        .right:hover {
+            background-color: rgb(112, 110, 110)
+        }
+
+        .left::before {
+            content: "";
+            position: absolute;
+            top: 23%;
+            right: 30%;
+            border: 17px solid;
+            width: aoto;
+            height: auto;
+            border-bottom-color: transparent;
+            border-top-color: transparent;
+            border-right-color: rgba(216, 205, 205, 0.6);
+            border-left-color: white;
+            border-left-width: 0px;
+        }
+
+        .right::after {
+            content: "";
+            position: absolute;
+            top: 23%;
+            left: 30%;
+            border: 17px solid;
+            width: aoto;
+            height: auto;
+            border-bottom-color: transparent;
+            border-top-color: transparent;
+            border-right-color: white;
+            border-left-color: rgba(216, 205, 205, 0.6);
+            border-right-width: 0px;
+        }
+
+
+
+        .slider input {
+            display: none;
+        }
+
+        .slider img {
+            opacity: 0;
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            transition: 1s;
+        }
+
+        .slider .circle {
+            margin: 0px;
+            position: absolute;
+            top: 424px;
+            right: 20px;
+            z-index: 2;
+
+        }
+
+        .circle label {
+            outline: none;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: rgb(117, 116, 116);
+            border-radius: 8px;
+            border: 2px solid rgba(158, 156, 156, 0.993);
+            cursor: pointer;
+            margin: 3px;
+        }
+
+
+        .circle label:hover,
+        .circle label:focus {
+            background-color: white;
+        }
+
+
+
+        input:checked+img {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slider">
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="circle">
+            <label for="round1"
+                   tabindex="1"></label>
+            <label for="round2"
+                   tabindex="2"></label>
+            <label for="round3"
+                   tabindex="3"></label>
+            <label for="round4"
+                   tabindex="4"></label>
+            <label for="round5"
+                   tabindex="5>"></label>
+        </div>
+        <input checked
+               type="radio"
+               name="xm"
+               id="round1">
+        <img src="https://i1.mifile.cn/a4/xmad_15566146318197_mAghl.jpg"
+             alt="">
+        <input type="radio"
+               name="xm"
+               id="round2">
+        <img src="https://i1.mifile.cn/a4/xmad_15529884424562_HKYaG.jpg"
+             alt="">
+        <input type="radio"
+               name="xm"
+               id="round3">
+        <img src="https://i1.mifile.cn/a4/xmad_15579184778872_ECdvK.jpg"
+             alt="">
+        <input type="radio"
+               name="xm"
+               id="round4">
+        <img src="https://i1.mifile.cn/a4/xmad_15548066591437_Stxlj.jpg"
+             alt="">
+        <input type="radio"
+               name="xm"
+               id="round5">
+        <img src="https://i1.mifile.cn/a4/xmad_15476942061027_STEvM.jpg"
+             alt="">
+    </div>
+</body>
+
+</html>
