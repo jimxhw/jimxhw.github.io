@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 30px;
+        }
+
+        label {
+            position: relative;
+            width: 91px;
+            height: 53px;
+            background-color: rgba(0, 128, 0, 0.664);
+            display: block;
+            border-radius: 25px;
+            border: 1px solid transparent;
+
+        }
+
+        label::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            width: 45px;
+            height: 45px;
+            background-color: white;
+            border-radius: 45px;
+
+        }
+
+        input:checked+label {
+            background-color: rgb(221, 216, 216)
+        }
+
+        input:checked+label::after {
+            left: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <input hidden
+           type="checkbox"
+           id="iso">
+    <label for="iso"></label>
+
+</body>
+
+</html>
