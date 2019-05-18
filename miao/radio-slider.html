@@ -27,7 +27,7 @@
             background-color: transparent;
             z-index: 2;
         }
-        
+
 
         .right {
             width: 43px;
@@ -39,7 +39,7 @@
             background-color: transparent;
             z-index: 2;
         }
-         
+
         .left:hover,
         .right:hover {
             background-color: rgb(112, 110, 110)
@@ -51,12 +51,9 @@
             top: 23%;
             right: 30%;
             border: 17px solid;
-            width: aoto;
-            height: auto;
             border-bottom-color: transparent;
             border-top-color: transparent;
             border-right-color: rgba(216, 205, 205, 0.6);
-            border-left-color: white;
             border-left-width: 0px;
         }
 
@@ -66,16 +63,19 @@
             top: 23%;
             left: 30%;
             border: 17px solid;
-            width: aoto;
-            height: auto;
             border-bottom-color: transparent;
             border-top-color: transparent;
-            border-right-color: white;
             border-left-color: rgba(216, 205, 205, 0.6);
             border-right-width: 0px;
         }
 
+        .left:hover::before {
+            border-right-color: white
+        }
 
+        .right:hover::after {
+            border-left-color: white
+        }
 
         .slider input {
             display: none;
@@ -117,7 +117,9 @@
             background-color: white;
         }
 
-
+        input#round1:checked~.circle label:first-child {
+            background-color: white;
+        }
 
         input:checked+img {
             opacity: 1;
@@ -129,18 +131,6 @@
     <div class="slider">
         <div class="left"></div>
         <div class="right"></div>
-        <div class="circle">
-            <label for="round1"
-                   tabindex="1"></label>
-            <label for="round2"
-                   tabindex="2"></label>
-            <label for="round3"
-                   tabindex="3"></label>
-            <label for="round4"
-                   tabindex="4"></label>
-            <label for="round5"
-                   tabindex="5>"></label>
-        </div>
         <input checked
                type="radio"
                name="xm"
@@ -167,6 +157,19 @@
                id="round5">
         <img src="https://i1.mifile.cn/a4/xmad_15476942061027_STEvM.jpg"
              alt="">
+
+        <div class="circle">
+            <label for="round1"
+                   tabindex="1"></label>
+            <label for="round2"
+                   tabindex="2"></label>
+            <label for="round3"
+                   tabindex="3"></label>
+            <label for="round4"
+                   tabindex="4"></label>
+            <label for="round5"
+                   tabindex="5>"></label>
+        </div>
     </div>
 </body>
 
