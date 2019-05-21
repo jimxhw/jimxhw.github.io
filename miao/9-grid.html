@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        div {
+            position: relative;
+            top: 200px;
+            left: 500px;
+            border: 1px solid black;
+            width: 600px;
+            height: 600px;
+            text-align: center;
+        }
+
+        table {
+            position: absolute;
+            top: calc(50% - 150px);
+            left: calc(50% - 150px);
+            table-layout: fixed;
+            border-collapse: collapse;
+            border: 10px solid blue;
+            vertical-align: middle;
+            width: 300px;
+            height: 300px
+        }
+
+        tr,col{
+           
+            border: 10px solid blue;
+
+        }
+
+        td:hover {
+            border: 10px solid red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <table>
+            <col>
+            <col>
+            <col>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
