@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 0;
+        }
+
+       /* 设置外边框 */
+        div {
+            position: relative;
+            top: 200px;
+            left: 500px;
+            border: 1px solid black;
+            width: 600px;
+            height: 600px;
+            text-align: center;
+        }
+
+       /* 设置table垂直居中，合并边框，设置长度 */
+        table {
+            position: absolute;
+            top: calc(50% - 150px);
+            left: calc(50% - 150px);
+            table-layout: fixed;
+            border-collapse: collapse;
+            border: 10px solid blue;
+            vertical-align: middle;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+
+        }
+       
+       /* 设置内边框 */
+        tr,
+        col {
+
+            border: 10px solid blue;
+
+        }
+
+
+       /* 设置交互 */
+        td:hover>span {
+            background-color: red;
+
+
+        }  
+
+         /* 以下为span设置位置和大小，成为单元格hover的时候两条背景色，横竖背景色设置不同的index，防止错乱 */
+        .a1 {
+            position: absolute;
+            display: inline-block;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            z-index: -1;
+        }
+
+
+        .a2 {
+            position: absolute;
+            display: inline-block;
+            top: 0;
+            bottom: 0;
+            left: 100px;
+            width: 90px;
+            z-index: -1;
+        }
+
+        .a3 {
+            position: absolute;
+            display: inline-block;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            z-index: -1;
+        }
+
+        .b1 {
+            position: absolute;
+            display: inline-block;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            z-index: -2;
+        }
+
+        .b2 {
+            position: absolute;
+            display: inline-block;
+            top: 100px;
+            left: 0;
+            right: 0;
+            height: 90px;
+            z-index: -2;
+        }
+
+        .b3 {
+            position: absolute;
+            display: inline-block;
+            bottom: 0px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            z-index: -2;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <table>
+            <col>
+            <col>
+            <col>
+            <tr>
+                <!-- 为单元格设置两个span，对应横竖两条背景 -->
+                <td><span class="a1"></span><span class="b1"></span></td>
+                <td><span class="a2"></span><span class="b1"></span></td>
+                <td><span class="a3"></span><span class="b1"></span></td>
+            </tr>
+            <tr>
+                <td><span class="a1"></span><span class="b2"></span></td>
+                <td><span class="a2"></span><span class="b2"></span></td>
+                <td><span class="a3"></span><span class="b2"></span></td>
+            <tr>
+                <td><span class="a1"></span><span class="b3"></span></td>
+                <td><span class="a2"></span><span class="b3"></span></td>
+                <td><span class="a3"></span><span class="b3"></span></td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+
+</html>
