@@ -10,8 +10,19 @@
     <title>Document</title>
 </head>
 <style>
-    div {
+   /*  div {
         position: relative;
+        margin: 20px;
+        width: 200px;
+        height: 100px;
+        background-color: rgb(120, 202, 216);
+        border-bottom: 5px solid red;
+        outline: none;
+        cursor: pointer;
+       
+    } */
+    div {
+        display: table;
         margin: 20px;
         width: 200px;
         height: 100px;
@@ -22,22 +33,32 @@
        
     }
 
-    span {
+    /* span {
         position: absolute;
         bottom: 0;
         
     }
+ */
 
+    span{
+        display: table-cell;
+        vertical-align: bottom;
+    }
     div:focus {
         transition-delay: 4s;
         background-color: green;
     }
 
-    div:focus span {
+  /*   div:focus span {
         position: absolute;
         bottom: 0;
         font-size: 50px;
         /* transition-property: all; */
+       /*  transition-duration: 4s;
+        transition-timing-function: linear;
+    } */ 
+    div:focus span {
+        font-size: 50px;
         transition-duration: 4s;
         transition-timing-function: linear;
     }

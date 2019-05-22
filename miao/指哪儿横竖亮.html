@@ -13,7 +13,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-size: 0;
+            font-size: 16px;
         }
 
        /* 设置外边框 */
@@ -40,6 +40,11 @@
             height: 300px;
             cursor: pointer;
 
+        }
+
+        td{
+            width: 100px;
+            height: 100px;
         }
        
        /* 设置内边框 */
@@ -76,7 +81,7 @@
             top: 0;
             bottom: 0;
             left: 100px;
-            width: 90px;
+            width: 100px;
             z-index: -1;
         }
 
@@ -106,7 +111,7 @@
             top: 100px;
             left: 0;
             right: 0;
-            height: 90px;
+            height: 100px;
             z-index: -2;
         }
 
@@ -130,18 +135,18 @@
             <col>
             <tr>
                 <!-- 为单元格设置两个span，对应横竖两条背景 -->
-                <td><span class="a1"></span><span class="b1"></span></td>
-                <td><span class="a2"></span><span class="b1"></span></td>
-                <td><span class="a3"></span><span class="b1"></span></td>
+                <td>1<span class="a1"></span><span class="b1"></span></td>
+                <td>2<span class="a2"></span><span class="b1"></span></td>
+                <td>3<span class="a3"></span><span class="b1"></span></td>
             </tr>
             <tr>
-                <td><span class="a1"></span><span class="b2"></span></td>
-                <td><span class="a2"></span><span class="b2"></span></td>
-                <td><span class="a3"></span><span class="b2"></span></td>
+                <td>4<span class="a1"></span><span class="b2"></span></td>
+                <td>5<span class="a2"></span><span class="b2"></span></td>
+                <td>6<span class="a3"></span><span class="b2"></span></td>
             <tr>
-                <td><span class="a1"></span><span class="b3"></span></td>
-                <td><span class="a2"></span><span class="b3"></span></td>
-                <td><span class="a3"></span><span class="b3"></span></td>
+                <td>7<span class="a1"></span><span class="b3"></span></td>
+                <td>8<span class="a2"></span><span class="b3"></span></td>
+                <td>9<span class="a3"></span><span class="b3"></span></td>
             </tr>
 
         </table>

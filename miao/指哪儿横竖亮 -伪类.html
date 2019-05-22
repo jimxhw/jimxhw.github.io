@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* 设置外边框 */
+        div {
+            position: relative;
+            top: 200px;
+            left: 500px;
+            border: 1px solid black;
+            width: 600px;
+            height: 600px;
+            text-align: center;
+        }
+
+        /* 设置table垂直居中，合并边框，设置长度 */
+        table {
+            position: absolute;
+            top: calc(50% - 150px);
+            left: calc(50% - 150px);
+            table-layout: fixed;
+            border-collapse: collapse;
+            border: 10px solid blue;
+            vertical-align: middle;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+            overflow: hidden;
+
+        }
+
+        td {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        /* 设置内边框 */
+        tr,
+        col {
+
+            border: 10px solid blue;
+
+        }
+
+        tr:hover {
+            background-color: red;
+        }
+          
+          /* 为每一个td设置伪类 */
+        td:hover::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 500000%;
+            z-index: -1;
+            display: block;
+            top: -3000px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <table>
+            <col>
+            <col>
+            <col>
+            <tr>
+                <td>001</td>
+                <td>002</td>
+                <td>003</td>
+            </tr>
+            <tr>
+                <td>004</td>
+                <td>005</td>
+                <td>006</td>
+            </tr>
+            <tr>
+                <td>007</td>
+                <td>008</td>
+                <td>009</td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+
+</html>

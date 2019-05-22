@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        /* 统一标准 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 设置最小宽度  */
+        html,
+        body {
+            min-width: 650px;
+            height: 100%;
+        }
+
+        /* 触发BFC */
+        div {
+            overflow: hidden;
+            height: 100%;
+            display: flow-root;
+        }
+
+        /* 设置左边位置  */
+        .a {
+            height: 100%;
+            width: 200px;
+            float: left;
+            background-color: red;
+            border: 1px solid grey;
+        }
+
+        /* 设置右边位置  */
+        .c {
+            height: 100%;
+            width: 200px;
+            float: right;
+            background-color: tan;
+            border: 1px solid grey;
+        }
+
+        /* 设置右边位置  */
+        .d {
+            height: 100%;
+            width: 200px;
+            float: right;
+            background-color: blanchedalmond;
+            border: 1px solid grey;
+        }
+
+        /* 设置中间位置，宽度可变，由窗口大小决定 */
+        .b {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        /* 中间上部分定高 */
+        header {
+            height: 200px;
+            background-color: cadetblue;
+            border-bottom: 1px solid grey;
+        }
+
+        /* 设置中间下部分的高度 */
+        footer {
+            color: black;
+            font-weight: bolder;
+            background-color: darksalmon;
+            height: calc(100% - 200px)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="all">
+        <div class="a"></div>
+        <div class="c"></div>
+        <div class="d"></div>
+
+        <div class="b">
+            <header></header>
+            <footer>
+                一直以来都知道JavaScript是一门单线程语言，在笔试过程中不断的遇到一些输出结果的问题，考量的是对异步编程掌握情况。一般被问到异步的时候脑子里第一反应就是Ajax，setTimseout...这些东西。在平时做项目过程中，基本大多数操作都是异步的。JavaScript异步都是通过回调形式完成的，开发过程中一直在处理回调，可能不知不觉中自己就已经处在回调地狱中。
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
