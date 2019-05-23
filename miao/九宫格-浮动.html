@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    /* 设置下填充，使下margin在回到正常位置,触发BFC */
+    div {
+        width: 170px;
+        border: 6px solid grey;
+        padding-bottom: 5px;
+        overflow: hidden;
+    }
+    
+  
+   /* 合并边框 */
+    span {
+        float: left;
+        width: 50px;
+        height: 50px;
+        border: 5px solid blue;
+        margin-right: -5px;
+        margin-bottom: -5px;
+    }
+
+/* 设置交互 */
+    span:hover {
+      
+        border-color: red;
+        position: relative;
+        z-index: 1;
+    }
+</style>
+
+<body>
+    <div>
+        <span>001</span>
+        <span>002</span>
+        <span>003</span>
+        <span>004</span>
+        <span>005</span>
+        <span>006</span>
+        <span>007</span>
+        <span>008</span>
+        <span>009</span>
+    </div>
+</body>
+
+</html>
