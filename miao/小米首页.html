@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>小米商城</title>
+</head>
+<style>
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 设置第一个主根div的高度和定位 */
+    div.page1 {
+        height: 100%;
+        position: relative;
+    }
+
+    div.page1>header {
+        background-color: rgb(51, 51, 51);
+        position: absolute;
+        height: 40px;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 55566;
+    }
+
+    div.page1>header>section {
+        position: absolute;
+        width: 1230px;
+        left: 340px;
+        right: 340px;
+    }
+
+    div.page1>header>section>nav {
+        display: inline-block;
+    }
+
+    div.page1>header>section>nav>span {
+        display: inline-block;
+        color: rgb(192, 186, 186);
+        font-size: 10px;
+        line-height: 40px;
+        cursor: pointer;
+    }
+
+    div.page1>header>section>nav.menu {
+        position: absolute;
+        left: 0;
+        width: 930px;
+
+    }
+
+    /* 设置导航栏间隔符号| */
+    div.page1>header>section>nav>span.lll {
+        color: #424242;
+        cursor: none;
+    }
+
+
+    div.page1>header>section>nav.zhanghao {
+        position: absolute;
+        left: 953px;
+        width: 137px;
+    }
+
+    div.page1>header>section>nav.buycar {
+        position: absolute;
+        right: 0;
+        background-color: rgb(66, 66, 66);
+        width: 120px;
+        text-align: center;
+    }
+
+    div.page1>header>section>nav span.childmenu:hover {
+        color: rgb(255, 255, 255)
+    }
+
+    /* 设置菜单字体的交互效果 */
+
+    div.page1>header>section>nav.buycar::after {
+        content: "购物车中还没有商品，赶紧选购吧！";
+        color: rgb(66, 66, 66);
+        font-size: 10px;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background-color: white;
+        width: 314px;
+        height: 100px;
+        text-align: center;
+        line-height: 100px;
+        display: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    div.page1>header>section>nav.buycar:hover {
+        background-color: white;
+    }
+
+    div.page1>header>section>nav.buycar:hover>span {
+        color: #ff6700;
+    }
+
+    div.page1>header>section>nav.buycar:hover::after {
+        display: inline-block;
+    }
+
+    /* 以上完成购物车的交互效果 */
+
+    div.page1>header>section>nav div.qr-code {
+        position: absolute;
+        top: 40px;
+        left: 481px;
+        height: 154px;
+        width: 123px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        background-color: white;
+        text-align: center;
+        display: none;
+    }
+
+    div.page1>header>section>nav div.qr-code>img {
+        width: 87px;
+        height: 87px;
+        margin: 20px;
+    }
+
+    div.page1>header>section>nav div.qr-code>span {
+        position: absolute;
+        bottom: 15px;
+        top: 120px;
+        left: 17px;
+        color: black;
+        font-size: 15px;
+        line-height: 20px;
+
+    }
+
+    div.page1>header>section>nav div.qr-code::before {
+        content: "";
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid white;
+        position: absolute;
+        top: -10px;
+        left: 53px;
+        display: inline-block;
+    }
+
+    div.page1>header>section>nav span.childmenu:hover>div.qr-code {
+        display: inline-block;
+    }
+
+    /* 以上完成下载菜单栏的交互效果 */
+
+
+    /* ***********最上面的导航栏设置完毕********** */
+
+    div.aside-right {
+        position: fixed;
+        top: 300px;
+        bottom: 175px;
+        right: 0;
+        width: 84px;
+        cursor: pointer;
+        z-index: 555999;
+    }
+
+    div.aside-right>div.fixed-aside {
+        position: relative;
+        width: 84px;
+        height: 92px;
+        border: 1px solid rgb(245, 245, 245);
+        text-align: center;
+        border-bottom: 0;
+    }
+
+    div>div:last-child {
+        border-bottom: 1px solid rgb(245, 245, 245);
+    }
+
+    div.aside-right div span {
+        display: inline-block;
+        text-align: center;
+        color: #757575;
+        font-size: 14px;
+    }
+
+    div.aside-right div img {
+        padding-top: 20px;
+        width: 30px;
+        height: 30px;
+    }
+
+    div.aside-right div img.hover-img {
+        display: none;
+    }
+
+    /* 以上设置右边固定栏的元素 */
+
+    div.aside-right>div:hover span.fix-text {
+        color: rgb(255, 103, 0)
+    }
+
+    div.aside-right>div:hover>img.hover-img {
+        display: inline-block;
+    }
+
+    div.aside-right>div:hover>img.original-img {
+        display: none;
+    }
+
+    /* 以上设置交互效果，hover和不hover时分别有不同交互效果 */
+
+    div.aside-right>div>span.fix-text>div.qr-code {
+        position: absolute;
+        top: 0;
+        right: 90px;
+        width: 130px;
+        height: 190px;
+        border: 1px solid rgb(245, 245, 245);
+        text-align: center;
+        display: none;
+    }
+
+    div.aside-right>div>span.fix-text>div.qr-code>img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 17px;
+    }
+
+    div.aside-right>div:first-child:hover>span.fix-text>div.qr-code {
+        display: inline-block;
+    }
+
+    /* 设置APP二维码的交互效果 */
+
+    /* ********************以上完成右边固定栏的设置******************** */
+
+    div.second-line {
+        position: relative;
+        height: 100px;
+        width: 100%;
+        top: 40px;
+        z-index: 555;
+    }
+
+    div.second-line>nav {
+        position: absolute;
+        width: 1230px;
+        left: 340px;
+        right: 340px;
+        height: 100px;
+    }
+
+
+    div.second-line>.second-nav>img {
+        display: inline-block;
+        width: 57px;
+        height: 57px;
+        position: absolute;
+        left: -6px;
+        top: 20px;
+        cursor: pointer;
+    }
+
+    div.second-line>.second-nav>div.nav {
+        position: absolute;
+        top: 36px;
+        left: 235px;
+        width: 620px;
+        height: 50px;
+        text-align: justify;
+        word-spacing: 12px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    div.second-line>.second-nav>form.search {
+        position: absolute;
+        top: 20px;
+        right: 1px;
+        width: 350px;
+        height: 0px;
+        line-height: 50px;
+        text-align: right;
+        font-size: 0;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    div.second-line>.second-nav>form.search>input {
+        font-size: 16px;
+    }
+
+    div.second-line>.second-nav>form.search input.te {
+        height: 50px;
+        border: 1px solid rgb(206, 202, 202);
+        cursor: auto;
+        display: inline-block;
+    }
+
+    div.second-line>.second-nav>form.search input.sb {
+        height: 54px;
+        padding-bottom: 4px;
+        border: 1px solid rgb(206, 202, 202);
+        border-left: 0;
+        display: inline-block;
+        cursor: pointer;
+        background-color:white;
+    }
+
+    /* ****************以上完成第二行的基本布局************** */
+
+    nav.second-nav>.nav>span#xm-ph {
+        display: inline-block;
+        padding-bottom: 43px;
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line {
+        position: absolute;
+        top: 64px;
+        left: -576px;
+        width: 1838px;
+        height: 230px;
+        z-index: 555;
+        box-shadow: -3px 3px 4px rgba(0,0,0,0.18);
+        display: none;
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind {
+        position: absolute;
+        width: 1230px;
+        left: 340px;
+        right: 253x;
+        height: 230px;
+        display: block;
+        word-spacing: 40px;
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind * {
+        display: inline-block;
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div{
+        text-align: center;
+        height: 230px;
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>img {
+        width: 160px;
+        height: 110px;
+       display: block;
+       margin-top: 15px;
+       margin-bottom: 15px;
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.new-goods{
+        color: rgb(255, 103, 0);
+        line-height: 18px;
+        border: 1px solid  rgb(255, 103, 0);
+        
+
+    }
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.phone-name{
+        font-size: 14px;
+        line-height: 18px;
+        word-spacing:normal;
+    }
+    
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.price{
+        font-size: 12px;
+        color: rgb(255, 103, 0);
+        line-height: 18px;
+    }
+
+    nav.second-nav>.nav>span:hover{
+        color: rgb(255, 103, 0);
+    }
+
+    nav.second-nav>form.search>.sb:hover{
+        color: rgb(255, 103, 0);
+    }
+    nav.second-nav>.nav>span#xm-ph:hover>.xmph-line{
+        display: block;
+    }
+</style>
+
+<body>
+    <div class="aside-right">
+        <div class="fixed-aside">
+            <img class="original-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/98a23aae70f25798192693f21c4d4039.png">
+            <img class="hover-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/74c4fcb4475af8308e9a670db9c01fdf.png">
+            <span class="fix-text">手机APP
+                <div class="qr-code">
+                    <img src="https://i8.mifile.cn/b2c-mimall-media/93650133310ec1c385487417a472a26c.png"
+                         alt="">
+                    <span>手机扫一扫</span><br>
+                    <span>一分赢好礼</span>
+                </div>
+            </span>
+        </div>
+        <div class="fixed-aside">
+            <img class="original-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/55cad219421bee03a801775e7309b920.png">
+            <img class="hover-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/41f858550f42eb1770b97faf219ae215.png">
+            <span class="fix-text">个人中心</span>
+        </div>
+        <div class="fixed-aside">
+            <img class="original-img"
+                 src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/12eb0965ab33dc8e05870911b90f3f13.png">
+            <img class="hover-img"
+                 src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/95fbf0081a06eec7be4d35e277faeca0.png">
+            <span class="fix-text">售后服务</span>
+        </div>
+        <div class="fixed-aside">
+            <img class="original-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/4f036ae4d45002b2a6fb6756cedebf02.png">
+            <img class="hover-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/5e9f2b1b0da09ac3b3961378284ef2d4.png">
+            <span class="fix-text">联系客服</span>
+        </div>
+        <div class="fixed-aside">
+            <img class="original-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/d7db56d1d850113f016c95e289e36efa.png">
+            <img class="hover-img"
+                 src="https://i8.mifile.cn/b2c-mimall-media/692a6c3b0a93a24f74a29c0f9d68ec71.png">
+            <span class="fix-text">&nbsp;购物车&nbsp;</span>
+        </div>
+    </div>
+    <div class="page1">
+        <header>
+            <section class="first-line">
+                <nav class="menu">
+                    <span class="childmenu">小米商城</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">MIUI</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">loT</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">云服务</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">金融</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">有品</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">小爱开放平台</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">企业团购</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">资质证书</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">协议规则</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">下载app
+                        <div class="qr-code">
+                            <img src="https://i1.mifile.cn/f/i/17/appdownload/download.png?1"
+                                 id="二维码">
+                            <span>小米商城APP</span>
+                        </div>
+                    </span>
+
+                    <span class="lll">|</span>
+                    <span class="childmenu">Select&nbsp;Region</span>
+                    <span class="lll">|</span>
+                </nav>
+                <nav class="zhanghao">
+                    <span class="childmenu">登录</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">注册</span>
+                    <span class="lll">|</span>
+                    <span class="childmenu">&nbsp;&nbsp;消息通知</span>
+                </nav>
+                <nav class="buycar">
+                    <span>购物车(0)</span>
+
+                </nav>
+            </section>
+        </header>
+        <div class="second-line">
+            <nav class="second-nav">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN2iqXrzRkNsuYSmJcqmB1RvOkHYbFJ9K8BodWRBwl-khVWjMS"
+                     title="小米官网">
+                <div class="nav">
+                    <span id="xm-ph">小米手机
+                        <div class="xmph-line">
+                            <div class="kind">
+                                <div class="小米9">
+                                    <span class="new-goods">新品</span>
+                                    <img src="https://i1.mifile.cn/f/i/g/2015/cn-index/mi9-320.png"
+                                         alt="">
+                                    <span class="phone-name">小米9</span><br>
+                                    <span class="price">2999元</span>
+                                </div>
+                                <div class="小米9-SE">
+                                    <span class="new-goods">新品</span>
+                                    <img src="https://i1.mifile.cn/f/i/g/2015/cn-index/note7320-220.png"
+                                         alt="">
+                                    <span class="phone-name">小米9&nbsp;SE</span><br>
+                                    <span class="price">1999元</span>
+                                </div>
+                                <div class="小米8-青春版">
+                                    <img src="https://i1.mifile.cn/f/i/g/2015/cn-index/qingchun-320.png"
+                                         alt="">
+                                    <span class="phone-name">小米8&nbsp;青春版</span><br>
+                                    <span class="price">1499元</span>
+                                </div>
+                                <div class="小米MIX3">
+                                    <img src="https://i1.mifile.cn/f/i/g/2015/cn-index/mix3-320.png"
+                                         alt="">
+                                    <span class="phone-name">小米MIX&nbsp;3</span><br>
+                                    <span class="price">3299元</span>
+                                </div>
+                                <div class="小米8">
+                                    <img src="https://i1.mifile.cn/f/i/g/2015/cn-index/pc-320-220-mi8.png"
+                                         alt="">
+                                    <span class="phone-name">小米8</span><br>
+                                    <span class="price">2599元</span>
+                                </div>
+                                <div class="小米Play">
+                                    <span class="new-goods">新品</span>
+                                    <img src="https://i1.mifile.cn/f/i/g/2015/cn-index/pc-320-miplay-1.png"
+                                         alt="">
+                                    <span class="phone-name">小米Play</span><br>
+                                    <span class="price">1099元</span>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                    <span>红米</span>
+                    <span>电视</span>
+                    <span>笔记本</span>
+                    <span>家电</span>
+                    <span>新品</span>
+                    <span>路由器</span>
+                    <span>智能硬件</span>
+                    <span>服务</span>
+                    <span>社区</span>
+                </div>
+                <form class="search"
+                      action="https://www.mi.com/index.html">
+                    <input type="text"
+                           class="te">
+                    <input type="submit"
+                           class="sb"
+                           value="搜索">
+                </form>
+            </nav>
+        </div>
+    </div>
+</body>
+
+</html>
