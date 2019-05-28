@@ -19,7 +19,7 @@
 
     /* 设置第一个主根div的高度和定位 */
     div.page1 {
-        height: 100%;
+        height: 937px;
         position: relative;
     }
 
@@ -184,7 +184,7 @@
         border-bottom: 0;
     }
 
-    div>div:last-child {
+    div.aside-right>div:last-child {
         border-bottom: 1px solid rgb(245, 245, 245);
     }
 
@@ -316,11 +316,12 @@
         border-left: 0;
         display: inline-block;
         cursor: pointer;
-        background-color:white;
+        background-color: white;
     }
 
     /* ****************以上完成第二行的基本布局************** */
 
+    /* 为小米手机增加padding，从而增加交互面积 */
     nav.second-nav>.nav>span#xm-ph {
         display: inline-block;
         padding-bottom: 43px;
@@ -333,8 +334,9 @@
         width: 1838px;
         height: 230px;
         z-index: 555;
-        box-shadow: -3px 3px 4px rgba(0,0,0,0.18);
+        box-shadow: -3px 3px 4px rgba(0, 0, 0, 0.18);
         display: none;
+        background-color: white;
     }
 
     nav.second-nav>.nav>#xm-ph>.xmph-line>.kind {
@@ -351,7 +353,7 @@
         display: inline-block;
     }
 
-    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div{
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div {
         text-align: center;
         height: 230px;
     }
@@ -359,41 +361,663 @@
     nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>img {
         width: 160px;
         height: 110px;
-       display: block;
-       margin-top: 15px;
-       margin-bottom: 15px;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
 
-    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.new-goods{
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.new-goods {
         color: rgb(255, 103, 0);
         line-height: 18px;
-        border: 1px solid  rgb(255, 103, 0);
-        
+        border: 1px solid rgb(255, 103, 0);
+
 
     }
 
-    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.phone-name{
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.phone-name {
         font-size: 14px;
         line-height: 18px;
-        word-spacing:normal;
+        word-spacing: normal;
+        color: rgb(56, 55, 55);
     }
-    
-    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.price{
+
+    nav.second-nav>.nav>#xm-ph>.xmph-line>.kind>div>.price {
         font-size: 12px;
         color: rgb(255, 103, 0);
         line-height: 18px;
     }
 
-    nav.second-nav>.nav>span:hover{
+    /* 以上小米手机扩展图布局完成 */
+
+    nav.second-nav>.nav>span:hover {
         color: rgb(255, 103, 0);
     }
 
-    nav.second-nav>form.search>.sb:hover{
+    nav.second-nav>form.search>.sb:hover {
         color: rgb(255, 103, 0);
     }
-    nav.second-nav>.nav>span#xm-ph:hover>.xmph-line{
+
+    nav.second-nav>.nav>span#xm-ph:hover>.xmph-line {
         display: block;
     }
+
+    /* *************以上小米手机扩展图交互设置完毕******************* */
+
+
+    .third-line * {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 设置主区域定位 */
+    .third-line {
+        position: absolute;
+        top: 141px;
+        height: 462px;
+        width: 100%;
+        z-index: 500;
+    }
+
+    /* 为轮播图定位 */
+    .third-line>.radio-img {
+        top: 0px;
+        left: 340px;
+        width: 1226px;
+        height: 460px;
+        position: absolute;
+    }
+
+    /* 为图片绝对定位 */
+    .third-line>.radio-img>img {
+        position: absolute;
+        width: 1226px;
+        opacity: 0;
+        transition: 0.7s;
+        cursor: pointer;
+    }
+
+    /* input在check的时候紧挨着的图片显示 */
+    .third-line>.radio-img>input:checked+img {
+        opacity: 1;
+    }
+
+    /* 为标签1设置位置 */
+    .third-line>.radio-img>.label1 {
+        position: absolute;
+        top: 93%;
+        left: 90%;
+        z-index: 501;
+    }
+
+    /* 为标签1里面的小标签设置样式 */
+    .third-line>.radio-img>.label1>label {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+    /* 为标签1里面的小标签设置交互效果 */
+    .third-line>.radio-img>.label1>label:hover {
+        background-color: #fff;
+        transition: 0.2s;
+    }
+
+    /* 为标签1里面的小标签设置交互效果 */
+    .third-line>.radio-img>input:nth-of-type(1):checked~.label1>label:nth-child(1),
+    .third-line>.radio-img>input:nth-of-type(2):checked~.label1>label:nth-child(2),
+    .third-line>.radio-img>input:nth-of-type(3):checked~.label1>label:nth-child(3),
+    .third-line>.radio-img>input:nth-of-type(4):checked~.label1>label:nth-child(4),
+    .third-line>.radio-img>input:nth-of-type(5):checked~.label1>label:nth-child(5) {
+        background-color: #fff;
+    }
+
+    /* 为左标签设置定位 */
+    .third-line>.radio-img>.left {
+        display: block;
+        position: absolute;
+        width: 50px;
+        height: 80px;
+        background-color: transparent;
+        text-align: center;
+        line-height: 78px;
+        left: 234px;
+        top: 41%;
+        transition: 0.5s;
+    }
+
+    /* 为左标签里面的子标签设置样式,完全覆盖父元素,display为none */
+    .third-line>.radio-img>.left label {
+        width: 50px;
+        height: 80px;
+        font-size: 2em;
+        color: rgba(0, 0, 0, 0.2);
+        display: none;
+        cursor: pointer;
+    }
+
+    /* 是<符号无法被鼠标选中 */
+    .third-line>.radio-img>.left label>span {
+        user-select: none;
+    }
+
+    /* 当第一个input被checked的时候左标签的第五个子标签出现在页面，点击它就代表和第5张图片交互，下面的类似，不同的input被checked左标签对应相应的交互图面标签 */
+    .third-line>.radio-img>input:nth-of-type(1):checked~.left>label:nth-child(5) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(2):checked~.left>label:nth-child(1) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(3):checked~.left>label:nth-child(2) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(4):checked~.left>label:nth-child(3) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(5):checked~.left>label:nth-child(4) {
+        display: block;
+    }
+
+    /* 为右标签设置定位 */
+    .third-line>.radio-img>.right {
+        display: block;
+        position: absolute;
+        width: 50px;
+        height: 80px;
+        background-color: transparent;
+        text-align: center;
+        line-height: 78px;
+        right: 0;
+        top: 41%;
+        transition: 0.5s;
+    }
+
+    /* 为右标签里面的子标签设置样式,完全覆盖父元素,display为none */
+    .third-line>.radio-img>.right label {
+        width: 50px;
+        height: 80px;
+        font-size: 2em;
+        color: rgba(0, 0, 0, 0.2);
+        display: none;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    /* 使>符号无法被鼠标选中 */
+    .third-line>.radio-img>.right label>span {
+        user-select: none;
+    }
+
+    /* 当第一个input被checked的时候右标签的第二个子标签出现在页面，点击它就代表和第2张图片交互，下面的类似，不同的input被checked左标签对应相应的交互图面标签 */
+    .third-line>.radio-img>input:nth-of-type(1):checked~.right>label:nth-child(2) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(2):checked~.right>label:nth-child(3) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(3):checked~.right>label:nth-child(4) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(4):checked~.right>label:nth-child(5) {
+        display: block;
+    }
+
+    .third-line>.radio-img>input:nth-of-type(5):checked~.right>label:nth-child(1) {
+        display: block;
+    }
+
+    /* input的默认按钮不需要，全部用label代替 */
+    .third-line>.radio-img>input {
+        display: none;
+    }
+
+    /* 左右标签被hover时候背景颜色变化 */
+    .third-line>.radio-img>.right:hover,
+    .third-line>.radio-img>.left:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* 以上轮播图设置完毕 */
+
+
+    .third-line>.left-menu {
+        position: absolute;
+        width: 235px;
+        height: 460px;
+        top: 0px;
+        left: 340px;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .third-line>.left-menu>ul {
+        list-style-type: none;
+        margin: 20px 0px;
+
+    }
+
+    .third-line>.left-menu>ul>li {
+
+        display: block;
+        height: 42px;
+        line-height: 42px;
+        color: rgb(230, 230, 230);
+        width: 205px;
+        padding-left: 30px;
+        cursor: pointer;
+    }
+
+    .third-line>.left-menu>ul>li>span.turnright {
+        position: absolute;
+        right: 15px;
+        font-size: 1.5em;
+    }
+
+    /* 以上完成左边菜单的固定布局 */
+
+    .third-line>.left-menu>ul>li>span.rightdisplay {
+        position: absolute;
+        width: 992px;
+        height: 460px;
+        left: 235px;
+        top: 0px;
+        background-color: white;
+        display: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        z-index: 502;
+    }
+
+    /* 以上完成右边菜单的模拟布局 */
+
+    .third-line>.left-menu>ul>li:hover {
+        background-color: #ff6700;
+    }
+
+    .third-line>.left-menu>ul>li:hover>span.rightdisplay {
+        display: block;
+    }
+
+    /* 以上完成右边菜单的交互 */
+
+    /* ***********以上完成第三行所有布局******************* */
+
+    .fourth-line {
+        position: absolute;
+        top: 613px;
+        height: 190px;
+        width: 100%;
+    }
+
+    .fourth-line>.middle-menu {
+        top: 0px;
+        left: 340px;
+        width: 1226px;
+        height: 190px;
+        position: absolute;
+    }
+
+    .fourth-line>.middle-menu>table {
+        height: 100%;
+        width: 100%;
+    }
+
+    .fourth-line>.middle-menu>table .middle-menu-tr1 {
+        text-align: end;
+        vertical-align: top;
+        width: 1226px;
+        height: 186px;
+        cursor: pointer;
+    }
+
+    .fourth-line>.middle-menu>table .min-menu>table {
+        width: 235px;
+        height: 170px;
+        background-color: rgba(0, 0, 0, 0.6);
+        margin-left: -3px;
+    }
+
+    .fourth-line>.middle-menu>table .min-menu>table tr td {
+        color: rgb(230, 230, 230);
+        text-align: center;
+    }
+
+    .fourth-line>.middle-menu>table .min-menu>table tr td:hover {
+        color: white;
+    }
+
+    .fourth-line>.middle-menu>table .xm8>img {
+        width: 315px;
+        height: 170px;
+    }
+
+    .fourth-line>.middle-menu>table .hm7>img {
+        width: 320px;
+        height: 170px;
+    }
+
+    .fourth-line>.middle-menu>table .xmsh>img {
+        width: 315px;
+        height: 170px;
+    }
+
+    /* ****************以上第4行布局设置完毕，通过表格来布局*********** */
+
+    .fiveth-line {
+        position: absolute;
+        height: 170px;
+        width: 100%;
+        top: 800px;
+    }
+
+    .fiveth-line>img {
+        width: 1223px;
+        height: 123px;
+        position: absolute;
+        top: 0;
+        left: 340px;
+    }
+
+    /* *******第一页最后一行代码设置完毕***** */
+
+    .page2 {
+        width: 100%;
+        position: relative;
+        height: 900px;
+    }
+
+    .page2>header {
+        position: absolute;
+        top: 0;
+        left: 340px;
+        height: 80px;
+        width: 1230px;
+        vertical-align: bottom;
+        text-align: justify
+    }
+
+    .page2>header>.phone {
+        position: absolute;
+        bottom: 0;
+        display: inline-block;
+        font-size: 22px;
+        font-weight: 200;
+        line-height: 58px;
+        color: #333;
+        left: 0;
+    }
+
+    .page2>header>.chakan {
+        font-size: 16px;
+        line-height: 58px;
+        color: #424242;
+        bottom: 0;
+        position: absolute;
+        right: 0;
+        display: inline-block;
+    }
+
+    .page2>header>.chakan>span {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 1px solid grey;
+        background-color: grey;
+        border-radius: 20px;
+        line-height: 17px;
+        margin-left: 10px;
+        color: #fff;
+        font-size: 17px;
+    }
+
+    .page2>header>.chakan:hover {
+        color: #ff6700;
+    }
+
+    .page2>header>.chakan:hover>span {
+        background-color: #ff6700;
+        border-color: #ff6700;
+    }
+
+
+    /* ******第二页header设置完毕*********** */
+    .page2>.next-line {
+        position: absolute;
+        width: 1230px;
+        height: 640px;
+        left: 340px;
+        top: 80px;
+    }
+
+    .page2>.next-line>.left {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 620px;
+        width: 236px;
+    }
+
+    .page2>.next-line>.left>img {
+        width: 234px;
+        height: 616px;
+    }
+
+    .page2>.next-line>.left:hover {
+        top: -2px;
+        transition-duration: 1s;
+        box-shadow: inset 0 0px 0px 5px rgba(226, 223, 223, 0.692);
+    }
+
+
+    /* 第二页第二行左边布局完成 */
+
+    .page2>.next-line>.right {
+        width: 979px;
+        height: 618px;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .page2>.next-line>.right .kind {
+        width: 236px;
+        height: 302px;
+        margin-right: 5px;
+        margin-bottom: 7px;
+        text-align: center;
+        box-shadow: 0 2px 2px rgba(226, 223, 223, 0.911);
+        font-size: 16px;
+        position: relative;
+    }
+
+    .page2>.next-line>.right .kind>img {
+        width: 160px;
+        height: 160px;
+        display: block;
+        margin-left: 40px;
+    }
+
+    .page2>.next-line>.right .kind>span {
+        display: block;
+    }
+
+    .page2>.next-line>.right tr:nth-child(1)>.kind>.toptag {
+        background-color: #83c44e;
+        position: absolute;
+        top: 0;
+        left: 100px;
+        color: azure;
+
+    }
+
+    .page2>.next-line>.right tr:nth-child(2)>.kind>span.toptag {
+        background-color: red;
+        position: absolute;
+        top: 0;
+        left: 100px;
+        color: azure;
+    }
+
+    .page2>.next-line>.right .kind>span.price {
+        color: #ff6700;
+    }
+
+    .page2>.next-line>.right .kind>span.parameter {
+        font-size: 10px;
+        color: grey
+    }
+
+    .page2>.next-line>.right .kind:hover {
+        top: -2px;
+        transition-duration: 1s;
+    }
+
+    /* 第二页第二行右边布局完整 */
+    .page2>.last-line {
+        position: absolute;
+        top: 720px;
+        width: 100%;
+        height: 150px;
+    }
+
+    .page2>.last-line>img {
+        position: absolute;
+        left: 340px;
+        top: 10px;
+        width: 1230px;
+        height: 120px;
+    }
+
+    /* *************************第二页设置完毕******************* */
+
+    .end {
+        width: 100%;
+        height: 270px;
+        position: relative;
+        color: #616161;
+    }
+
+    .end>.first-line {
+        position: absolute;
+        top: 10px;
+        left: 340px;
+        border-bottom: 1px solid rgb(156, 155, 155);
+        width: 1230px;
+        height: 60px;
+    }
+
+    .end>.first-line>span {
+        display: inline-block;
+        font-size: 16px;
+        line-height: 30px;
+        height: 30px;
+        padding: 0 69px;
+        border-right: 1px solid rgb(165, 154, 154);
+        cursor: pointer;
+    }
+
+    .end>.first-line>span:last-child {
+        border: 0;
+    }
+
+    .end>.first-line>span:hover {
+        color: #ff6700;
+    }
+
+    /* 最好一页第一行完毕 */
+    .end>.second-line {
+        position: absolute;
+        top: 80px;
+        left: 340px;
+        width: 1230px;
+        height: 190px;
+    }
+
+    .end>.second-line>.left {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 964px;
+        border-right: 1px solid rgb(165, 154, 154);
+        word-spacing: 10px;
+        height: 130px;
+
+    }
+
+    .end>.second-line>.left>dl {
+        display: inline-block;
+        width: 150px;
+        height: 130px;
+        cursor: pointer;
+    }
+
+    .end>.second-line>.left>dl:first-child {
+        margin-left: -40px;
+    }
+
+    .end>.second-line>.left>dl>dt {
+        font-size: 20xp;
+        color: grey;
+        display: inline-block;
+        padding-bottom: 18px;
+        padding-left: 42px;
+    }
+
+    .end>.second-line>.left>dl>dd {
+        display: inline-block;
+        margin-bottom: 3px;
+    }
+
+    .end>.second-line>.left>dl>dd:hover {
+        color: #ff6700;
+    }
+
+    /* 最后一行第二行左边设置完毕 */
+
+    .end>.second-line>.right {
+        position: absolute;
+        top: 0px;
+        right: 60px;
+        width: 150px;
+        height: 130px;
+        text-align: center;
+    }
+
+    .end>.second-line>.right>span {
+        display: block;
+    }
+
+    .end>.second-line>.right>span:nth-child(1) {
+        color: #ff6700;
+        font-size: 20px;
+    }
+
+    .end>.second-line>.right>span:nth-child(2) {
+        color: #252525;
+        font-size: 10px;
+        margin-top: 10px;
+    }
+
+    .end>.second-line>.right>span:nth-child(3) {
+        color: #252525;
+        font-size: 8px;
+    }
+
+    .end>.second-line>.right>span:nth-child(4) {
+        color: #ff6700;
+        font-size: 14px;
+        border: 1px solid #ff6700;
+        margin-top: 20px;
+    }
+
+    /* 最后一行第二行设置完毕 */
 </style>
 
 <body>
@@ -560,7 +1184,261 @@
                 </form>
             </nav>
         </div>
+        <div class="third-line">
+            <div class="radio-img">
+                <input checked
+                       type="radio"
+                       name="img"
+                       id="rd1">
+                <img src="https://i1.mifile.cn/a4/xmad_15589219834033_YdMas.jpg"
+                     alt="">
+                <input type="radio"
+                       name="img"
+                       id="rd2">
+                <img src="https://i1.mifile.cn/a4/xmad_15587134804362_DKmte.jpg"
+                     alt="">
+                <input type="radio"
+                       name="img"
+                       id="rd3">
+                <img src="https://i1.mifile.cn/a4/xmad_15585424509643_WcdLE.jpg"
+                     alt="">
+                <input type="radio"
+                       name="img"
+                       id="rd4">
+                <img src="https://i1.mifile.cn/a4/xmad_15548066591437_Stxlj.jpg"
+                     alt="">
+                <input type="radio"
+                       name="img"
+                       id="rd5">
+                <img src="https://i1.mifile.cn/a4/xmad_15476942061027_STEvM.jpg"
+                     alt="">
+                <div class="label1">
+                    <label for="rd1"></label>
+                    <label for="rd2"></label>
+                    <label for="rd3"></label>
+                    <label for="rd4"></label>
+                    <label for="rd5"></label>
+                </div>
+                <div class="left">
+                    <label for="rd1"><span>&lt;</span></label>
+                    <label for="rd2"><span>&lt;</span></label>
+                    <label for="rd3"><span>&lt;</span></label>
+                    <label for="rd4"><span>&lt;</span></label>
+                    <label for="rd5"><span>&lt;</span></label>
+                    <!-- 左标签里面设置小于号代表左   -->
+                </div>
+                <div class="right">
+                    <label for="rd1"><span>&gt;</span></label>
+                    <label for="rd2"><span>&gt;</span></label>
+                    <label for="rd3"><span>&gt;</span></label>
+                    <label for="rd4"><span>&gt;</span></label>
+                    <label for="rd5"><span>&gt;</span></label>
+                    <!-- 右标签里面设置大于号代表右     -->
+                </div>
+            </div>
+            <div class="left-menu">
+                <ul>
+                    <li><span class="production-name">手机&nbsp;电话</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">电视&nbsp;盒子</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">笔记&nbsp;平板</span><span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">家电&nbsp;插线板</span><span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">出行&nbsp;穿戴</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">智能&nbsp;路由器</span><span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">电源&nbsp;配件</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">健康&nbsp;儿童</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">耳机&nbsp;音响</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                    <li><span class="production-name">生活&nbsp;箱包</span> <span class="turnright">&gt;</span><span
+                              class="rightdisplay"></span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="fourth-line">
+            <div class="middle-menu">
+                <table>
+                    <tbody>
+                        <tr class="middle-menu-tr1">
+                            <td class="min-menu">
+                                <table>
+                                    <tr>
+                                        <td>选购手机</td>
+                                        <td>企业团购</td>
+                                        <td>F码通道</td>
+                                    </tr>
+                                    <tr>
+                                        <td>米粉卡</td>
+                                        <td>以旧换新</td>
+                                        <td>话费充值</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="xm8"><img src="https://i1.mifile.cn/a4/xmad_15564509814653_bkvmP.jpg"
+                                     alt=""> </td>
+                            <td class="hm7"><img src="https://i1.mifile.cn/a4/xmad_15553962519926_fcMZl.jpg"
+                                     alt=""> </td>
+                            <td class="xmsh"><img src="https://i1.mifile.cn/a4/xmad_15410599445473_Ivjsb.jpg"
+                                     alt=""> </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fiveth-line">
+            <img src="https://i1.mifile.cn/a4/xmad_15589591963223_VwqiU.jpg"
+                 alt="">
+        </div>
     </div>
+    <div class="page2">
+        <header>
+            <span class="phone">手机</span>
+            <span class="chakan">查看全部<span>&nbsp;&gt;</span></span>
+        </header>
+        <div class="next-line">
+            <div class="left">
+                <img src="https://i1.mifile.cn/a4/xmad_15589606696364_lPMvT.jpg"
+                     alt="">
+            </div>
+            <table class="right">
+                <tr>
+                    <td class="kind">
+                        <span class="toptag">新品</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1550642182.7527088!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">小米9&nbsp;6GB+128GB</span>
+                        <span class="parameter">骁龙855，索尼4800万超广角微距三摄</span>
+                        <span class="price">2999元</span>
+                    </td>
+                    <td class="kind">
+                        <span class="toptag">新品</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1550646283.24414368!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">Redmi&nbsp;K20</span>
+                        <span class="parameter">8nm高性能处理器，4800万高清相机</span>
+                        <span class="price">2499元</span>
+                    </td>
+                    <td class="kind">
+                        <span class="toptag">新品</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1547020852.30751177!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">小米9&nbsp;SE&nbsp;6GB+64GB</span>
+                        <span class="parameter">索尼4800万超广角三摄，骁龙712</span>
+                        <span class="price">1999元</span>
+                    </td>
+                    <td class="kind">
+                        <span class="toptag">新品</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1545457719.47232999!220x220.png"
+                             alt="">
+                        <span class="sjmc">Redmi&nbsp;Note7</span>
+                        <span class="parameter">4800万拍照千元机，18个月超长质保</span>
+                        <span class="price">999元</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="kind">
+                        <span class="toptag">减200元</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1537324004.08544830!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">小米Play</span>
+                        <span class="parameter">5.84"小水滴全面屏，后置1200万 AI </span>
+                        <span class="price">1099元</span>
+                    </td>
+                    <td class="kind">
+                        <span class="toptag">享8折</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1527685277.65255600!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">小米8&nbsp;青春版</span>
+                        <span class="parameter">潮流镜面渐变色，2400万自拍旗舰</span>
+                        <span class="price">1499元</span>
+                    </td>
+                    <td class="kind">
+                        <span class="toptag">享8折</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1524621350.77238418!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">小米6S</span>
+                        <span class="parameter">轻薄美观的拍照手机</span>
+                        <span class="price">1600元</span>
+                    </td>
+                    <td class="kind">
+                        <span class="toptag">减50元</span>
+                        <img src="https://i1.mifile.cn/a1/pms_1528719461.20891365!220x220.jpg"
+                             alt="">
+                        <span class="sjmc">小米8&nbsp;SE</span>
+                        <span class="parameter">三星 AMOLED 全面屏，骁龙710</span>
+                        <span class="price">1599元</span>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="last-line">
+            <img src="https://i1.mifile.cn/a4/xmad_15586821761848_DFqQS.jpg"
+                 alt="">
+        </div>
+    </div>
+    <div class="end">
+        <div class="first-line">
+            <span>预约维修服务</span>
+            <span>7天无理由退货</span>
+            <span>15天免费换货</span>
+            <span>满150元包邮</span>
+            <span>520余家售后网点</span>
+        </div>
+        <div class="second-line">
+            <div class="left">
+                <dl class="help">
+                    <dt>帮助中心</dt>
+                    <dd>账户管理</dd>
+                    <dd>购物指南</dd>
+                    <dd>订单操作</dd>
+                </dl>
+                <dl class="serve">
+                    <dt> 服务支持</dt>
+                    <dd>售后政策</dd>
+                    <dd>自助服务</dd>
+                    <dd>相关下载</dd>
+                </dl>
+                <dl class="offline">
+                    <dt>线下门店</dt>
+                    <dd>小米之家</dd>
+                    <dd>服务网点</dd>
+                    <dd>授权体验店</dd>
+                </dl>
+                <dl class="aboutxm">
+                    <dt>关于小米</dt>
+                    <dd>了解小米</dd>
+                    <dd>加入小米</dd>
+                    <dd>投资者关系</dd>
+                </dl>
+                <dl class="aboutus">
+                    <dt>关注我们</dt>
+                    <dd>新浪微博</dd>
+                    <dd>官方微信</dd>
+                    <dd>联系我们</dd>
+                </dl>
+                <dl class="special">
+                    <dt>特色服务</dt>
+                    <dd>F码通道</dd>
+                    <dd>礼物码</dd>
+                    <dd>防伪查询</dd>
+                </dl>
+            </div>
+            <div class="right">
+                <span>400-100-5678</span>
+                <span>周一至周日 8:00-18:00</span>
+                <span>&lt;仅收市话费&gt;</span>
+                <span>联系客服</span>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
