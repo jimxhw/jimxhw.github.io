@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>摩拜</title>
+</head>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+     body{
+         margin: 0
+     }
+
+     .first{
+       background-image: url(https://mobike.com/cn/assets/themes/moby/img/landing/hero-bg-3.jpg);
+        background-position: center;
+        background-size: cover;
+        height: 800px;
+        border: 2px solid white;
+        margin-bottom: -3px;
+     }
+
+     div.dad{
+         border: 1px solid white
+     }
+     .dad>div:nth-child(1){
+          background-image: url(https://mobike.com/cn/assets/themes/moby/img/promo-01.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          float: left;
+          width: 25%;
+          height: 260px;
+          border: 1px solid white
+     }
+     .dad>div:nth-child(2){
+          background-image: url(https://mobike.com/cn/assets/themes/moby/img/promo-02.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          float: left;
+          width: 25%;
+          height: 260px;
+          border: 1px solid white
+     }
+     .dad>div:nth-child(3){
+          background-image: url(https://mobike.com/cn/assets/themes/moby/img/promo-03.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          float: left;
+          width: 25%;
+          height: 260px;
+          border: 1px solid white
+     }
+     .dad>div:nth-child(4){
+          background-image: url(https://mobike.com/cn//assets/themes/moby/img/promo-03.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          float: left;
+          width: 25%;
+          height: 260px;
+          border: 1px solid white
+     }
+     @media (max-width:1100px){
+        .dad.dad>.second{
+            width: 50%;
+        }
+        .first{
+            height: 600px ;
+        } 
+     }
+     @media (max-width:600px){
+        .dad.dad>.second{
+            width: 100% ;
+        }
+     }
+     @media (min-width:1400px){
+        .first{
+            height: 648px;
+            background-size: 68%;
+            background-position-y: 57%;
+        } 
+     }
+     /* 使用@media要主要选择器的优先级，可以通过重复或者加！important改变优先级 */
+
+</style>
+<body>
+    <div class="first"></div>
+    <div class="dad">
+        <div class="second"></div>
+        <div class="second"></div>
+        <div class="second"></div>
+        <div class="second"></div>
+    </div>
+</body>
+</html>
