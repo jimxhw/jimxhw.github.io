@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>摩拜</title>
+</head>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+     body{
+         margin: 0
+     }
+
+     div.dad{
+         margin-top: 200px;
+         border: 1px solid white;
+         display: flex;
+     }
+     .dad>div:nth-child(1){
+          background-image: url(https://mobike.com/cn/assets/themes/moby/img/promo-01.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          border: 1px solid white;
+          height: 260px;
+          flex-grow: 1;
+     }
+     .dad>div:nth-child(2){
+          background-image: url(https://mobike.com/cn/assets/themes/moby/img/promo-02.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          border: 1px solid white;
+          height: 260px;
+          flex-grow: 1;
+     }
+     .dad>div:nth-child(3){
+          background-image: url(https://mobike.com/cn/assets/themes/moby/img/promo-03.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          border: 1px solid white;
+          height: 260px;
+          flex-grow: 1;
+     }
+     .dad>div:nth-child(4){
+          background-image: url(https://mobike.com/cn//assets/themes/moby/img/promo-03.jpg) ; 
+          background-size: cover;
+          background-position: center;
+          border: 1px solid white;
+          height: 260px;
+          flex-grow: 1;
+     }
+     @media (max-width:1200px){
+        .dad.dad{
+            flex-wrap: wrap;
+        }
+        .dad.dad>div{
+            width: 50%;
+        }
+     }
+     @media (max-width:600px){
+        .dad.dad{
+            flex-wrap: wrap;
+        }
+        .dad.dad>div{
+            width: 100%;
+        }
+     }
+    
+    
+     /* 使用@media要主要选择器的优先级，可以通过重复或者加！important改变优先级 */
+
+</style>
+<body>
+    <div class="dad">
+        <div class="second"></div>
+        <div class="second"></div>
+        <div class="second"></div>
+        <div class="second"></div>
+    </div>
+</body>
+</html>
