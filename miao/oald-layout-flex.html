@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+        *{
+            box-sizing: border-box;
+        }
+
+        div.all {
+            height: 100%;
+            width: 100%;
+            display: flex;
+        }
+
+        div.all>.a{
+            flex-grow: 1;
+            background-color: aqua;
+            border-right: 2px solid black;
+        }
+        div.all>.b{
+            flex-grow: 2;
+            border-right: 2px solid black;
+            display: inline-flex;
+            flex-direction: column;
+        }
+        div.all>.c{
+            flex-grow: 1;
+            background-color: rgb(55, 0, 255);
+            border-right: 2px solid black;
+        }
+        div.all>.d{
+            flex-grow: 1;
+            background-color: rgb(255, 81, 0);
+        }
+        div.all>.b>header{
+             height:200px;
+             background-color: crimson;
+        }
+        div.all>.b>footer{
+            flex-grow: 1;
+            background-color: gold
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <div class="all">
+        <div class="a"></div>
+        <section class="b">
+            <header></header>
+            <footer></footer>
+        </section>
+        <div class="c"></div>
+        <div class="d"></div>
+    </div>
+</body>
+
+</html>

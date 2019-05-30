@@ -14,26 +14,26 @@
            width: 100%;
            height: 100%;
        }
+       div{
+           display: flex;
+           flex-direction: column;
+       }
        div>header{
            height: 100px;
-           width: 100%;
            background-color: aqua;
            border-bottom: 1px solid black;
        }
        div>section{
-          width: 100%;
           display: flex;
-          height: calc(100% - 101px);
+          flex-grow: 1;
        }
        div>section>aside{
            width: 200px;
            background-color: burlywood;
            border-right: 1px solid black;
-           height: 100%;
        }
        div>section>main{
            flex-grow: 1;
-           height:100% ;
            background-color: chartreuse;
        }
 
