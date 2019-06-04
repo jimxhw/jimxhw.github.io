@@ -19,45 +19,51 @@
         position: relative;
         transform-style: preserve-3d;
         transform: rotate3d(1,-1,1,210deg);
-        background-image: linear-gradient(to right,rgb(0, 89, 255),pink);
+        background-image: linear-gradient(to right,rgba(0, 89, 255, 0.24),rgba(255, 192, 203, 0.335));
+        transition: 3s linear;
     }
     div{
-        transform: perspective(500px);
         left: 200px;
         top: 200px;
         position: absolute;
         width: 100px;
         height: 100px;
-        background-color: rgba(196, 221, 51, 0.164);
         text-align: center;
-        font-size: 60px;
+        font-size: 65px;
         vertical-align: middle;
         color: white;
+        font-family: STKaiti;
+        background-image: linear-gradient(to right,rgb(53, 240, 109),rgb(66, 8, 224))
         
     }
     div:nth-child(1){
         transform-origin:bottom;
         transform: rotate3d(1000,0,0,90deg);
-        background-color: rgba(255, 0, 0, 0.89);
+        background-image: linear-gradient(to right,rgb(245, 206, 206),rgb(253, 7, 7));
     }
     div:nth-child(2){
         transform-origin:right;
         transform: rotate3d(0,1000,0,-90deg);
-        background-color: rgba(136, 255, 0, 1);
+        background-image: linear-gradient(to right,rgb(250, 9, 9),rgb(247, 243, 12));
     }
     div:nth-child(3){
         transform-origin:left;
         transform: rotate3d(0,1000,0,90deg);
-        background-color: rgba(0, 132, 255, 0.6);
+        background-image: linear-gradient(to right,rgb(229, 245, 6),rgb(6, 247, 26));
     }
     div:nth-child(4){
         transform-origin:top;
         transform: rotate3d(1000,0,0,270deg);
-        background-color: rgba(98, 0, 255, 0.3);
+        background-image: linear-gradient(to right,rgb(7, 245, 78),rgb(11, 7, 252));
     }
     div:nth-child(5){
         transform: translateZ(-100px);
-        background-color:rgba(255, 0, 149, 0.8);
+        background-image: linear-gradient(to right,rgb(47, 14, 236),rgb(245, 8, 107))
+    }
+
+    section:hover{
+        transform: rotate3d(-1,1,-1,310deg);
+      
     }
 </style>
 
