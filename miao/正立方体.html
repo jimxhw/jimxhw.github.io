@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    section {
+        margin-top: 200px;
+        margin-left: 400px;
+        height: 500px;
+        border: 1px solid;
+        width: 500px;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotate3d(1,-1,1,210deg);
+        background-image: linear-gradient(to right,rgb(0, 89, 255),pink);
+    }
+    div{
+        transform: perspective(500px);
+        left: 200px;
+        top: 200px;
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-color: rgba(196, 221, 51, 0.164);
+        text-align: center;
+        font-size: 60px;
+        vertical-align: middle;
+        color: white;
+        
+    }
+    div:nth-child(1){
+        transform-origin:bottom;
+        transform: rotate3d(1000,0,0,90deg);
+        background-color: rgba(255, 0, 0, 0.89);
+    }
+    div:nth-child(2){
+        transform-origin:right;
+        transform: rotate3d(0,1000,0,-90deg);
+        background-color: rgba(136, 255, 0, 1);
+    }
+    div:nth-child(3){
+        transform-origin:left;
+        transform: rotate3d(0,1000,0,90deg);
+        background-color: rgba(0, 132, 255, 0.6);
+    }
+    div:nth-child(4){
+        transform-origin:top;
+        transform: rotate3d(1000,0,0,270deg);
+        background-color: rgba(98, 0, 255, 0.3);
+    }
+    div:nth-child(5){
+        transform: translateZ(-100px);
+        background-color:rgba(255, 0, 149, 0.8);
+    }
+</style>
+
+<body>
+    <section>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+    </section>
+</body>
+
+</html>
