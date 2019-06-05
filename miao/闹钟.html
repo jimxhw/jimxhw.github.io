@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible"
+          content="ie=edge">
+    <title>闹钟</title>
+    <style>
+        div {
+            margin: 200px 0 0 300px;
+            height: 200px;
+            width: 200px;
+            border: 1px solid;
+            position: relative;
+            text-align: center;
+            clip-path: circle(49%);
+            background-image: linear-gradient(to left, yellow,green,green,blue,blue,pink)
+        }
+       
+
+        div>span {
+            position: absolute;
+            top: 0;
+            left: 80px;
+            display: inline-block;
+            font-size: 30px;
+            line-height: 40px;
+            transform-origin: 20px 103px;
+            width: 40px;
+            height: 40px;
+            
+        }
+
+        div>span>span{
+            display: inline-block;
+            color: rgba(216, 36, 36, 0.842);
+        }
+
+        div>.second{
+            border: 1px solid white;
+            width: 60px;
+            position: absolute;
+            top: 102px;
+            left: 102px;
+            transform-origin: 0 0 ;
+            animation: miao 60s steps(60) infinite;
+            transform: rotate(-90deg);
+           
+        }
+
+        @keyframes miao{
+            to{
+                transform: rotate(360deg)
+            }
+        }
+
+        div>.min{
+            border: 2px solid rgb(209, 245, 8);
+            width: 70px;
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            transform-origin: 0 0 ;
+            animation: fen 3600s steps(60) infinite;
+            transform: rotate(-60deg);
+           
+        }
+
+        @keyframes fen{
+            to{
+                transform: rotate(360deg)
+            }
+        }
+        div>.hour{
+            border: 2px solid black;
+            width: 40px;
+            position: absolute;
+            top: 103px;
+            left: 100px;
+            transform-origin: 0  0 ;
+            animation: shi 43200s steps(60) infinite;
+            transform: rotate(180deg);
+        }
+
+        @keyframes shi{
+            to{
+                transform: rotate(360deg)
+            }
+        }
+
+        div>.dot{
+            width: 5px;
+            height: 5px;
+            border-radius:10px;
+            border: 4px solid black;
+            position: absolute;
+            top: 95px;
+            left: 95px;
+            background-color: black;
+
+        }
+
+
+      
+
+
+
+        div>span:nth-child(1) {}
+
+
+        div>span:nth-child(2) {
+            transform: rotate(30deg)
+        }
+
+        div>span:nth-child(3) {
+            transform: rotate(60deg)
+        }
+
+        div>span:nth-child(4) {
+            transform: rotate(90deg)
+        }
+
+        div>span:nth-child(5) {
+            transform: rotate(120deg)
+        }
+
+        div>span:nth-child(6) {
+            transform: rotate(150deg)
+        }
+
+        div>span:nth-child(7) {
+            transform: rotate(180deg)
+        }
+
+        div>span:nth-child(8) {
+            transform: rotate(210deg)
+        }
+
+        div>span:nth-child(9) {
+            transform: rotate(240deg)
+        }
+
+        div>span:nth-child(10) {
+            transform: rotate(270deg)
+        }
+
+        div>span:nth-child(11) {
+            transform: rotate(300deg)
+        }
+
+        div>span:nth-child(12) {
+            transform: rotate(330deg)
+        }
+        div>span:nth-child(2)>span {
+            transform: rotate(-30deg)
+        }
+
+        div>span:nth-child(3)>span {
+            transform: rotate(-60deg)
+        }
+
+        div>span:nth-child(4)>span {
+            transform: rotate(-90deg)
+        }
+
+        div>span:nth-child(5)>span {
+            transform: rotate(-120deg)
+        }
+
+        div>span:nth-child(6)>span {
+            transform: rotate(-150deg)
+        }
+
+        div>span:nth-child(7)>span {
+            transform: rotate(-180deg)
+        }
+
+        div>span:nth-child(8)>span {
+            transform: rotate(-210deg)
+        }
+
+        div>span:nth-child(9)>span {
+            transform: rotate(-240deg)
+        }
+
+        div>span:nth-child(10)>span {
+            transform: rotate(-270deg)
+        }
+
+        div>span:nth-child(11)>span {
+            transform: rotate(-300deg)
+        }
+
+        div>span:nth-child(12)>span {
+            transform: rotate(-330deg)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="clock">
+        <span><span> 12</span></span>
+        <span><span> 1</span></span>
+        <span><span> 2</span></span>
+        <span><span> 3</span></span>
+        <span><span> 4</span></span>
+        <span><span> 5</span></span>
+        <span><span> 6</span></span>
+        <span><span> 7</span></span>
+        <span><span> 8</span></span>
+        <span><span> 9</span></span>
+        <span><span> 10</span></span>
+        <span><span> 11</span></span>
+        <section class="second"></section>
+        <section class="min"></section>
+        <section class="hour"></section>
+        <section class="dot"></section>
+    </div>
+
+</body>
+
+</html>
