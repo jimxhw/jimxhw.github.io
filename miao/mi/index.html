@@ -246,7 +246,7 @@
 
     /* ********************以上完成右边固定栏的设置******************** */
 
-    div.second-line {
+    .page1>div.second-line {
         position: relative;
         height: 100px;
         width: 100%;
@@ -254,7 +254,7 @@
         z-index: 555;
     }
 
-    div.second-line>nav {
+    .page1>div.second-line>nav {
         position: absolute;
         width: 1230px;
         left: 340px;
@@ -263,7 +263,7 @@
     }
 
 
-    div.second-line>.second-nav>img {
+    .page1>div.second-line>.second-nav>img {
         display: inline-block;
         width: 57px;
         height: 57px;
@@ -273,7 +273,7 @@
         cursor: pointer;
     }
 
-    div.second-line>.second-nav>div.nav {
+    .page1>div.second-line>.second-nav>div.nav {
         position: absolute;
         top: 36px;
         left: 235px;
@@ -285,7 +285,7 @@
         display: inline-block;
     }
 
-    div.second-line>.second-nav>form.search {
+    .page1>div.second-line>.second-nav>form.search {
         position: absolute;
         top: 20px;
         right: 1px;
@@ -298,18 +298,18 @@
         cursor: pointer;
     }
 
-    div.second-line>.second-nav>form.search>input {
+    .page1>div.second-line>.second-nav>form.search>input {
         font-size: 16px;
     }
 
-    div.second-line>.second-nav>form.search input.te {
+    .page1>div.second-line>.second-nav>form.search input.te {
         height: 50px;
         border: 1px solid rgb(206, 202, 202);
         cursor: auto;
         display: inline-block;
     }
 
-    div.second-line>.second-nav>form.search input.sb {
+    .page1>div.second-line>.second-nav>form.search input.sb {
         height: 54px;
         padding-bottom: 4px;
         border: 1px solid rgb(206, 202, 202);
@@ -930,6 +930,167 @@
     }
 
     /* *************************第二页设置完毕******************* */
+    .page3 {
+        width: 100%;
+        height: 890px;
+        position: relative;
+    }
+
+    .page3>.top-nav {
+        position: absolute;
+        top: 0;
+        left: 340px;
+        height: 70px;
+        width: 1230px;
+    }
+
+    .page3>.top-nav>.kind {
+        float: left;
+        font-size: 30px;
+    }
+
+    .page3>span:nth-of-type(1) {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 520px;
+        height: 70px;
+        width: 40px;
+        line-height: 50px;
+    }
+
+    .page3>span:nth-of-type(2) {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 430px;
+        height: 70px;
+        width: 80px;
+        line-height: 50px;
+    }
+
+    .page3>span:nth-of-type(3) {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 390px;
+        height: 70px;
+        width: 40px;
+        line-height: 50px;
+    }
+
+    .page3>span:nth-of-type(4) {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 340px;
+        height: 70px;
+        width: 40px;
+        line-height: 50px;
+    }
+
+    .page3>.second-line {
+        position: absolute;
+        top: 70px;
+        left: 340px;
+        height: 650px;
+        width: 1230px;
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: space-between;
+        visibility: hidden;
+        transition: 0s 9999s;
+    }
+
+    .page3>.second-line#one1 , .page3>span:nth-of-type(1):hover~#one1,
+    .page3>span:nth-of-type(2):hover~#two2,
+    .page3>span:nth-of-type(3):hover~#three3,
+    .page3>span:nth-of-type(4):hover~#four4 {
+        visibility: visible;
+    }
+    .page3>span:not(:nth-of-type(1)):hover~#one1{
+        visibility: hidden;
+    }
+
+    .page3>span:hover~.second-line {
+        transition: none;
+    }
+
+    .page3>.second-line>div:nth-child(-n+9) {
+        position: relative;
+        height: 320px;
+        width: 236px;
+        background-color: rgba(0, 0, 0, 0.1);
+        font-size: 100px;
+        text-align: center;
+        line-height: 320px;
+    }
+
+    .page3>.second-line>div:nth-last-child(1) {
+        display: flex;
+        flex-flow: column;
+        justify-content: space-between;
+        position: relative;
+        height: 320px;
+        width: 236px;
+        
+    }
+
+    .page3>.second-line>div:nth-last-child(1)>div {
+        width: 100%;
+        height: 155px;
+        background-color: rgba(0, 0, 0, 0.1);
+        font-size: 60px;
+        text-align: center;
+        line-height: 155px;
+    }
+
+    .page3>img {
+        position: absolute;
+        top: 740px;
+        left: 340px;
+        width: 1230px;
+        height: 120px;
+    }
+
+    /* 第三页基本布局完成 */
+
+    @keyframes divhover {
+        to {
+            top: -2px;
+            box-shadow: 0px 3px 10px rgb(95, 92, 92)
+        }
+    }
+
+    .page3>.second-line>div:nth-child(-n+9):hover,
+    .page3>.second-line>div>div:hover {
+        animation: divhover 1s;
+    }
+
+    .page3>.second-line>div:nth-child(n+3):nth-child(-n+9)::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        background-color: #ff6700;
+        height: 0;
+        bottom: 0;
+        display: block;
+    }
+
+    @keyframes upup {
+        100% {
+            height: 70px;
+        }
+    }
+
+    .page3>.second-line>div:nth-child(n+3):nth-child(-n+9):hover::after {
+        animation: upup 0.5s forwards;
+    }
+
+    /* 第三页交互效果完成 */
+
+
+
 
     .end {
         width: 100%;
@@ -1335,7 +1496,7 @@
                                 <li></li>
                                 <li></li>
                                 <li></li>
-                                <li></li> 
+                                <li></li>
                                 <li></li>
                                 <li></li>
                                 <li></li>
@@ -1577,6 +1738,85 @@
             <img src="https://i1.mifile.cn/a4/xmad_15586821761848_DFqQS.jpg"
                  alt="">
         </div>
+    </div>
+    <div class="page3">
+        <div class="top-nav">
+            <span class="kind">家电</span>
+        </div>
+        <span>热门</span>
+        <span>电视影音</span>
+        <span>电脑</span>
+        <span>家居</span>
+        <div class="second-line"
+             id="one1">
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>
+                <div>1</div>
+                <div>1</div>
+            </div>
+
+        </div>
+        <div class="second-line"
+             id="two2">
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>2</div>
+            <div>
+                <div>2</div>
+                <div>2</div>
+            </div>
+
+        </div>
+        <div class="second-line"
+             id="three3">
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>3</div>
+            <div>
+                <div>3</div>
+                <div>3</div>
+            </div>
+
+        </div>
+        <div class="second-line"
+             id="four4">
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>4</div>
+            <div>
+                <div>4</div>
+                <div>4</div>
+            </div>
+
+        </div>
+        <img src="https://i1.mifile.cn/a4/xmad_15597213375945_bmzKF.jpg"
+             alt="">
     </div>
     <div class="end">
         <div class="first-line">
