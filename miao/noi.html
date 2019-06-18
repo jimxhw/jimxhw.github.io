@@ -1048,10 +1048,54 @@
         var c = +prompt("c")
         var d = +prompt("d")
      </script> -->
-
-
-
-
+     
+    <script type="43" id="ch0105/43">
+        var n = +prompt("n")
+        for(var i = n-1;i>1;i--){
+            if (n % i === 0) {
+                console.log(i)
+                break
+            }
+        }
+    </script>
+    
+    <script type="44" id="ch0105/44">
+        var n = +prompt("n")
+        var c = 0
+        for(var i =2;;i++){
+            var b =0
+           for(a=2;a<i;a++){
+              if(i % a == 0){
+                  b++
+              }
+           }
+           if (b==0) {
+               c++ 
+           }
+           if (c == n) {
+               console.log(i)
+               break
+           }
+        }
+    </script>
+    
+    <script type="45" id="ch0105/45">
+        var n = +prompt("n")
+        var c = 0
+        for(i =1;;i++){
+          c = c + i
+          if (c >=n) {
+            break
+          }
+        }  
+        var s = 0
+        for(a=1;a<i;a++){
+            s =s + a*a
+            n = n - a
+        }
+        s = s + n*a
+        console.log(s) 
+    </script>
 
 
 
