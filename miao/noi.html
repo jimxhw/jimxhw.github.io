@@ -831,7 +831,10 @@
        var a3 =  (a - a1*100 -a2)/10
        var b3 =  (b - b1*100 -b2)/10
        if (a1===b2 && a2 ===b1 && a3 ==b3) {
-           console.log(i ,a ,b)
+           <!-- console.log(i)
+           console.log(a)
+           console.log(b) -->
+           console.log('（不提供）')
         }
     }    
     </script>
@@ -990,8 +993,21 @@
      console.log(S.toFixed(2))
      </script>
      
-     <!-- <script type="37" id="ch0105/37">
-     </script> -->
+     
+    <script id="ch0105/37">
+    var M = prompt("M") | 0
+    var N = prompt("N") | 0
+    var X = prompt("X") | 0
+    while (N <= M) {
+        X = X - Math.ceil(M / N)
+        if (X < 0) {
+            break
+        }
+        N = N + Math.floor(M / N)
+    }
+    console.log(N)
+    </script>
+  
 
     <!--  <script type="" id="ch0105/38">
      </script> -->
