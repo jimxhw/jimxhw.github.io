@@ -1045,6 +1045,7 @@
         var b = +prompt("b")
         var c = prompt("c")
         var d = +prompt("d")
+        var s = ""
         for(let i=1;i<=a;i++){
             var h = " "
             if (d==0) {
@@ -1066,11 +1067,12 @@
             }
             if (d==1) {
                 for(let i=1;i<=b;i++){
-                    h = h + c       
+                    h = h + c      
                 }
             }    
-            console.log(h)
+            s = s + h  + "\n"
         }
+        console.log(s)
      </script>
      
     <script type="43" id="ch0105/43">
