@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>画图</title>
+  <style>
+    canvas {
+      border: 2px solid #f0f;
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas width="400" height="300"></canvas>
+</body>
+<script>
+  var canvas = document.querySelector('canvas')
+  canvas.style.imageRendering = 'pixelated'
+  var ctx = canvas.getContext('2d')
+
+  function dot(x, y, color = 'black') {
+    ctx.fillStyle = color
+    ctx.fillRect(x, y, 1, 1)
+  }
+
+  for(let i=20;i<=300;i++){
+    dot(i,20,"red")
+  }
+
+
+  for(let i=20;i<=300;i=i+2){
+    dot(i,40,"red")
+  }
+
+
+  for(let i=5;i<=75;i++){
+     let c = 4*i + 1 
+    dot(c,60,"blue")
+  }
+  for(let i=5;i<=75;i++){
+    let c = 4*i + 2 
+    dot(c,60,"blue")
+  }
+
+
+  for(let i=4;i<=60;i++){
+     let c = 5*i + 1 
+    dot(c,80,"black")
+  }
+  for(let i=4;i<=60;i++){
+    let c = 5*i + 2 
+    dot(c,80,"black")
+  }
+  for(let i=4;i<=60;i++){
+    let c = 5*i + 3 
+    dot(c,80,"black")
+  }
+  
+  
+  for(let i=1;i<=304;i++){
+    let c = i  
+    let d = i  
+    dot(c,d,"black")
+  }
+  
+  
+  
+  for(let i=1;i<=404;i++){
+    let c = i  
+    let d = i*0.75  
+    dot(c,d,"green")
+  }
+  
+  
+  
+  for(let i=10;i<=30;i++){
+    let c = i  
+    dot(c,280,"green")
+    dot(c,290,"green")
+  }
+  for(let i=280;i<=290;i++){
+    let d = i  
+    dot(10,d,"green")
+    dot(30,d,"green")
+  }
+  
+  
+  
+  for(let i=280;i<=290;i++){
+    let d = i  
+    for(let a = 40; a <=60;a++){
+      dot(a,d,"green")
+    }
+  }
+  
+  
+  
+  
+  
+  for(let i=170;i<=233;i=i+0.25){
+    let d = i  
+    for(let a = 10; a <=73;a=a+0.25){
+      var h = 'rgba('+ 0 +','+ 4*d +','+ 4*a +')'
+      dot(a,d,h)
+    }
+  }
+  
+
+  for(let i=30;i<=50;i++){
+    let a = Math.sqrt(100 - (i - 40)*(i - 40))
+    let b = a + 120
+    let c = 120 - a 
+    dot(i,b,"red")
+    dot(i,c,"red")
+  }
+  
+  
+  
+  for(let i=60;i<=80;i++){
+    let a = Math.sqrt(100 - (i - 70)*(i - 70))
+    let b = a + 120
+    let c = 120 - a 
+    for(let d=c;d<=b;d++)
+    dot(i,d,"red")
+  }
+
+
+
+  for(let i=0;i<=400;i++){
+      let a = Math.sin(i) + 100
+      dot(i,a,"red")  
+  }
+
+  /**
+   * YOUR TASK
+   画图的题：
+   画一条实线
+   画一条一个实点一个空点的虚线
+画一条两个实点两个空点的虚线
+画一条三个实点两个空点的虚线
+画一条45度的斜线
+画一条跨越画布左上角和右下角的对角线
+画一个空心矩形
+画一个实心矩形
+画一个rgb色彩空间的某一面
+画一个空心的圆
+画一个实心的圆
+画一个大小合适的sin(x)的图像
+   */
+</script>
+<script>
+  // YOUR CODE GOES BELOW
+  
+
+
+</script>
+</html>
