@@ -937,10 +937,26 @@
     }
     </script>
     
-   <!--  <script type="" id="ch0105/31">
-    var N = +prompt("N")
-    var M = +prompt("M")
-    </script> -->
+    <script type="31" id="ch0105/31">
+    var n = Number(prompt("请输入灯泡的数量n"))
+    var m = Number(prompt("请输入人的数量m"))
+    var char = ""
+    var light  
+
+    for (i = 1;i <= n;i++) {
+    light = 1
+    for (j = 1;j <= m;j++){
+        if (i % j === 0) {
+        light = - light
+        }
+    }
+    if (light === -1) {
+        char += i + ","
+    }
+    }
+
+    console.log (char)
+    </script>
     
      <script type="32" id="ch0105/32">
      var n = +prompt("n")
@@ -955,11 +971,24 @@
      console.log(S.toFixed(4))
      </script>
      
+     <script type="33" id="ch0105/33" >
+        var n = Number(prompt("请输入项数n"))
+        var sum = 0
+        for (i = 1;i <= n;i++) {
+          if (i % 2 === 1 ) {
+            sum += 1 / i
+          } else {
+            sum -= 1 / i
+          }
+        }
+        sum = sum.toFixed(4)
+        console.log (sum)
+      </script>
      
      <script type="34" id="ch0105/34">
      var n = +prompt("n")
      var S = 0
-     for(i=1;i<=n;i++){87
+     for(i=1;i<=n;i++){
         var s =1
         for(a =1;a<=i;a++){
             s = s*a
@@ -994,7 +1023,7 @@
      </script>
      
      
-    <script id="ch0105/37">
+    <script type="37" id="ch0105/37">
     var M = prompt("M") | 0
     var N = prompt("N") | 0
     var X = prompt("X") | 0
@@ -1009,8 +1038,25 @@
     </script>
   
 
-    <!--  <script type="" id="ch0105/38">
-     </script> -->
+     <script type="38" id="ch0105/38">
+        var m = +prompt("m") 
+        for (var k = 0; k < m; k++) {
+        var n = +prompt("n") 
+        var str = "", temp
+        if (n == 0) {
+            console.log(prompt("C0") * 0)
+        }
+        else {
+            for (var i = 0; i <= n; i++) {
+                temp = (prompt("C" + (n - i))) * (n - i)
+                if (i != n) {
+                    str = str + " " + temp
+                }
+            }
+            console.log(str.substr(1))
+        }
+    }
+     </script>
 
      <script type="39" id="ch0105/39">
         var n = +prompt("n")
