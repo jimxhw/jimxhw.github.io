@@ -940,22 +940,19 @@
     <script type="31" id="ch0105/31">
     var n = Number(prompt("请输入灯泡的数量n"))
     var m = Number(prompt("请输入人的数量m"))
-    var char = ""
-    var light  
 
     for (i = 1;i <= n;i++) {
-    light = 1
+     var light = true
     for (j = 1;j <= m;j++){
         if (i % j === 0) {
-        light = - light
+        light = !light
         }
     }
-    if (light === -1) {
-        char += i + ","
+    if (light === false) {
+        console.log (i)
     }
     }
 
-    console.log (char)
     </script>
     
      <script type="32" id="ch0105/32">
