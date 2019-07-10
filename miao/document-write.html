@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>documentwrite</title>
+</head>
+<style>
+    span{
+       width: 1px;
+       height: 1px;
+       background-color: red;
+       display: block;
+       position: absolute;
+       top: 50%;
+       left: 50%;
+    }
+    div{
+        margin:50px 0 0 100px;
+        transform-style: preserve-3d;
+        width: 400px;
+        height: 500px; 
+        /* transform: rotateX(3deg) rotateY(0deg)rotateZ(0deg)scaleZ(20) */
+        animation: span-3d infinite 30s
+    }
+     @keyframes span-3d{
+        from{
+            transform: rotate3d(0deg)
+        }
+        to{
+            transform: rotatex(36deg) rotatey(360deg)
+        }
+    } 
+</style>
+
+<body>
+    <div>
+        <script>
+            for (let x = -50; x < 50; x++) {
+                for(let y = -50 ;y < 50;y++ ){
+                    var z = (Math.sin(x/10) + Math.cos(y/10))*10
+                    var span = "<span style=transform:translate3d(" + x +  "px," + y + 'px,'+ z + 'px)></span>'
+                    document.write(span)
+                }    
+            }
+        </script>
+    </div>
+</body>
+
+</html>

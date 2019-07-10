@@ -107,7 +107,7 @@
   }
   
 
-  for(let i=30;i<=50;i++){
+  for(let i=30;i<=50;i+=0.5){
     let a = Math.sqrt(100 - (i - 40)*(i - 40))
     let b = a + 120
     let c = 120 - a 
@@ -117,18 +117,18 @@
   
   
   
-  for(let i=60;i<=80;i++){
+  for(let i=60;i<=80;i+=0.5){
     let a = Math.sqrt(100 - (i - 70)*(i - 70))
     let b = a + 120
     let c = 120 - a 
-    for(let d=c;d<=b;d++)
+    for(let d=c;d<=b;d+=0.5)
     dot(i,d,"red")
   }
 
 
 
   for(let i=0;i<=400;i++){
-      let a = Math.sin(i) + 100
+      let a = 10*Math.sin(i/10) + 100
       dot(i,a,"red")  
   }
 
