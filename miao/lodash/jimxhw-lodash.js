@@ -19,7 +19,8 @@ var jimxhw = {
         return ary.filter(it => it)
     },
     concat: function (array, ...val) {
-        return array.push(...val)
+        array.push(...val)
+        return  array
     },
     drop: function (arr, n = 1) {
         return arr.slice(n)
@@ -51,42 +52,27 @@ var jimxhw = {
     },
     flattenDeep: function (array) {
         let result = []
-        function flatten(array) {
-            var n = 0
-            for (let i = 0; i < array.length; i++) {
-                if (Array.isArray(array[i])) {
-                    result.push(...array[i])
-                } else {
-                    n++
-                    result.push(array[i])
-                }
-            }
-            if (n == array.length) {
-                return result
+        for (let i = 0; i < array.length; i++) {
+            if (Array.isArray(array[i])) {
+                let temp = flattenDeep(array[i])
+                result.push(...temp)
             } else {
-                return flatten(result)
+                result.push(array[i])
             }
         }
-        return flatten(array)
+        return result
     },
     flattenDepth: function (array, depth = 1) {
         let result = []
-        function flatten(array) {
-            for (let i = 0; i < array.length; i++) {
-                if (Array.isArray(array[i])) {
-                    result.push(...array[i])
-                } else {
-                    result.push(array[i])
-                }
-            }
-            depth--
-            if (depth) {
-                return flatten(result)
+        for (let i = 0; i < array.length; i++) {
+            if (Array.isArray(array[i])) {
+                let temp = flattenDeep(array[i], depth - 1)
+                result.push(...temp)
             } else {
-                return result
+                result.push(array[i])
             }
         }
-        return flatten(array)
+        return result
     },
     indexOf: function (array, val, fromIndex = 0) {
         for (let i = fromIndex; i < array.length; i++) {
@@ -101,43 +87,48 @@ var jimxhw = {
     },
     join: function (array, separator = ",") {
         return array.reduce(function (x, y) {
-            return x + separator + y
-        }, "")
+            return x + String(separator) + y
+        })
     },
     last: function (array) {
         return array[array.length - 1]
     },
     lastIndexOf: function (array, val, fromIndex = array.length - 1) {
         for (let i = fromIndex; i >= 0; i--) {
-            if (array[i] === val) {
-                return i
-            }
-        }
-        return -1
+    if (array[i] === val) {
+        return i
+    }
+}
+return -1
     },
-    nth: function (array, n = 0) {
-        if (n >= 0) {
-            return array[n]
-        } else {
-            return array[array.length + n]
-        }
-    },
-    reverse: function (array) {
-        let i = 0; j = array.length - 1
-        while (i != j) {
-            let temp = array[i]
-            array[i++] = array[j]
-            array[j--] = temp
-        }
-        return array
-    },
-    slice: function (array, start = 0, end = array.length) {
-        let result = []
-        for (let i = start; i < end; i++) {
-            result.push(array[i])
-        }
-        return result
-    },
+nth: function (array, n = 0) {
+    if (n >= 0) {
+        return array[n]
+    } else {
+        return array[array.length + n]
+    }
+},
+reverse: function (array) {
+    let i = 0; j = array.length - 1
+    while (i != j) {
+        let temp = array[i]
+        array[i++] = array[j]
+        array[j--] = temp
+    }
+    return array
+},
+slice: function (array, start = 0, end = array.length) {
+    let result = []
+    for (let i = start; i < end; i++) {
+        result.push(array[i])
+    }
+    return result
+},
+keyby: function (ary, key) {
+    let result = {}
+    ary.forEach(item => { result[item[key]] = item })
+    return result
+},
 
 
 
