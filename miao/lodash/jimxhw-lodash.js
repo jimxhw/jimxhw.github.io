@@ -19,8 +19,14 @@ var jimxhw = {
         return ary.filter(it => it)
     },
     concat: function (array, ...val) {
-        array.push(...val)
-        return  array
+        for (let i = 1; i < arguments.length; i++) {
+            if (Array.isArray(arguments[i])) {
+                array.push(...arguments[i])
+            } else {
+                array.push(arguments)
+            }
+        }
+        return array
     },
     drop: function (arr, n = 1) {
         return arr.slice(n)
@@ -54,7 +60,7 @@ var jimxhw = {
         let result = []
         for (let i = 0; i < array.length; i++) {
             if (Array.isArray(array[i])) {
-                let temp = flattenDeep(array[i])
+                let temp = this.flattenDeep(array[i])
                 result.push(...temp)
             } else {
                 result.push(array[i])
@@ -66,7 +72,7 @@ var jimxhw = {
         let result = []
         for (let i = 0; i < array.length; i++) {
             if (Array.isArray(array[i])) {
-                let temp = flattenDeep(array[i], depth - 1)
+                let temp = this.flattenDeep(array[i], depth - 1)
                 result.push(...temp)
             } else {
                 result.push(array[i])
@@ -95,41 +101,100 @@ var jimxhw = {
     },
     lastIndexOf: function (array, val, fromIndex = array.length - 1) {
         for (let i = fromIndex; i >= 0; i--) {
-    if (array[i] === val) {
-        return i
-    }
-}
-return -1
+            if (array[i] === val) {
+                return i
+            }
+        }
+        return -1
     },
-nth: function (array, n = 0) {
-    if (n >= 0) {
-        return array[n]
-    } else {
-        return array[array.length + n]
-    }
-},
-reverse: function (array) {
-    let i = 0; j = array.length - 1
-    while (i != j) {
-        let temp = array[i]
-        array[i++] = array[j]
-        array[j--] = temp
-    }
-    return array
-},
-slice: function (array, start = 0, end = array.length) {
-    let result = []
-    for (let i = start; i < end; i++) {
-        result.push(array[i])
-    }
-    return result
-},
-keyby: function (ary, key) {
-    let result = {}
-    ary.forEach(item => { result[item[key]] = item })
-    return result
-},
-
+    nth: function (array, n = 0) {
+        if (n >= 0) {
+            return array[n]
+        } else {
+            return array[array.length + n]
+        }
+    },
+    reverse: function (array) {
+        let i = 0; j = array.length - 1
+        while (i != j) {
+            let temp = array[i]
+            array[i++] = array[j]
+            array[j--] = temp
+        }
+        return array
+    },
+    slice: function (array, start = 0, end = array.length) {
+        let result = []
+        for (let i = start; i < end; i++) {
+            result.push(array[i])
+        }
+        return result
+    },
+    keyby: function (ary, key) {
+        let result = {}
+        ary.forEach(item => { result[item[key]] = item })
+        return result
+    },
+    findIndex: function (array, [predicate = _.identity], [fromIndex = 0]) {
+        for (let i = fromIndex; i < array.length; i++) {
+            if (predicate(array[i])) {
+                return i
+            }
+        }
+        return -1
+    },
+    findLastIndex: function (array, [predicate = _.identity], [fromIndex = array.length - 1]) {
+        for (let i = fromIndex; i >= 0; i--) {
+            if (predicate(array[i])) {
+                return i
+            }
+        }
+        return -1
+    },
+    intersection: function (...arguments) {
+        let map = {}
+        arguments.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                if (x[i] in map) {
+                    map[x[i]] = true
+                } else {
+                    map[x[i]] = false
+                }
+            }
+        })
+        let result = []
+        for (let key in map) {
+            if (map[key] == true) {
+                result.push(key)
+            }
+        }
+        return result
+    },
+    pull: function (array, ...arguments) {
+        for (let i = 1; i < arguments.length; i++) {
+            array = array.filter(x => { return x != i })
+        }
+        return array
+    },
+    pullAll: function (array, arr) {
+        return this.pull(array, ...arr)
+    },
+    sortedIndex: function (array, value) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i] >= value) {
+                return i
+            }
+        }
+    },
+    tail: function (array) {
+        return array.slice(1)
+    },
+    take: function (array, n = 1) {
+        return array.slice(0, n)
+    },
+    takeRight: function (array, n = 1) {
+        return array.slice(array.length - 1, array.length)
+    },
 
 
 
