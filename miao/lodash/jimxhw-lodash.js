@@ -75,7 +75,7 @@ var jimxhw = {
         }
         for (let i = 0; i < array.length; i++) {
             if (Array.isArray(array[i])) {
-                let temp = this.flattenDeep(array[i], depth - 1)
+                let temp = this.flattenDepth(array[i], depth - 1)
                 result.push(...temp)
             } else {
                 result.push(array[i])
@@ -174,10 +174,16 @@ var jimxhw = {
         return result
     },
     pull: function (array, ...arguments) {
-        for (let i = 1; i < arguments.length; i++) {
-            var result = array.filter(x => { return x != i })
+        let map = {}
+        for (let i = 0; i < arguments.length; i++) {
+            map[arguments[i]] = true
         }
-        return result
+        for (let i = 0; i < array.length; i++) {
+            if (array[i] in map) {
+                array.splice(i, 1)
+            }
+        }
+        return array
     },
     pullAll: function (array, arr) {
         return this.pull(array, ...arr)
@@ -196,6 +202,9 @@ var jimxhw = {
         return array.slice(0, n)
     },
     takeRight: function (array, n = 1) {
+        if (array.length - n < 0) {
+            return array.slice(0, array.length)
+        }
         return array.slice(array.length - n, array.length)
     },
 
