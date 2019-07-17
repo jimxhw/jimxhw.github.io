@@ -208,7 +208,81 @@ var jimxhw = {
         }
         return array.slice(array.length - n, array.length)
     },
+    uniq: function (array) {
+        let map = {}
+        for (let i = 0; i < array.length; i++) {
+            map[array[i]] = 1
+        }
+        let result = []
+        for (let keys in map) {
+            result.push(Number(keys))
+        }
+        return result
+    },
+    without: function (array, ...arguments) {
+        let map = {}
+        for (let i = 0; i < arguments.length; i++) {
+            map[arguments[i]] = true
+        }
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            if (!(array[i] in map)) {
+                result.push(array[i])
+            }
+        }
+        return result
+    },
+    xor: function () {
+        let map = {}
+        arguments.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                if (x[i] in map) {
+                    map[x[i]] = true
+                } else {
+                    map[x[i]] = false
+                }
+            }
+        })
+        let result = []
+        for (let key in map) {
+            if (map[key] == false) {
+                result.push(Number(key))
+            }
+        }
+        return result
+    },
+    every: function (collection, predicate) {
+        for (let keys of collection) {
+            if (!(predicate(keys))) {
+                return false
+            }
+        }
+        return true
+    },
+    filter: function (collection, predicate) {
+        let result = []
+        for (let keys of collection) {
+            if (predicate(keys)) {
+                result.push(keys)
+            }
+        }
+        return result
+    },
+    difference: function (array, ...value) {
+        let map = {}
+        value.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                map[x[i]] = true
+            }
+        })
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            if (!(array[i] in map)) {
+                result.push(array[i])
+            }
+        }
+        return result
+    }
 
 
-
-}
+}    
