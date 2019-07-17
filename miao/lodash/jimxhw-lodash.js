@@ -70,6 +70,9 @@ var jimxhw = {
     },
     flattenDepth: function (array, depth = 1) {
         let result = []
+        if (depth == 0) {
+            return array
+        }
         for (let i = 0; i < array.length; i++) {
             if (Array.isArray(array[i])) {
                 let temp = this.flattenDeep(array[i], depth - 1)
@@ -135,7 +138,7 @@ var jimxhw = {
         ary.forEach(item => { result[item[key]] = item })
         return result
     },
-    findIndex: function (array, [predicate = _.identity], [fromIndex = 0]) {
+    findIndex: function (array, predicate = _.identity, fromIndex = 0) {
         for (let i = fromIndex; i < array.length; i++) {
             if (predicate(array[i])) {
                 return i
@@ -143,7 +146,7 @@ var jimxhw = {
         }
         return -1
     },
-    findLastIndex: function (array, [predicate = _.identity], [fromIndex = array.length - 1]) {
+    findLastIndex: function (array, predicate = _.identity, fromIndex = array.length - 1) {
         for (let i = fromIndex; i >= 0; i--) {
             if (predicate(array[i])) {
                 return i
@@ -165,16 +168,16 @@ var jimxhw = {
         let result = []
         for (let key in map) {
             if (map[key] == true) {
-                result.push(key)
+                result.push(Number(key))
             }
         }
         return result
     },
     pull: function (array, ...arguments) {
         for (let i = 1; i < arguments.length; i++) {
-            array = array.filter(x => { return x != i })
+            var result = array.filter(x => { return x != i })
         }
-        return array
+        return result
     },
     pullAll: function (array, arr) {
         return this.pull(array, ...arr)
@@ -193,7 +196,7 @@ var jimxhw = {
         return array.slice(0, n)
     },
     takeRight: function (array, n = 1) {
-        return array.slice(array.length - 1, array.length)
+        return array.slice(array.length - n, array.length)
     },
 
 
