@@ -282,7 +282,26 @@ var jimxhw = {
             }
         }
         return result
+    },
+    forOwn: function (obj, iterator) {
+        var hasOwn = Object.prototype.hasOwnProperty
+        for (let keys in obj) {
+            if (hasOwn.call(obj[keys])) {
+                iterator(obj[keys], keys, obj)
+            }
+        }
+    },
+    isObjectLike: function (value) {
+        return typeof (value) == "object" && value !== value
+    },
+    isArguments: function (value) {
+        return Object.prototype.toString.call(value) === "[object Arguments]"
+    },
+    isArray: function (value) {
+        return Object.prototype.toString.call(value) === "[object Array]"
+    },
+    isBoolean: function(value){
+        return Object.prototype.toString.call(value) === "[object Boolean]"
     }
-
 
 }    
