@@ -304,7 +304,8 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object Number]"
     },
     isObject: function (value) {
-        return Object.prototype.toString.call(value) === "[object Object]"
+        var type = typeof value;
+        return value != null && (type == 'object' || type == 'function');
     },
     isString: function (value) {
         return Object.prototype.toString.call(value) === "[object String]"
@@ -312,4 +313,7 @@ var jimxhw = {
     isUndefined: function (value) {
         return Object.prototype.toString.call(value) === "[object Undefined]"
     },
+    isNaN: function (value) {
+        return value === value ? false : true
+    }
 }    
