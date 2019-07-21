@@ -209,15 +209,9 @@ var jimxhw = {
         return array.slice(array.length - n, array.length)
     },
     uniq: function (array) {
-        let map = {}
-        for (let i = 0; i < array.length; i++) {
-            map[array[i]] = 1
-        }
-        let result = []
-        for (let keys in map) {
-            result.push(Number(keys))
-        }
-        return result
+        let a = new Set(array)
+        let b = Array.from(a)
+        return b
     },
     without: function (array, ...arguments) {
         let map = {}
@@ -300,8 +294,22 @@ var jimxhw = {
     isArray: function (value) {
         return Object.prototype.toString.call(value) === "[object Array]"
     },
-    isBoolean: function(value){
+    isBoolean: function (value) {
         return Object.prototype.toString.call(value) === "[object Boolean]"
-    }
-
+    },
+    isNull: function (value) {
+        return Object.prototype.toString.call(value) === "[object Null]"
+    },
+    isNumber: function (value) {
+        return Object.prototype.toString.call(value) === "[object Number]"
+    },
+    isObject: function (value) {
+        return Object.prototype.toString.call(value) === "[object Object]"
+    },
+    isString: function (value) {
+        return Object.prototype.toString.call(value) === "[object String]"
+    },
+    isUndefined: function (value) {
+        return Object.prototype.toString.call(value) === "[object Undefined]"
+    },
 }    
