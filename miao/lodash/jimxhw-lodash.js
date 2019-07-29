@@ -314,6 +314,11 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object Undefined]"
     },
     isNaN: function (value) {
+        if (Object.prototype.toString.call(value) === "[object Null]") { return false }
         return value === value ? false : true
+    },
+    ceil: function (number, precision = 0) {
+        let zs = number | 0
+
     }
 }    
