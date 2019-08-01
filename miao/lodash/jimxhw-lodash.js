@@ -321,7 +321,10 @@ var jimxhw = {
         let zs = number | 0
 
     },
-    differenceBy: function (array, ...value, iteratee = x => x) {
+    differenceBy: function (...arguments) {
+        let array = arguments[0]
+        let iteratee = arguments[arguments.length-1]
+        let value = arguments.slice(1,arguments.length-1)
         let map = {}
         value.forEach(function (x) {
             for (let i = 0; i < x.length; i++) {
