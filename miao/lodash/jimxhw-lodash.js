@@ -380,5 +380,5 @@ var jimxhw = {
             }
         }
         return result
-    },
+    }
 }    
