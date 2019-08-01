@@ -1,4 +1,68 @@
 var jimxhw = {
+    identity: value => value,
+    isEqual: function (value, other) {
+        if (value === other) {
+            return true
+        }
+        if (value != value && other != other) {
+            return true
+        }
+        if (typeof value == "object" && typeof other == "object") {
+            var valueKeys = Object.keys(value)
+            var otherKeys = Object.keys(other)
+            if (valueKeys.length != otherKeys.length) {
+                return false
+            }
+            for (var prop in value) {
+                if (rubick1.isEqual(value[prop], other[prop])) {
+                    continue
+                } else {
+                    return false
+                }
+            }
+            return true
+        }
+        return value === other
+    },
+    iteratee: function (iter) {
+        if (typeof iter == "function") {
+            return iter
+        }
+        if (typeof iter == "string") {
+            return jimxhw.property(iter)
+        }
+        if (jimxhw.isArray(iter)) {
+            return jimxhw.matchesProperty(...iter)
+        }
+        if (jimxhw.isObject(iter)) {
+            return jimxhw.matches(iter)
+        }
+    },
+    property: function (path) {
+        if (typeof path == "string") {
+            path = path.split(".")
+        }
+        return function (obj) {
+            path.forEach((item) => obj = obj[item])
+            return obj
+        }
+    },
+
+    matches: function (source) {
+        return function (obj) {
+            for (var prop in source) {
+                if (!jimxhw.isEqual(source[prop], obj[prop])) {
+                    return false
+                }
+            }
+            return true
+        }
+    },
+    matchesProperty: function (path, srcValue) {
+        return function (obj) {
+            return jimxhw.isEqual(jimxhw.property(path)(obj), srcValue)
+        }
+    },
     chunk: function (array, n) {
         let l = array.length
         if (n >= l) { return array }
@@ -138,7 +202,7 @@ var jimxhw = {
         ary.forEach(item => { result[item[key]] = item })
         return result
     },
-    findIndex: function (array, predicate = x => x, fromIndex = 0) {
+    findIndex: function (array, predicate = jimxhw.identity, fromIndex = 0) {
         for (let i = fromIndex; i < array.length; i++) {
             if (predicate(array[i])) {
                 return i
@@ -146,7 +210,7 @@ var jimxhw = {
         }
         return -1
     },
-    findLastIndex: function (array, predicate = x => x, fromIndex = array.length - 1) {
+    findLastIndex: function (array, predicate = = jimxhw.identity, fromIndex = array.length - 1) {
         for (let i = fromIndex; i >= 0; i--) {
             if (predicate(array[i])) {
                 return i
@@ -321,22 +385,22 @@ var jimxhw = {
         let zs = number | 0
 
     },
-    differenceBy: function (...arguments) {
-        let array = arguments[0]
-        let iteratee = arguments[arguments.length-1]
-        let value = arguments.slice(1,arguments.length-1)
-        let map = {}
-        value.forEach(function (x) {
-            for (let i = 0; i < x.length; i++) {
-                map[iteratee(x[i])] = true
+    differenceBy: function (array, ...arguments) {
+        var iteratee
+        let temp = arguments[arguments.length - 1]
+        if (typeof temp === "string" || typeof temp === "function") {
+            iteratee = arguments.pop()
+        } else {
+            iteratee = jimxhw.identity
+        }
+        let arrayOne = [].concat(...arguments)
+        arrayOne = arrayOne.map(x => iteratee(x))
+        let result = []
+        array.forEach(function (item) {
+            if (!arrayOne.includes(iteratee(item))) {
+                result.push(item)
             }
         })
-        let result = []
-        for (let i = 0; i < array.length; i++) {
-            if (!(iteratee(array[i]) in map)) {
-                result.push(array[i])
-            }
-        }
         return result
     },
     dropRightWhile: function (arr, predicate = x => x) {
