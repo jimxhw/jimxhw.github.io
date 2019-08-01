@@ -138,7 +138,7 @@ var jimxhw = {
         ary.forEach(item => { result[item[key]] = item })
         return result
     },
-    findIndex: function (array, predicate = _.identity, fromIndex = 0) {
+    findIndex: function (array, predicate = x => x, fromIndex = 0) {
         for (let i = fromIndex; i < array.length; i++) {
             if (predicate(array[i])) {
                 return i
@@ -146,7 +146,7 @@ var jimxhw = {
         }
         return -1
     },
-    findLastIndex: function (array, predicate = _.identity, fromIndex = array.length - 1) {
+    findLastIndex: function (array, predicate = x => x, fromIndex = array.length - 1) {
         for (let i = fromIndex; i >= 0; i--) {
             if (predicate(array[i])) {
                 return i
@@ -320,5 +320,65 @@ var jimxhw = {
     ceil: function (number, precision = 0) {
         let zs = number | 0
 
-    }
+    },
+    differenceBy: function (array, ...value, iteratee = x => x) {
+        let map = {}
+        value.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                map[iteratee(x[i])] = true
+            }
+        })
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            if (!(iteratee(array[i]) in map)) {
+                result.push(array[i])
+            }
+        }
+        return result
+    },
+    dropRightWhile: function (arr, predicate = x => x) {
+        let result = []
+        for (let i = 0; i < arr.length; i++) {
+            if (!predicate(arr[x])) {
+                var arr2 = arr.slice(0, i)
+                break
+            }
+        }
+        for (let i = 0; i < arr2.length; i++) {
+            result.push(arr[x])
+        }
+        return result
+    },
+    dropWhile: function (arr, predicate = x => x) {
+        let result = []
+        for (let i = 0; i < arr.length; i++) {
+            if (!predicate(arr[x])) {
+                var arr2 = arr.slice(i)
+                break
+            }
+        }
+        for (let i = 0; i < arr2.length; i++) {
+            result.push(arr[x])
+        }
+        return result
+    },
+    fromPairs: function (arr) {
+        let obj = {}
+        for (let i = 0; i < arr.length; i++) {
+            obj[arr[i][0]] = arr[i][1]
+        }
+        return obj
+    },
+    union: function (...array) {
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            let temp = array[i]
+            for (let j = 0; j < temp.length; j++) {
+                if (!result.includes(temp[j])) {
+                    result.push(temp[j])
+                }
+            }
+        }
+        return result
+    },
 }    
