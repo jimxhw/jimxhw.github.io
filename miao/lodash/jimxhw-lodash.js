@@ -1,29 +1,7 @@
 var jimxhw = {
-    identity: value => value,
-    isEqual: function (value, other) {
-        if (value === other) {
-            return true
-        }
-        if (value != value && other != other) {
-            return true
-        }
-        if (typeof value == "object" && typeof other == "object") {
-            var valueKeys = Object.keys(value)
-            var otherKeys = Object.keys(other)
-            if (valueKeys.length != otherKeys.length) {
-                return false
-            }
-            for (var prop in value) {
-                if (jimxhw.isEqual(value[prop], other[prop])) {
-                    continue
-                } else {
-                    return false
-                }
-            }
-            return true
-        }
-        return value === other
-    },// 深对比两个值是否相等
+    identity: function (it) {
+        return it
+    },
     iteratee: function (iter) {
         if (typeof iter == "function") {
             return iter
@@ -46,7 +24,7 @@ var jimxhw = {
             path.forEach((item) => obj = obj[item])
             return obj
         }
-    },
+    },//返回给定对象的屬性路徑的值的函数
     matches: function (source) {
         return function (obj) {
             for (var prop in source) {
@@ -61,7 +39,7 @@ var jimxhw = {
         return function (obj) {
             return jimxhw.isEqual(jimxhw.property(path)(obj), srcValue)
         }
-    },
+    },//创建一个深比较的方法来比较给定对象的 path 的值是否是 srcValue
     chunk: function (array, n) {
         let l = array.length
         if (n >= l) { return array }
@@ -386,6 +364,30 @@ var jimxhw = {
         if (Object.prototype.toString.call(value) === "[object Null]") { return false }
         return value === value ? false : true
     },
+    isEqual: function (value, other) {
+        if (value === other) {
+            return true
+        }
+        if (value != value && other != other) {
+            return true
+        }
+        if (typeof value == "object" && typeof other == "object") {
+            var valueKeys = Object.keys(value)
+            var otherKeys = Object.keys(other)
+            if (valueKeys.length != otherKeys.length) {
+                return false
+            }
+            for (var prop in value) {
+                if (jimxhw.isEqual(value[prop], other[prop])) {
+                    continue
+                } else {
+                    return false
+                }
+            }
+            return true
+        }
+        return value === other
+    },// 深对比两个值是否相等
     ceil: function (number, precision = 0) {
         let zs = number | 0
 
@@ -400,7 +402,7 @@ var jimxhw = {
             iteratee = it => it[temp]
         }
         else {
-            iteratee = jimxhw.identity
+            iteratee = it => it
         }
         let arrayOne = [].concat(...arguments)
         arrayOne = arrayOne.map(x => iteratee(x))
