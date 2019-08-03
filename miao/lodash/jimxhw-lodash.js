@@ -14,7 +14,7 @@ var jimxhw = {
                 return false
             }
             for (var prop in value) {
-                if (rubick1.isEqual(value[prop], other[prop])) {
+                if (jimxhw.isEqual(value[prop], other[prop])) {
                     continue
                 } else {
                     return false
@@ -23,7 +23,7 @@ var jimxhw = {
             return true
         }
         return value === other
-    },
+    },// 深对比两个值是否相等
     iteratee: function (iter) {
         if (typeof iter == "function") {
             return iter
@@ -47,7 +47,6 @@ var jimxhw = {
             return obj
         }
     },
-
     matches: function (source) {
         return function (obj) {
             for (var prop in source) {
@@ -57,7 +56,7 @@ var jimxhw = {
             }
             return true
         }
-    },
+    },//返回一个函数，将该函数的参数和指定对象进行深对比
     matchesProperty: function (path, srcValue) {
         return function (obj) {
             return jimxhw.isEqual(jimxhw.property(path)(obj), srcValue)
@@ -203,6 +202,9 @@ var jimxhw = {
         return result
     },
     findIndex: function (array, predicate = jimxhw.identity, fromIndex = 0) {
+        if (typeof predicate === "string") {
+            predicate = it => it[predicate]
+        }
         for (let i = fromIndex; i < array.length; i++) {
             if (predicate(array[i])) {
                 return i
@@ -211,6 +213,9 @@ var jimxhw = {
         return -1
     },
     findLastIndex: function (array, predicate = jimxhw.identity, fromIndex = array.length - 1) {
+        if (typeof predicate === "string") {
+            predicate = it => it[predicate]
+        }
         for (let i = fromIndex; i >= 0; i--) {
             if (predicate(array[i])) {
                 return i
@@ -388,9 +393,13 @@ var jimxhw = {
     differenceBy: function (array, ...arguments) {
         var iteratee
         let temp = arguments[arguments.length - 1]
-        if (typeof temp === "string" || typeof temp === "function") {
+        if (typeof temp === "function") {
             iteratee = arguments.pop()
-        } else {
+        } else if (typeof temp === "string") {
+            arguments.pop()
+            iteratee = it => it[temp]
+        }
+        else {
             iteratee = jimxhw.identity
         }
         let arrayOne = [].concat(...arguments)
@@ -403,7 +412,7 @@ var jimxhw = {
         })
         return result
     },
-    dropRightWhile: function (arr, predicate = x => x) {
+    dropRightWhile: function (arr, predicate = jimxhw.identity) {
         let result = []
         for (let i = 0; i < arr.length; i++) {
             if (!predicate(arr[x])) {
@@ -416,7 +425,7 @@ var jimxhw = {
         }
         return result
     },
-    dropWhile: function (arr, predicate = x => x) {
+    dropWhile: function (arr, predicate = jimxhw.identity) {
         let result = []
         for (let i = 0; i < arr.length; i++) {
             if (!predicate(arr[x])) {
