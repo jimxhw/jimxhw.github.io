@@ -210,7 +210,7 @@ var jimxhw = {
         }
         return -1
     },
-    findLastIndex: function (array, predicate = = jimxhw.identity, fromIndex = array.length - 1) {
+    findLastIndex: function (array, predicate = jimxhw.identity, fromIndex = array.length - 1) {
         for (let i = fromIndex; i >= 0; i--) {
             if (predicate(array[i])) {
                 return i
