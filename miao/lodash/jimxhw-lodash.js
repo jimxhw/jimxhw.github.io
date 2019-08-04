@@ -270,7 +270,7 @@ var jimxhw = {
         return result
     },
     xor: function (...arguments) {
-        let result = arguments.this.flatten()
+        let result = this.flatten(arguments)
         let map = []
         for (let i = 0; i < result.length; i++) {
             let temp = result[i]
@@ -587,8 +587,8 @@ var jimxhw = {
         }
         iteratee = jimxhw.iteratee(iteratee)
         let map = new Map()
-        arguments.forEach(x => map(iteratee(x), x))
-        array.forEach(x => map(iteratee(x), x))
+        arguments.forEach(x => map.set(iteratee(x), x))
+        array.forEach(x => map.set(iteratee(x), x))
         let result = []
         for (let keys of map) {
             result.push(keys)
@@ -630,8 +630,8 @@ var jimxhw = {
     zip: function (...arguments) {
         return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
     },
-    unzip: function (...arguments) {
-        return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
+    unzip: function (array) {
+        return array[0].map((x, i) => { return array.map(j => j[i]) })
     },
     countBy: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
@@ -676,7 +676,7 @@ var jimxhw = {
             }
         }
         return undefined
-    }
+    },
 
 
 }    
