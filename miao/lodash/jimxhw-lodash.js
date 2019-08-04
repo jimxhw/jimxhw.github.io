@@ -633,6 +633,50 @@ var jimxhw = {
     unzip: function (...arguments) {
         return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
     },
+    countBy: function (collection, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        let map = {}
+        if (this.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                let temp = iteratee(collection[i])
+                if (temp in map) {
+                    map[temp]++
+                } else {
+                    map[temp] = 1
+                }
+            }
+        } else {
+            for (let keys in collection) {
+                let temp = iteratee(collection[keys])
+                if (temp in map) {
+                    map[temp]++
+                } else {
+                    map[temp] = 1
+                }
+            }
+        }
+        return map
+    },
+    find: function (collection, predicate = jimxhw.identity, fromIndex = 0) {
+        if (this.isArray(collection)) {
+            for (let i = fromIndex; i < collection.length; i++) {
+                if (predicate(collection[i])) {
+                    return collection[i]
+                }
+            }
+        } else {
+            let i = -1
+            for (let keys in collection) {
+                i++
+                if (i >= fromIndex) {
+                    if (predicate(collection(keys))) {
+                        return collection[key]
+                    }
+                }
+            }
+        }
+        return undefined
+    }
 
 
 }    
