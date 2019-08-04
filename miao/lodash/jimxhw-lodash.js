@@ -300,6 +300,14 @@ var jimxhw = {
         }
         return true
     },
+    some: function (collection, predicate) {
+        for (let keys of collection) {
+            if (predicate(keys)) {
+                return true
+            }
+        }
+        return false
+    },
     filter: function (collection, predicate) {
         let result = []
         for (let keys of collection) {
@@ -361,7 +369,7 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object Undefined]"
     },
     isNaN: function (value) {
-        if (Object.prototype.toString.call(value) === "[object Null]") { return false }
+        if (Object.prototype.toString.call(value) === "[object Null]") { return true }
         return value === value ? false : true
     },
     isEqual: function (value, other) {
@@ -414,29 +422,55 @@ var jimxhw = {
         })
         return result
     },
+    differenceWith: function (array, ...arguments) {
+        var comparater
+        let temp = arguments[arguments.length - 1]
+        if (typeof temp === "function") {
+            comparater = arguments.pop()
+        }
+        else {
+            arguments.pop()
+            comparater = this.isEqual
+        }
+        let arrayOne = [].concat(...arguments)
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            var temp = false
+            for (let j = 0; j < arrayOne.length; j++) {
+                if (comparater(array[i], arrayOne[j])) {
+                    temp = true
+                    break
+                }
+            }
+            if (!temp) {
+                result.push(array[i])
+            }
+        }
+        return result
+    },
     dropRightWhile: function (arr, predicate = jimxhw.identity) {
         let result = []
         for (let i = 0; i < arr.length; i++) {
-            if (!predicate(arr[x])) {
+            if (!predicate(arr[i])) {
                 var arr2 = arr.slice(0, i)
                 break
             }
         }
         for (let i = 0; i < arr2.length; i++) {
-            result.push(arr[x])
+            result.push(arr[i])
         }
         return result
     },
     dropWhile: function (arr, predicate = jimxhw.identity) {
         let result = []
         for (let i = 0; i < arr.length; i++) {
-            if (!predicate(arr[x])) {
+            if (!predicate(arr[i])) {
                 var arr2 = arr.slice(i)
                 break
             }
         }
         for (let i = 0; i < arr2.length; i++) {
-            result.push(arr[x])
+            result.push(arr[i])
         }
         return result
     },
