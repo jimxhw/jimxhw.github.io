@@ -435,14 +435,14 @@ var jimxhw = {
         let arrayOne = [].concat(...arguments)
         let result = []
         for (let i = 0; i < array.length; i++) {
-            var temp = false
+            var temps = false
             for (let j = 0; j < arrayOne.length; j++) {
                 if (comparater(array[i], arrayOne[j])) {
-                    temp = true
+                    temps = true
                     break
                 }
             }
-            if (!temp) {
+            if (!temps) {
                 result.push(array[i])
             }
         }
