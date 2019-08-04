@@ -629,7 +629,7 @@ var jimxhw = {
         for (let i = 0; i < array.length; i++) {
             let temp = iteratee[array[i]]
             if (!map.includes(temp)) {
-                map[temp] = true
+                map.push(temp)
                 result.push(array[i])
             }
         }
