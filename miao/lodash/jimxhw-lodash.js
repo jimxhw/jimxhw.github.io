@@ -276,6 +276,13 @@ var jimxhw = {
             let temp = result[i]
             if (!map.includes(temp)) {
                 map.push(temp)
+            } else {
+                for (let j = 0; j < map.length; j++) {
+                    if (map[j] === temp) {
+                        map.splice(j, 1)
+                        break
+                    }
+                }
             }
         }
         return map
