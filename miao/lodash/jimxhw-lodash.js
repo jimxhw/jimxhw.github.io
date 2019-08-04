@@ -368,8 +368,7 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object RegExp]"
     },
     isNaN: function (value) {
-        if (this.isNull(value)) { return true }
-        return value === value ? false : true
+        return typeof value == "number" && value != value
     },
     isEqual: function (value, other) {
         if (value === other) {
@@ -624,5 +623,16 @@ var jimxhw = {
         })
         return result
     },
-    
+    uniqBy: function (array, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        let result = [], map = []
+        for (let i = 0; i < array.length; i++) {
+            let temp = iteratee[array[i]]
+            if (!map.includes(temp)) {
+                map[temp] = true
+                result.push(array[i])
+            }
+        }
+        return result
+    },
 }    
