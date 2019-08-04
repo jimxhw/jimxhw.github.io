@@ -497,4 +497,132 @@ var jimxhw = {
         let date = new Date()
         return date.getTime
     },
+    intersectionBy: function (array, ...arguments) {
+        let temp = arguments[arguments.length - 1]
+        if (!this.isArray(temp)) {
+            var iteratee = jimxhw.iteratee
+        } else {
+            var iteratee = temp
+            arguments.pop()
+        }
+        iteratee = jimxhw.iteratee(iteratee)
+        let map = {}
+        arguments.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                var char = iteratee(x[i])
+                if (char in map) {
+                    map[char] = true
+                } else {
+                    map[char] = false
+                }
+            }
+        })
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            if (iteratee(array[i] in map)) {
+                result.push(array[i])
+            }
+        }
+        return result
+    },
+    intersectionWith: function (array, ...arguments) {
+        let comparater = arguments.pop()
+        let result = []
+        array.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                var char = x[i]
+                let flag = false
+                for (let j = 0; j < arguments.length; j++) {
+                    if (comparater(char, arguments[j])) {
+                        flag = true
+                        break
+                    }
+                }
+                if (flag) {
+                    result.push(char)
+                }
+            }
+        })
+        return result
+    },
+    pullAllBy(array, ...arguments) {
+        let temp = arguments[arguments.length - 1]
+        if (!this.isArray(temp)) {
+            var iteratee = jimxhw.iteratee
+        } else {
+            var iteratee = temp
+            arguments.pop()
+        }
+        iteratee = jimxhw.iteratee(iteratee)
+        let map = {}
+        for (let i = 0; i < arguments.length; i++) {
+            map[iteratee(arguments[i])] = true
+        }
+        for (let i = 0; i < array.length; i++) {
+            if (iteratee(array[i]) in map) {
+                array.splice(i, 1)
+                i--
+            }
+        }
+        return array
+    },
+    pullAllWith(array, ...arguments) {
+        let comparater = arguments.pop()
+        let result = []
+        array.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                var char = x[i]
+                let flag = false
+                for (let j = 0; j < arguments.length; j++) {
+                    if (comparater(char, arguments[j])) {
+                        flag = true
+                        break
+                    }
+                }
+                if (!flag) {
+                    result.push(char)
+                }
+            }
+        })
+        return result
+    },
+    unionBy: function (array, ...arguments) {
+        let temps = arguments[arguments.length - 1]
+        if (!this.isArray(temps)) {
+            var iteratee = jimxhw.iteratee
+        } else {
+            var iteratee = temps
+            arguments.pop()
+        }
+        iteratee = jimxhw.iteratee(iteratee)
+        let map = new Map()
+        arguments.forEach(x => map(iteratee(x), x))
+        array.forEach(x => map(iteratee(x), x))
+        let result = []
+        for (let keys of map) {
+            result.push(keys)
+        }
+        return result
+    },
+    unionWith: function (array, ...arguments) {
+        let comparater = arguments.pop()
+        let result = arguments.slice()
+        array.forEach(function (x) {
+            for (let i = 0; i < x.length; i++) {
+                var char = x[i]
+                let flag = false
+                for (let j = 0; j < arguments.length; j++) {
+                    if (comparater(char, arguments[j])) {
+                        flag = true
+                        break
+                    }
+                }
+                if (!flag) {
+                    result.push(char)
+                }
+            }
+        })
+        return result
+    },
+    
 }    
