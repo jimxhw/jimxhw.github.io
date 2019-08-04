@@ -180,9 +180,7 @@ var jimxhw = {
         return result
     },
     findIndex: function (array, predicate = jimxhw.identity, fromIndex = 0) {
-        if (typeof predicate === "string") {
-            predicate = it => it[predicate]
-        }
+        predicate = this.iteratee(predicate)
         for (let i = fromIndex; i < array.length; i++) {
             if (predicate(array[i])) {
                 return i
@@ -191,9 +189,7 @@ var jimxhw = {
         return -1
     },
     findLastIndex: function (array, predicate = jimxhw.identity, fromIndex = array.length - 1) {
-        if (typeof predicate === "string") {
-            predicate = it => it[predicate]
-        }
+        predicate = this.iteratee(predicate)
         for (let i = fromIndex; i >= 0; i--) {
             if (predicate(array[i])) {
                 return i
@@ -368,8 +364,11 @@ var jimxhw = {
     isUndefined: function (value) {
         return Object.prototype.toString.call(value) === "[object Undefined]"
     },
+    isRegExp: function (value) {
+        return Object.prototype.toString.call(value) === "[object RegExp]"
+    },
     isNaN: function (value) {
-        if (Object.prototype.toString.call(value) === "[object Null]") { return true }
+        if (this.isNull(value)) { return true }
         return value === value ? false : true
     },
     isEqual: function (value, other) {
@@ -449,7 +448,7 @@ var jimxhw = {
         return result
     },
     dropRightWhile: function (arr, predicate = jimxhw.identity) {
-        let result = []
+        predicate = this.iteratee(predicate)
         for (let i = 0; i < arr.length; i++) {
             if (!predicate(arr[i])) {
                 var arr2 = arr.slice(0, i)
@@ -462,6 +461,7 @@ var jimxhw = {
         return result
     },
     dropWhile: function (arr, predicate = jimxhw.identity) {
+        predicate = this.iteratee(predicate)
         let result = []
         for (let i = 0; i < arr.length; i++) {
             if (!predicate(arr[i])) {
