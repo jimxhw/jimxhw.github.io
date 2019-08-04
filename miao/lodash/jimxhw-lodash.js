@@ -292,7 +292,7 @@ var jimxhw = {
         }
         return result
     },
-    every: function (collection, predicate) {
+    every: function (collection, predicate = jimxhw.identity) {
         for (let keys of collection) {
             if (!(predicate(keys))) {
                 return false
@@ -341,7 +341,7 @@ var jimxhw = {
         }
     },
     isObjectLike: function (value) {
-        return typeof (value) == "object" && value !== value
+        return typeof (value) == "object" && value === value && !this.isNull(value)
     },
     isArguments: function (value) {
         return Object.prototype.toString.call(value) === "[object Arguments]"
@@ -493,7 +493,7 @@ var jimxhw = {
         }
         return result
     },
-    now:function(){
+    now: function () {
         let date = new Date()
         return date.getTime
     },
