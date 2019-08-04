@@ -635,4 +635,7 @@ var jimxhw = {
         }
         return result
     },
+    zip:function(...arguments){
+        return arguments[0].map((x,i)=>{return arguments.map(j=>j[i])})
+    }
 }    
