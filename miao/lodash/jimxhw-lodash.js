@@ -492,5 +492,9 @@ var jimxhw = {
             }
         }
         return result
-    }
+    },
+    now:function(){
+        let date = new Date()
+        return date.getTime
+    },
 }    
