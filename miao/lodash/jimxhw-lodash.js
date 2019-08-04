@@ -627,7 +627,7 @@ var jimxhw = {
         iteratee = this.iteratee(iteratee)
         let result = [], map = []
         for (let i = 0; i < array.length; i++) {
-            let temp = iteratee[array[i]]
+            let temp = iteratee(array[i])
             if (!map.includes(temp)) {
                 map.push(temp)
                 result.push(array[i])
