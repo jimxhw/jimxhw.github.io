@@ -269,24 +269,16 @@ var jimxhw = {
         }
         return result
     },
-    xor: function () {
-        let map = {}
-        arguments.forEach(function (x) {
-            for (let i = 0; i < x.length; i++) {
-                if (x[i] in map) {
-                    map[x[i]] = true
-                } else {
-                    map[x[i]] = false
-                }
-            }
-        })
-        let result = []
-        for (let key in map) {
-            if (map[key] == false) {
-                result.push(Number(key))
+    xor: function (...arguments) {
+        let result = arguments.this.flatten()
+        let map = []
+        for (let i = 0; i < result.length; i++) {
+            let temp = result[i]
+            if (!map.includes(temp)) {
+                map.push(temp)
             }
         }
-        return result
+        return map
     },
     every: function (collection, predicate = jimxhw.identity) {
         for (let keys of collection) {
@@ -635,7 +627,12 @@ var jimxhw = {
         }
         return result
     },
-    zip:function(...arguments){
-        return arguments[0].map((x,i)=>{return arguments.map(j=>j[i])})
-    }
+    zip: function (...arguments) {
+        return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
+    },
+    unzip: function (...arguments) {
+        return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
+    },
+
+
 }    
