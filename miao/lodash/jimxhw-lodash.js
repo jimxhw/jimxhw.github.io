@@ -550,7 +550,7 @@ var jimxhw = {
     },
     pullAllBy(array, values, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
-        return array.filter(it => { return !values.some(value => { return iterate(value) === iteratee(it) }) })
+        return array.filter(it => { return !values.some(value => { return iteratee(value) === iteratee(it) }) })
     },
     pullAllWith(array, values, comparater) {
         return array.filter(it => { return !values.some(value => { return comparater(it, value) }) })
@@ -564,7 +564,7 @@ var jimxhw = {
             arguments.pop()
         }
         iteratee = jimxhw.iteratee(iteratee)
-        array = array.concat(arguments)
+        array = array.concat(...arguments)
         let arr = array.map(x => iteratee(x))
         let map1 = {}
         for (let i = 0; i < arr.length; i++) {
