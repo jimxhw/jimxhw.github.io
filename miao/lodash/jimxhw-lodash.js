@@ -34,7 +34,7 @@ var jimxhw = {
             }
             return true
         }
-    },//返回一个函数，将该函数的参数和指定对象进行深对比
+    },//返回一个函数，将该函数的参数和指定对象进行深对比,即判断source是不是obj的子集
     matchesProperty: function (path, srcValue) {
         return function (obj) {
             return jimxhw.isEqual(jimxhw.property(path)(obj), srcValue)
@@ -281,12 +281,12 @@ var jimxhw = {
             }
         }
         let array = []
-        for(let keys in map){
-            if(map[keys]>1){
+        for (let keys in map) {
+            if (map[keys] > 1) {
                 array.push(+keys)
             }
         }
-        return this.without(result,...array)
+        return this.without(result, ...array)
     },
     every: function (collection, predicate = jimxhw.identity) {
         predicate = this.iteratee(predicate)
@@ -307,6 +307,7 @@ var jimxhw = {
         return false
     },
     filter: function (collection, predicate) {
+        predicate = this.iteratee(predicate)
         let result = []
         for (let keys of collection) {
             if (predicate(keys)) {
@@ -450,15 +451,15 @@ var jimxhw = {
     },
     dropRightWhile: function (arr, predicate = jimxhw.identity) {
         predicate = this.iteratee(predicate)
-        for (let i = 0; i < arr.length; i++) {
+        for (let i = arr.length-1; i >=0; i--) {
             if (!predicate(arr[i])) {
-                var arr2 = arr.slice(0, i)
+                var arr2 = arr.slice(0, i + 1)
                 break
             }
         }
         let result = []
         for (let i = 0; i < arr2.length; i++) {
-            result.push(arr[i])
+            result.push(arr2[i])
         }
         return result
     },
@@ -472,7 +473,7 @@ var jimxhw = {
             }
         }
         for (let i = 0; i < arr2.length; i++) {
-            result.push(arr[i])
+            result.push(arr2[i])
         }
         return result
     },
@@ -501,7 +502,7 @@ var jimxhw = {
     },
     intersectionBy: function (array, ...arguments) {
         let temp = arguments[arguments.length - 1]
-        if (!this.isArray(temp)) {
+        if (this.isArray(temp)) {
             var iteratee = jimxhw.iteratee
         } else {
             var iteratee = temp
@@ -521,7 +522,7 @@ var jimxhw = {
         })
         let result = []
         for (let i = 0; i < array.length; i++) {
-            if (iteratee(array[i] in map)) {
+            if (String(iteratee(array[i])) in map) {
                 result.push(array[i])
             }
         }
@@ -549,7 +550,7 @@ var jimxhw = {
     },
     pullAllBy(array, ...arguments) {
         let temp = arguments[arguments.length - 1]
-        if (!this.isArray(temp)) {
+        if (this.isArray(temp)) {
             var iteratee = jimxhw.iteratee
         } else {
             var iteratee = temp
@@ -561,7 +562,7 @@ var jimxhw = {
             map[iteratee(arguments[i])] = true
         }
         for (let i = 0; i < array.length; i++) {
-            if (iteratee(array[i]) in map) {
+            if (String(iteratee(array[i])) in map) {
                 array.splice(i, 1)
                 i--
             }
@@ -590,7 +591,7 @@ var jimxhw = {
     },
     unionBy: function (array, ...arguments) {
         let temps = arguments[arguments.length - 1]
-        if (!this.isArray(temps)) {
+        if (this.isArray(temps)) {
             var iteratee = jimxhw.iteratee
         } else {
             var iteratee = temps
@@ -689,6 +690,62 @@ var jimxhw = {
         }
         return undefined
     },
+    bind: function (f, thisArg, ...fixarg) {
+        return function (...Arguments) {
+            let arg = fixarg
+            for (let i = 0; i < arg.length; i++) {
+                if (arg[i] === _) {
+                    arg[i] = Arguments.shift()
+                }
+            }
+            arg.push(...Arguments)
+            return f.apply(thisArg, arg)
+        }
+    },
+    isMath: function (obj, src) {
+        if (obj === src) {
+            return true
+        }
+        for (var key in src) {
+            if (typeof src[key] == 'object' && src[key] !== null) {
+                if (!this.isMatch(obj[key], src[key])) {
+                    return false
+                }
+            } else {
+                if (obj[key] != src[key]) {
+                    return false
+                }
+            }
+        }
+        return true
+    },
+    toPath: function (value) {
+        return value.split(split(/\.|\[|\]./g)
+        )
+    },
+    get: function (obj, path, defaultVal) {
+        if (obj === undefined) {
+            return defaultVal
+        }
+        return get(obj[path[0]], path.slice(1))
+    },
+    map: function (collection, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        let result = []
+        if (this.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                result.push(iteratee(collection[i]))
+            }
+        } else {
+            for (let keys in collection) {
+                result.push(iteratee(collection[keys]))
+            }
+        }
+        return result
+    },
+
+
+
 
 
 }    
