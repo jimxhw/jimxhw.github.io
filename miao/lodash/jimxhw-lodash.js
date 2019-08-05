@@ -271,23 +271,25 @@ var jimxhw = {
     },
     xor: function (...arguments) {
         let result = this.flatten(arguments)
-        let map = []
+        let map = {}
         for (let i = 0; i < result.length; i++) {
             let temp = result[i]
-            if (!map.includes(temp)) {
-                map.push(temp)
+            if (temp in map) {
+                map[temp]++
             } else {
-                for (let j = 0; j < map.length; j++) {
-                    if (map[j] === temp) {
-                        map.splice(j, 1)
-                        break
-                    }
-                }
+                map[temp] = 1
             }
         }
-        return map
+        let array = []
+        for(let keys in map){
+            if(map[keys]>1){
+                array.push(+keys)
+            }
+        }
+        return this.without(result,...array)
     },
     every: function (collection, predicate = jimxhw.identity) {
+        predicate = this.iteratee(predicate)
         for (let keys of collection) {
             if (!(predicate(keys))) {
                 return false
@@ -296,6 +298,7 @@ var jimxhw = {
         return true
     },
     some: function (collection, predicate) {
+        predicate = this.iteratee(predicate)
         for (let keys of collection) {
             if (predicate(keys)) {
                 return true
@@ -665,6 +668,7 @@ var jimxhw = {
         return map
     },
     find: function (collection, predicate = jimxhw.identity, fromIndex = 0) {
+        predicate = this.iteratee(predicate)
         if (this.isArray(collection)) {
             for (let i = fromIndex; i < collection.length; i++) {
                 if (predicate(collection[i])) {
