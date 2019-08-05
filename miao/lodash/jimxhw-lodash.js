@@ -456,6 +456,7 @@ var jimxhw = {
                 break
             }
         }
+        let result = []
         for (let i = 0; i < arr2.length; i++) {
             result.push(arr[i])
         }
