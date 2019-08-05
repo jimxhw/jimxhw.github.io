@@ -451,7 +451,7 @@ var jimxhw = {
     },
     dropRightWhile: function (arr, predicate = jimxhw.identity) {
         predicate = this.iteratee(predicate)
-        for (let i = arr.length-1; i >=0; i--) {
+        for (let i = arr.length - 1; i >= 0; i--) {
             if (!predicate(arr[i])) {
                 var arr2 = arr.slice(0, i + 1)
                 break
@@ -548,46 +548,12 @@ var jimxhw = {
         })
         return result
     },
-    pullAllBy(array, ...arguments) {
-        let temp = arguments[arguments.length - 1]
-        if (this.isArray(temp)) {
-            var iteratee = jimxhw.iteratee
-        } else {
-            var iteratee = temp
-            arguments.pop()
-        }
-        iteratee = jimxhw.iteratee(iteratee)
-        let map = {}
-        for (let i = 0; i < arguments.length; i++) {
-            map[iteratee(arguments[i])] = true
-        }
-        for (let i = 0; i < array.length; i++) {
-            if (String(iteratee(array[i])) in map) {
-                array.splice(i, 1)
-                i--
-            }
-        }
-        return array
+    pullAllBy(array, values, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        return array.filter(it => { return !values.some(value => { return iterate(value) === iteratee(it) }) })
     },
-    pullAllWith(array, ...arguments) {
-        let comparater = arguments.pop()
-        let result = []
-        array.forEach(function (x) {
-            for (let i = 0; i < x.length; i++) {
-                var char = x[i]
-                let flag = false
-                for (let j = 0; j < arguments.length; j++) {
-                    if (comparater(char, arguments[j])) {
-                        flag = true
-                        break
-                    }
-                }
-                if (!flag) {
-                    result.push(char)
-                }
-            }
-        })
-        return result
+    pullAllWith(array, values, comparater) {
+        return array.filter(it => { return !values.some(value => { return comparater(it, value) }) })
     },
     unionBy: function (array, ...arguments) {
         let temps = arguments[arguments.length - 1]
@@ -598,14 +564,20 @@ var jimxhw = {
             arguments.pop()
         }
         iteratee = jimxhw.iteratee(iteratee)
-        let map = new Map()
-        arguments.forEach(x => map.set(iteratee(x), x))
-        array.forEach(x => map.set(iteratee(x), x))
-        let result = []
-        for (let keys of map) {
-            result.push(keys)
+        array = array.concat(arguments)
+        let arr = array.map(x => iteratee(x))
+        let map1 = {}
+        for (let i = 0; i < arr.length; i++) {
+            var char = arr[i]
+            if (char in map1) {
+                arr.splice(i, 1)
+                array.splice(i, 1)
+                i--
+            } else {
+                map1[char] = true
+            }
         }
-        return result
+        return array
     },
     unionWith: function (array, ...arguments) {
         let comparater = arguments.pop()
@@ -720,14 +692,13 @@ var jimxhw = {
         return true
     },
     toPath: function (value) {
-        return value.split(split(/\.|\[|\]./g)
-        )
+        return value.split(/\.|\[|\]./g)
     },
     get: function (obj, path, defaultVal) {
         if (obj === undefined) {
             return defaultVal
         }
-        return get(obj[path[0]], path.slice(1))
+        return this.get(obj[path[0]], path.slice(1))
     },
     map: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
