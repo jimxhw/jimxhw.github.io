@@ -712,11 +712,11 @@ var jimxhw = {
         let result = []
         if (this.isArray(collection)) {
             for (let i = 0; i < collection.length; i++) {
-                result.push(iteratee(collection[i]))
+                result.push(iteratee(collection[i],i,collection))
             }
         } else {
             for (let keys in collection) {
-                result.push(iteratee(collection[keys]))
+                result.push(iteratee(collection[keys],keys,collection))
             }
         }
         return result
@@ -743,19 +743,59 @@ var jimxhw = {
         iteratee = this.iteratee(iteratee)
         if (this.isArray(collection)) {
             for (let i = 0; i < collection.length; i++) {
-                if(iteratee(collection[i],i,collection)===false){
+                if (iteratee(collection[i], i, collection) === false) {
                     break
                 }
             }
         } else {
             for (let keys in collection) {
-                if(iteratee(collection[keys],keys,collection)===false){
+                if (iteratee(collection[keys], keys, collection) === false) {
                     break
                 }
             }
         }
         return collection
     },
+    keyBy: function (collection, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let result = {}
+        if (this.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                result[iteratee(collection[i])] = collection[i]
+            }
+        } else {
+            for (let keys in collection) {
+                result[iteratee(collection[keys])] = collection[keys]
+            }
+        }
+        return result
+    },
+    groupBy: function (collection, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let result = {}
+        if (this.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                let temp = iteratee(collection[i])
+                if (temp in result) {
+                    result[temp].push(collection[i])
+                } else {
+                    result[temp] = [collection[i]]
+                }
+            }
+        } else {
+            for (let keys in collection) {
+                let temp = iteratee(collection[keys])
+                if (temp in result) {
+                    result[temp].push(collection[keys])
+                } else {
+                    result[temp] = [collection[keys]]
+                }
+            }
+        }
+        return result
+    },
+
+}
 
 
 
