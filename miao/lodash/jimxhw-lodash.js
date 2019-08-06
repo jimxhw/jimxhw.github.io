@@ -332,12 +332,15 @@ var jimxhw = {
         return result
     },
     forOwn: function (obj, iterator) {
-        var hasOwn = Object.prototype.hasOwnProperty
+        iterator = jimxhw.iteratee(iterator)
         for (let keys in obj) {
-            if (hasOwn.call(obj[keys])) {
-                iterator(obj[keys], keys, obj)
+            if (obj.hasOwnProperty(keys)) {
+                if (iterator(obj[keys], keys, obj) === false) {
+                    break
+                }
             }
         }
+        return obj
     },
     isObjectLike: function (value) {
         return typeof (value) == "object" && value === value && !this.isNull(value)
@@ -695,10 +698,14 @@ var jimxhw = {
         return value.split(/\.|\[|\]./g)
     },
     get: function (obj, path, defaultVal) {
-        if (obj === undefined) {
-            return defaultVal
+        path = jimxhw.toPath(path)
+        for (let i = 0; i < path.length; i++) {
+            if (obj === undefined) {
+                return defaultVal
+            }
+            obj = obj[path[i]]
         }
-        return this.get(obj[path[0]], path.slice(1))
+        return obj
     },
     map: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
@@ -714,7 +721,21 @@ var jimxhw = {
         }
         return result
     },
-
+    flatMap:function(collection,iteratee=jimxhw.identity){
+        iteratee = jimxhw.iteratee(iteratee)
+        if (this.isArray(collection)) {
+            let result = []
+            for (let i = 0; i < collection.length; i++) {
+                result.push(...iteratee(collection[i]))
+            }
+        }else{
+            let result = []
+            for (let keys in collection) {
+                result.push(...iteratee(collection[keys]))
+            }
+        }
+        return result
+    },
 
 
 
