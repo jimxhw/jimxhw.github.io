@@ -771,7 +771,7 @@ var jimxhw = {
         }
         if (jimxhw.isArray(collection)) {
             for (let i = 0; i < collection.length; i++) {
-                if (jimxhw.isArray(iteratee(collection[i])) {
+                if (jimxhw.isArray(iteratee(collection[i]))){
                     let temp = jimxhw.flatMapDepth(collection[i], iteratee, depth - 1)
                     result.push(...temp)
                 }
