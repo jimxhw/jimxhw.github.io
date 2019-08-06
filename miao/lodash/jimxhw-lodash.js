@@ -712,11 +712,11 @@ var jimxhw = {
         let result = []
         if (this.isArray(collection)) {
             for (let i = 0; i < collection.length; i++) {
-                result.push(iteratee(collection[i],i,collection))
+                result.push(iteratee(collection[i], i, collection))
             }
         } else {
             for (let keys in collection) {
-                result.push(iteratee(collection[keys],keys,collection))
+                result.push(iteratee(collection[keys], keys, collection))
             }
         }
         return result
@@ -794,8 +794,30 @@ var jimxhw = {
         }
         return result
     },
+    partition: function (collection, predicate = jimxhw.identity) {
+        predicate = jimxhw.iteratee(predicate)
+        let trueArray = []
+        let falseArray = []
+        if (this.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                if(predicate(collection[i])){
+                    trueArray.push(collection[i])
+                }else{
+                   falseArray.push(collection[i])
+                }
+            }
+        } else {
+            for (let keys in collection) {
+                if(predicate(collection[keys])){
+                    trueArray.push(collection[keys])
+                }else{
+                   falseArray.push(collection[keys])
+                }
+            }
+        }
+        return [trueArray,falseArray]
+    },
 
-}
 
 
 
