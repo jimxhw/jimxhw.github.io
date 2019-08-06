@@ -698,7 +698,9 @@ var jimxhw = {
         return value.split(/\.|\[|\]./g)
     },
     get: function (obj, path, defaultVal) {
-        path = jimxhw.toPath(path)
+        if(jimxhw.isString(path)){
+            path = jimxhw.toPath(path)
+        }
         for (let i = 0; i < path.length; i++) {
             if (obj === undefined) {
                 return defaultVal
@@ -706,7 +708,7 @@ var jimxhw = {
             obj = obj[path[i]]
         }
         return obj
-    },
+    }, 
     map: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
         let result = []
@@ -817,6 +819,7 @@ var jimxhw = {
         }
         return [trueArray,falseArray]
     },
+
 
 
 
