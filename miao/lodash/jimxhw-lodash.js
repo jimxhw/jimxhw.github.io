@@ -756,6 +756,7 @@ var jimxhw = {
                 iteratee(collection[keys],keys,collection)
             }
         }
+        return collection
     },
 
 
