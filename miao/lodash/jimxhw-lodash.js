@@ -819,6 +819,18 @@ var jimxhw = {
         }
         return [trueArray,falseArray]
     },
+    toArray:function(value){
+        let result = []
+        if(jimxhw.isObject(value)){
+            for(let keys in value){
+                result.push(value[keys])
+            }
+        }
+        if(jimxhw.isString(value)){
+            return value.split("")
+        }
+        return result
+    },
 
 
 
