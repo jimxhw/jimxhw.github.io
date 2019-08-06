@@ -721,21 +721,74 @@ var jimxhw = {
         }
         return result
     },
-    flatMap:function(collection,iteratee=jimxhw.identity){
+    flatMap: function (collection, iteratee = jimxhw.identity) {
         iteratee = jimxhw.iteratee(iteratee)
+        let result = []
         if (this.isArray(collection)) {
-            let result = []
             for (let i = 0; i < collection.length; i++) {
-                result.push(...iteratee(collection[i]))
+                if (this.isArray(iteratee(collection[i]))) {
+                    result.push(...iteratee(collection[i]))
+                }
+                result.push(iteratee(collection[i]))
             }
-        }else{
-            let result = []
+        } else {
             for (let keys in collection) {
-                result.push(...iteratee(collection[keys]))
+                if (this.isArray(iteratee(collection[keys]))) {
+                    result.push(...iteratee(collection[keys]))
+                }
+                result.push(iteratee(collection[keys]))
             }
         }
         return result
     },
+    flatMapDeep: function (collection, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let result = []
+        if (jimxhw.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                if (jimxhw.isArray(iteratee(collection[i]))) {
+                    let temp = jimxhw.flatMapDeep(collection[i], iteratee)
+                    result.push(...temp)
+                }
+                result.push(iteratee(collection[i]))
+            }
+        } else {
+            for (let keys in collection) {
+                if (jimxhw.isArray(iteratee(collection[keys]))) {
+                    let temp = jimxhw.flatMapDeep(collection[keys], iteratee)
+                    result.push(...temp)
+                }
+                result.push(iteratee(collection[keys]))
+            }
+        }
+        return result
+    },
+    flatMapDepth: function (collection, iteratee = jimxhw.identity, depth = 1) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let result = []
+        if (depth == 0) {
+            return collection
+        }
+        if (jimxhw.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                if (jimxhw.isArray(iteratee(collection[i])) {
+                    let temp = jimxhw.flatMapDepth(collection[i], iteratee, depth - 1)
+                    result.push(...temp)
+                }
+                result.push(iteratee(collection[i]))
+            }
+        } else {
+            for (let keys in collection) {
+                if (jimxhw.isArray(iteratee(collection[keys]))) {
+                    let temp = jimxhw.flatMapDepth(collection[keys], iteratee, depth - 1)
+                    result.push(...temp)
+                }
+                result.push(iteratee(collection[keys]))
+            }
+        }
+        return result
+    },
+
 
 
 
