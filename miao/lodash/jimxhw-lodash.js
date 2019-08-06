@@ -746,14 +746,12 @@ var jimxhw = {
                 if(iteratee(collection[i],i,collection)===false){
                     break
                 }
-                iteratee(collection[i],i,collection)
             }
         } else {
             for (let keys in collection) {
                 if(iteratee(collection[keys],keys,collection)===false){
                     break
                 }
-                iteratee(collection[keys],keys,collection)
             }
         }
         return collection
