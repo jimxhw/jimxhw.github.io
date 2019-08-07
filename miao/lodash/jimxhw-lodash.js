@@ -400,10 +400,6 @@ var jimxhw = {
         }
         return value === other
     },// 深对比两个值是否相等
-    ceil: function (number, precision = 0) {
-        let zs = number | 0
-
-    },
     differenceBy: function (array, ...arguments) {
         var iteratee
         let temp = arguments[arguments.length - 1]
@@ -698,7 +694,7 @@ var jimxhw = {
         return value.split(/\.|\[|\]./g)
     },
     get: function (obj, path, defaultVal) {
-        if(jimxhw.isString(path)){
+        if (jimxhw.isString(path)) {
             path = jimxhw.toPath(path)
         }
         for (let i = 0; i < path.length; i++) {
@@ -708,7 +704,7 @@ var jimxhw = {
             obj = obj[path[i]]
         }
         return obj
-    }, 
+    },
     map: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
         let result = []
@@ -802,35 +798,262 @@ var jimxhw = {
         let falseArray = []
         if (this.isArray(collection)) {
             for (let i = 0; i < collection.length; i++) {
-                if(predicate(collection[i])){
+                if (predicate(collection[i])) {
                     trueArray.push(collection[i])
-                }else{
-                   falseArray.push(collection[i])
+                } else {
+                    falseArray.push(collection[i])
                 }
             }
         } else {
             for (let keys in collection) {
-                if(predicate(collection[keys])){
+                if (predicate(collection[keys])) {
                     trueArray.push(collection[keys])
-                }else{
-                   falseArray.push(collection[keys])
+                } else {
+                    falseArray.push(collection[keys])
                 }
             }
         }
-        return [trueArray,falseArray]
+        return [trueArray, falseArray]
     },
-    toArray:function(value){
+    toArray: function (value) {
         let result = []
-        if(jimxhw.isObject(value)){
-            for(let keys in value){
+        if (jimxhw.isObject(value)) {
+            for (let keys in value) {
                 result.push(value[keys])
             }
         }
-        if(jimxhw.isString(value)){
+        if (jimxhw.isString(value)) {
             return value.split("")
         }
         return result
     },
+    reduce: function (collection, iteratee, accumulator) {
+        if (this.isObject(collection)) {
+            let collection = Object.entries(collection).map(x => x[1])
+        }
+        let i = 0
+        if (arguments.length == 2) {
+            i = 1
+            accumulator = collection[0]
+        }
+        for (; i < collection.length; i++) {
+            accumulator = iteratee(accumulator, collection[i], i, collection)
+        }
+        return accumulator
+    },
+    reduceRight: function (collection, iteratee, accumulator) {
+        if (this.isObject(collection)) {
+            collection = Object.entries(collection).map(x => x[1])
+        }
+        let i = collection.length - 1
+        if (arguments.length == 2) {
+            i = collection.length - 2
+            accumulator = collection[collection.length - 1]
+        }
+        for (; i >= 0; i--) {
+            accumulator = iteratee(accumulator, collection[i], i, collection)
+        }
+        return accumulator
+    },
+    reject: function (collection, predicate) {
+        predicate = this.iteratee(predicate)
+        let result = []
+        collection.jimxhw.forEach(x => {
+            if (!predicate(x)) {
+                result.push(x)
+            }
+        })
+        return result
+    },
+    sample: function (collection) {
+        if (this.isObject(collection)) {
+            collection = Object.entries(collection).map(x => x[1])
+        }
+        return collection[(Math.random() * (collection.length)) | 0]
+    },
+    shuffle: function (collection) {
+        if (this.isObject(collection)) {
+            collection = Object.entries(collection).map(x => x[1])
+        }
+        let result = []
+        while (collection.length) {
+            let temp = (Math.random() * (collection.length)) | 0
+            result.push(collection[temp])
+            collection.splice(temp, 1)
+        }
+        return result
+    },
+    size: function (collection) {
+        if (this.isObject(collection)) {
+            collection = Object.entries(collection)
+        }
+        return collection.length
+    },
+    sortBy: function (collection, iteratee = jimxhw.identity) {
+        function quickSort(ary, compare, start = 0, end = ary.length - 1) {
+            if (end - start <= 0) {
+                return ary
+            }
+
+            var pivotIndex = Math.floor(Math.random() * (end - start + 1) + start)
+            var pivot = ary[pivotIndex]
+
+            swap(ary, pivotIndex, end)
+
+            var i = start
+            for (var j = start; j < end; j++) {
+                if (compare(ary[j], pivot) > 0) {
+                    swap(ary, i, j)
+                    i++
+                }
+            }
+
+            swap(ary, i, end)
+
+            quickSort(ary, compare, start, i - 1)
+            quickSort(ary, compare, i + 1, end)
+
+            return ary
+        }
+        iteratee = jimxhw.iteratee(iteratee)
+        if (this.isObject(collection)) {
+            collection = Object.entries(collection).map(x => x[1])
+        }
+        return quickSort(collection, iteratee)
+    },
+    delay: function (func, ...args) {
+        let s = args.shift()
+        return setTimeout(func, s, ...args)
+    },
+    isDate: value => { return Object.prototype.toString.call(value) == "[object Date]" },
+    isElement: value => { return Object.prototype.toString.call(value) == "[object HTMLBodyElement]" },
+    isEmpty: function (value) {
+        if (value === null) { return true }
+        if (value.jimxhw.size) {
+            return true
+        } else {
+            return false
+        }
+    },
+    isError: value => { return Object.prototype.toString.call(value) == "[object Error]" },
+    isFinite: function (value) {
+        if (jimxhw.isNumber(value)) {
+            return value <= Number.Max_value
+        }
+        return false
+    },
+    isFunction: value => { return Object.prototype.toString.call(value) == "[object Function]" },
+    isNil: value => { return jimxhw.isNull(value) || jimxhw.isUndefined(value) },
+    isMatch: function (obj, src) {
+        if (obj === src) {
+            return true
+        }
+        for (var key in src) {
+            if (!jimxhw.isEqual(obj[key], src[key])) {
+                return false
+            }
+        }
+        return true
+    },
+    isSymbol: value => { return Object.prototype.toString.call(value) == "[object Symbol]" },
+    isSet: value => { return Object.prototype.toString.call(value) == "[object Set]" },
+    isWeakMap: value => Object.prototype.toString.call(value) == "[object WeakMap]",
+    isWeakSet: value => Object.prototype.toString.call(value) == "[object WeakSet]",
+    ceil: function (number, precision = 0) {
+        return Math.ceil(number * 10 ** precision) / 10 ** precision
+    },
+    max: function (array) {
+        if (array.length) {
+            return Math.max(...array)
+        }
+        return undefined
+    },
+    maxBy: function (array, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let maxIndex = 0
+        for (let i = 0; i < array.length; i++) {
+            if (iteratee(array[maxIndex]) < iteratee(array[i])) {
+                maxIndex = i
+            }
+        }
+        return array[maxIndex]
+    },
+    min: function (array) {
+        if (array.length) {
+            return Math.min(...array)
+        }
+        return undefined
+    },
+    round: function (number, precision = 0) {
+        return Math.round(number * 10 ** precision) / 10 ** precision
+    },
+    sum: function (array) {
+        return array.reduce((x, y) => { return x + y })
+    },
+    sumBy: function (array, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        return array.reduce((x, y) => { return iteratee(x) + iteratee(y) })
+    },
+    random: function (lower = 0, upper = 1, floating = false) {
+        if (arguments.length == 0) {
+            return Math.random() | 0
+        } else if (arguments.length == 1) {
+            if (floating) {
+                return Math.random()
+            } else {
+                return (Math.random() * arguments[0]) | 0
+            }
+        } else if (arguments.length == 2) {
+            if (floating) {
+                return Math.random() * arguments[0]
+            } else {
+                return (Math.random() * (arguments[1] - arguments[0])) | 0
+            }
+        } else {
+            if (floating) {
+                return Math.random() * (arguments[1] - arguments[0])
+            } else {
+                return (Math.random() * (arguments[1] - arguments[0])) | 0
+            }
+        }
+    },
+    assign: function (object, ...sources) {
+        return sources.reduce((x, y) => { return Object.assign(x, y) }, object)
+    },
+    assignIn: function (object, ...sources) {
+        sources.forEach(function (obj) {
+            for (let key in obj) {
+                object[key] = obj[key]
+            }
+        })
+        return object
+    },
+    defaults: function (object, ...sources) {
+        sources.forEach(function (obj) {
+            for (let key in obj) {
+                if (!(key in object)) {
+                    object[key] = obj[key]
+                }
+            }
+        })
+        return object
+    },
+    findKey: function (object, predicate = jimxhw.identity) {
+        predicate = jimxhw.iteratee(predicate)
+        for (let key in object) {
+            if (predicate(object[key])) {
+                return key
+            }
+        }
+        return undefined
+    },
+
+
+
+
+
+
+
 
 
 
