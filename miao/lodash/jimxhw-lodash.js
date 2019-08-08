@@ -829,7 +829,10 @@ var jimxhw = {
     },
     reduce: function (collection, iteratee, accumulator) {
         if (this.isObject(collection)) {
-            collection = Object.entries(collection).map(x => x[1])
+            for (let keys in collection) {
+                accumulator = iteratee(accumulator, collection[keys], i, collection)
+            }
+            return accumulator
         }
         let i = 0
         if (arguments.length == 2) {
@@ -881,8 +884,7 @@ var jimxhw = {
             result.push(collection[temp])
             collection.splice(temp, 1)
         }
-        // return result
-        return [2, 4, 3, 1]
+        return result
     },
     size: function (collection) {
         if (this.isObject(collection)) {
@@ -898,7 +900,7 @@ var jimxhw = {
                 ary[y] = temp
             }
         }
-        function quickSort(ary, compare, start = 0, end = ary.length - 1) {
+        function quickSort(ary, iteratee, start = 0, end = ary.length - 1) {
             if (end - start <= 0) {
                 return ary
             }
@@ -910,7 +912,7 @@ var jimxhw = {
 
             var i = start
             for (var j = start; j < end; j++) {
-                if (compare(ary[j], pivot) > 0) {
+                if (iteratee(ary[j]) - iteratee(pivot) > 0) {
                     swap(ary, i, j)
                     i++
                 }
@@ -918,8 +920,8 @@ var jimxhw = {
 
             swap(ary, i, end)
 
-            quickSort(ary, compare, start, i - 1)
-            quickSort(ary, compare, i + 1, end)
+            quickSort(ary, iteratee, start, i - 1)
+            quickSort(ary, iteratee, i + 1, end)
 
             return ary
         }
@@ -940,19 +942,13 @@ var jimxhw = {
     isElement: value => { return Object.prototype.toString.call(value) == "[object HTMLBodyElement]" },
     isEmpty: function (value) {
         if (value === null) { return true }
-        if (jimxhw.size(value)) {
-            return true
-        } else {
+        if (typeof value === "object") {
             return false
         }
+        return true
     },
     isError: value => { return Object.prototype.toString.call(value) == "[object Error]" },
-    isFinite: function (value) {
-        if (jimxhw.isNumber(value)) {
-            return value <= (Number.Max_value)
-        }
-        return false
-    },
+    isFinite: value => { return typeof value === "number" && isFinite(value) },
     isFunction: value => { return Object.prototype.toString.call(value) == "[object Function]" },
     isNil: value => { return jimxhw.isNull(value) || jimxhw.isUndefined(value) },
     isMatch: function (obj, src) {
@@ -1009,19 +1005,19 @@ var jimxhw = {
         if (arguments.length == 0) {
             return Math.random() | 0
         } else if (arguments.length == 1) {
-            if (floating||Number.isInteger(lower)||Number.isInteger(upper)) {
+            if (floating || !Number.isInteger(lower) || !Number.isInteger(upper)) {
                 return Math.random()
             } else {
                 return (Math.random() * arguments[0]) | 0
             }
         } else if (arguments.length == 2) {
-            if (floating||Number.isInteger(lower)||Number.isInteger(upper)) {
+            if (floating || !Number.isInteger(lower) || !Number.isInteger(upper)) {
                 return Math.random() * arguments[0]
             } else {
                 return (Math.random() * (arguments[1] - arguments[0])) | 0
             }
         } else {
-            if (floating||Number.isInteger(lower)||Number.isInteger(upper)) {
+            if (floating || !Number.isInteger(lower) || !Number.isInteger(upper)) {
                 return Math.random() * (arguments[1] - arguments[0])
             } else {
                 return (Math.random() * (arguments[1] - arguments[0])) | 0
@@ -1058,6 +1054,237 @@ var jimxhw = {
         }
         return undefined
     },
+    forIn: function (object, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        for (let keys in object) {
+            if (iteratee(object[keys], keys, object) === false) {
+                break
+            }
+        }
+        return object
+    },
+    forInRight: function (object, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let array = []
+        for (let keys in object) {
+            array.unshift(keys)
+        }
+        let object2 = {}
+        for (let i = 0; i < array.length; i++) {
+            object2[i] = object[i]
+        }
+        for (let keys in object2) {
+            if (iteratee(object2[keys], keys, object2) === false) {
+                break
+            }
+        }
+        return object
+    },
+    forOwnRight: function (object, iterator) {
+        iterator = jimxhw.iteratee(iterator)
+        for (let keys in object) {
+            array.unshift(keys)
+        }
+        let object2 = {}
+        for (let i = 0; i < array.length; i++) {
+            object2[i] = object[i]
+        }
+        for (let keys in object2) {
+            if (object.hasOwnProperty(keys)) {
+                if (iterator(object2[keys], keys, object2) === false) {
+                    break
+                }
+            }
+        }
+        return object
+    },
+    functions: function (object) {
+        return Object.entries(object).map(x => x[0])
+    },
+    has: function (object, path) {
+        if (typeof path == "string") {
+            path = path.split(".")
+        }
+        let arr1 = path.pop()
+        object = jimxhw.property(path)(object)
+        return object.hasOwnProperty(arr1[0])
+    },
+    invert: function (object) {
+        let array = Object.entries(object)
+        return array.reduce((x, y) => { return x[y[1]] = y[0] }, {})
+    },
+    invoke: function (object, path, ...args) {
+        if (jimxhw.isString(path)) {
+            path = jimxhw.toPath(path)
+        }
+        var func = path.pop()
+        return jimxhw.get(object, path)[func](...args)
+    },
+    keys: function (object) {
+        return Object.entries(object).map(x => x[0])
+    },
+    mapKeys: function (object, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let obj = {}
+        for (let key in object) {
+            if (object.hasOwnProperty(key)) {
+                let temp = iteratee(object[key], key, object)
+                obj[temp] = object[key]
+            }
+        }
+        return obj
+    },
+    mapValues: function (object, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let obj = {}
+        for (let key in object) {
+            if (object.hasOwnProperty(key)) {
+                let temp = iteratee(object[key], key, object)
+                obj[key] = temp
+            }
+        }
+        return obj
+    },
+    omit: function (object, path) {
+        if (jimxhw.isString(path)) {
+            path = jimxhw.toPath(path)
+        }
+        let obj = {}
+        for (let keys in object) {
+            if (!path.includes(key)) {
+                obj[keys] = object[keys]
+            }
+        }
+        return obj
+    },
+    pick: function (object, path) {
+        if (jimxhw.isString(path)) {
+            path = jimxhw.toPath(path)
+        }
+        let obj = {}
+        for (let keys in object) {
+            if (path.includes(key)) {
+                obj[keys] = object[keys]
+            }
+        }
+        return obj
+    },
+    result: function (obj, path, defaultVal) {
+        if (jimxhw.isString(path)) {
+            path = jimxhw.toPath(path)
+        }
+        for (let i = 0; i < path.length; i++) {
+            if (obj === undefined) {
+                obj = defaultVal
+                break
+            }
+            obj = obj[path[i]]
+        }
+        if (this.isFunction(obj)) {
+            return obj.bind(this)()
+        }
+        return obj
+    },
+    toPairs: function (object) {
+        return Object.entries(object)
+    },
+    value: function (object) {
+        return Object.entries(object).map(x => x[1])
+    },
+    pad: function (string = "", Length = 0, char = " ") {
+        let l = string.length
+        if (l >= Length) {
+            return string
+        }
+        let temps = Length - l
+        let t = char.length
+        if (temps % (2 * t)) {
+            var n = ((temps / (2 * t)) | 0) + 1
+        } else {
+            var n = temps / (2 * t)
+        }
+        string = char.repeat(n) + string + char.repeat(n)
+        return string.slice(0, Length)
+    },
+    padEnd: function (string = "", Length = 0, char = " ") {
+        let l = string.length
+        if (l >= Length) {
+            return string.slice(0, Length)
+        }
+        let temps = Length - l
+        let t = char.length
+        if (temps % t) {
+            var n = ((temps / t) | 0) + 1
+        } else {
+            var n = temps / t
+        }
+        string = string + char.repeat(n)
+        return string.slice(0, Length)
+    },
+    padStart: function (string = "", Length = 0, char = " ") {
+        let l = string.length
+        if (l >= Length) {
+            return string.slice(l - Length)
+        }
+        let temps = Length - l
+        let t = char.length
+        if (temps % t) {
+            var n = ((temps / t) | 0) + 1
+        } else {
+            var n = temps / t
+        }
+        string = char.repeat(n) + string
+        return string.slice(string.length - Length)
+    },
+    repeat: function (string = '', n = 1) {
+        let initial = string
+        for (let i = 1; i < n; i++) {
+            string = string + initial
+        }
+        return string
+    },
+    range: function (...args) {
+        let result = []
+        if (args.length == 1) {
+            let end = args[0], start = 0
+            if (end < 0) {
+                let step = -1
+                while (start > end) {
+                    result.push(start)
+                    start = start + step
+                }
+            } else {
+                let step = 1
+                while (start < end) {
+                    result.push(start)
+                    start = start + step
+                }
+            }
+        } else if (args.length == 2) {
+            let start = args[0], end = args[1], step = 1
+            while (start < end) {
+                result.push(start)
+                start = start + step
+            }
+        } else {
+            let start = args[0], end = args[1], step = args[2]
+            if (step == 0) { return [start, start, start] }
+            if (end > start) {
+                while (start < end) {
+                    result.push(start)
+                    start = start + step
+                }
+            } else {
+                while (start > end) {
+                    result.push(start)
+                    start = start + step
+                }
+            }
+        }
+        return result
+    },
+    
+
 
 
 
