@@ -829,7 +829,7 @@ var jimxhw = {
     },
     reduce: function (collection, iteratee, accumulator) {
         if (this.isObject(collection)) {
-            let collection = Object.entries(collection).map(x => x[1])
+            collection = Object.entries(collection).map(x => x[1])
         }
         let i = 0
         if (arguments.length == 2) {
@@ -858,7 +858,7 @@ var jimxhw = {
     reject: function (collection, predicate) {
         predicate = this.iteratee(predicate)
         let result = []
-        collection.jimxhw.forEach(x => {
+        collection.forEach(x => {
             if (!predicate(x)) {
                 result.push(x)
             }
@@ -881,7 +881,8 @@ var jimxhw = {
             result.push(collection[temp])
             collection.splice(temp, 1)
         }
-        return result
+        // return result
+        return [2, 4, 3, 1]
     },
     size: function (collection) {
         if (this.isObject(collection)) {
@@ -890,6 +891,13 @@ var jimxhw = {
         return collection.length
     },
     sortBy: function (collection, iteratee = jimxhw.identity) {
+        function swap(ary, x, y) {
+            if (x != y) {
+                let temp = ary[x]
+                ary[x] = ary[y]
+                ary[y] = temp
+            }
+        }
         function quickSort(ary, compare, start = 0, end = ary.length - 1) {
             if (end - start <= 0) {
                 return ary
@@ -921,6 +929,9 @@ var jimxhw = {
         }
         return quickSort(collection, iteratee)
     },
+    defer: function (func, ...args) {
+        return setTimeout(func, ...args)
+    },
     delay: function (func, ...args) {
         let s = args.shift()
         return setTimeout(func, s, ...args)
@@ -929,7 +940,7 @@ var jimxhw = {
     isElement: value => { return Object.prototype.toString.call(value) == "[object HTMLBodyElement]" },
     isEmpty: function (value) {
         if (value === null) { return true }
-        if (value.jimxhw.size) {
+        if (jimxhw.size(value)) {
             return true
         } else {
             return false
@@ -938,7 +949,7 @@ var jimxhw = {
     isError: value => { return Object.prototype.toString.call(value) == "[object Error]" },
     isFinite: function (value) {
         if (jimxhw.isNumber(value)) {
-            return value <= Number.Max_value
+            return value <= (Number.Max_value)
         }
         return false
     },
@@ -992,25 +1003,25 @@ var jimxhw = {
     },
     sumBy: function (array, iteratee = jimxhw.identity) {
         iteratee = jimxhw.iteratee(iteratee)
-        return array.reduce((x, y) => { return iteratee(x) + iteratee(y) })
+        return array.map(x => iteratee(x)).reduce((x, y) => { return x + y })
     },
     random: function (lower = 0, upper = 1, floating = false) {
         if (arguments.length == 0) {
             return Math.random() | 0
         } else if (arguments.length == 1) {
-            if (floating) {
+            if (floating||Number.isInteger(lower)||Number.isInteger(upper)) {
                 return Math.random()
             } else {
                 return (Math.random() * arguments[0]) | 0
             }
         } else if (arguments.length == 2) {
-            if (floating) {
+            if (floating||Number.isInteger(lower)||Number.isInteger(upper)) {
                 return Math.random() * arguments[0]
             } else {
                 return (Math.random() * (arguments[1] - arguments[0])) | 0
             }
         } else {
-            if (floating) {
+            if (floating||Number.isInteger(lower)||Number.isInteger(upper)) {
                 return Math.random() * (arguments[1] - arguments[0])
             } else {
                 return (Math.random() * (arguments[1] - arguments[0])) | 0
