@@ -828,7 +828,7 @@ var jimxhw = {
         return result
     },
     reduce: function (collection, iteratee, accumulator) {
-        if (this.isObject(collection)) {
+        if (jimxhw.isObject(collection)) {
             for (let keys in collection) {
                 accumulator = iteratee(accumulator, collection[keys], keys, collection)
             }
@@ -1082,7 +1082,7 @@ var jimxhw = {
     },
     forOwnRight: function (object, iterator) {
         iterator = jimxhw.iteratee(iterator)
-        let  array = []
+        let array = []
         for (let keys in object) {
             array.unshift(keys)
         }
@@ -1191,7 +1191,7 @@ var jimxhw = {
     toPairs: function (object) {
         return Object.entries(object)
     },
-    value: function (object) {
+    values: function (object) {
         return Object.entries(object).map(x => x[1])
     },
     pad: function (string = "", Length = 0, char = " ") {
@@ -1240,6 +1240,7 @@ var jimxhw = {
         return string.slice(string.length - Length)
     },
     repeat: function (string = '', n = 1) {
+        if (n == 0) { return "" }
         let initial = string
         for (let i = 1; i < n; i++) {
             string = string + initial
@@ -1286,6 +1287,31 @@ var jimxhw = {
         }
         return result
     },
+    negate: function (predicate) {
+        return function (...arg) {
+            return !predicate(...arg)
+        }
+    },
+    curry: function (f, length = f.length) {
+        return function (...args) {
+            if (args.length >= length) {
+                return f(...args)
+            } else {
+                return curry(f.bind(null, ...args), length - args.length)
+            }
+        }
+    },
+    times: function (n, iteratee = jimxhw.identity) {
+        let result = []
+        while (n > 0) {
+            result.push(iteratee())
+        }
+        return result
+    },
+    uniqueId: function (prefix = "") {
+        let s = ("" + Math.random()).slice(3, 6)
+        return prefix + s
+    }
 
 
 
