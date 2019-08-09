@@ -830,7 +830,7 @@ var jimxhw = {
     reduce: function (collection, iteratee, accumulator) {
         if (this.isObject(collection)) {
             for (let keys in collection) {
-                accumulator = iteratee(accumulator, collection[keys], i, collection)
+                accumulator = iteratee(accumulator, collection[keys], keys, collection)
             }
             return accumulator
         }
@@ -1082,6 +1082,7 @@ var jimxhw = {
     },
     forOwnRight: function (object, iterator) {
         iterator = jimxhw.iteratee(iterator)
+        let  array = []
         for (let keys in object) {
             array.unshift(keys)
         }
@@ -1111,7 +1112,9 @@ var jimxhw = {
     },
     invert: function (object) {
         let array = Object.entries(object)
-        return array.reduce((x, y) => { return x[y[1]] = y[0] }, {})
+        let result = {}
+        array.reduce((x, y) => { return x[y[1]] = y[0] }, result)
+        return result
     },
     invoke: function (object, path, ...args) {
         if (jimxhw.isString(path)) {
@@ -1151,7 +1154,7 @@ var jimxhw = {
         }
         let obj = {}
         for (let keys in object) {
-            if (!path.includes(key)) {
+            if (!path.includes(keys)) {
                 obj[keys] = object[keys]
             }
         }
@@ -1163,7 +1166,7 @@ var jimxhw = {
         }
         let obj = {}
         for (let keys in object) {
-            if (path.includes(key)) {
+            if (path.includes(keys)) {
                 obj[keys] = object[keys]
             }
         }
@@ -1283,7 +1286,7 @@ var jimxhw = {
         }
         return result
     },
-    
+
 
 
 
