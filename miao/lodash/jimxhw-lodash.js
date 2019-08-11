@@ -1297,7 +1297,7 @@ var jimxhw = {
             if (args.length >= length) {
                 return f(...args)
             } else {
-                return curry(f.bind(null, ...args), length - args.length)
+                return jimxhw.curry(f.bind(null, ...args), length - args.length)
             }
         }
     },
@@ -1305,12 +1305,30 @@ var jimxhw = {
         let result = []
         while (n > 0) {
             result.push(iteratee())
+            n--
         }
         return result
     },
     uniqueId: function (prefix = "") {
         let s = ("" + Math.random()).slice(3, 6)
         return prefix + s
+    },
+    constant: function (value) {
+        return value
+    },
+    propertyof: function (object) {
+        return function (path) {
+            return jimxhw.get(object, path, defaultVal)
+        }
+    },
+    cloneDeep: function (value) {
+        if (jimxhw.isElement(value) || jimxhw.isFunction(value) || jimxhw.isWeakMap(value) || jimxhw.isError(value)) {
+            return {}
+        }
+        if (jimxhw.isUndefined(value)) {
+            return undefined
+        }
+        return JSON.parse(JSON.stringify(value))
     }
 
 
