@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    div {
+        position: absolute;
+        top: 100px;
+        left: 200px;
+        height: 460px;
+        width: 1226px;
+    }
+
+    #one {
+        display: block
+    }
+
+    img {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 460px;
+        width: 1226px;
+        display: none;
+        cursor: pointer;
+    }
+</style>
+
+<body>
+    <div>
+        <img id="one"
+            src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/dd4eeeda1772431e72b22090df2ccda8.jpg?w=2452&h=920" alt="">
+        <img id="two"
+            src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/16b60ea00a15f079b6d71d60bf8dbb2c.jpg?thumb=1&w=1226&h=460&f=webp&q=90"
+            alt="">
+        <img id="three"
+            src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/8cd73402f792141366762796439b12f1.jpg?thumb=1&w=1226&h=460&f=webp&q=90"
+            alt="">
+        <img id="four"
+            src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/23000c5e8cf97ca33d49494de1bb80fb.jpg?thumb=1&w=1226&h=460&f=webp&q=90"
+            alt="">
+        <img id="five"
+            src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/15fd933713d8f323ba532490e6c00bf8.jpg?thumb=1&w=1226&h=460&f=webp&q=90"
+            alt="">
+    </div>
+</body>
+<script>
+    let img1 = document.getElementById("one")
+    let img2 = document.getElementById("two")
+    let img3 = document.getElementById("three")
+    let img4 = document.getElementById("four")
+    let img5 = document.getElementById("five")
+    img1.addEventListener("click", function (e) {
+        img1.style.display = "none"
+        img2.style.display = "block"
+    })
+    img2.addEventListener("click", function (e) {
+        img2.style.display = "none"
+        img3.style.display = "block"
+    })
+    img3.addEventListener("click", function (e) {
+        img3.style.display = "none"
+        img4.style.display = "block"
+    })
+    img4.addEventListener("click", function (e) {
+        img4.style.display = "none"
+        img5.style.display = "block"
+    })
+    img5.addEventListener("click", function (e) {
+        img5.style.display = "none"
+        img1.style.display = "block"
+    })
+</script>
+
+</html>
