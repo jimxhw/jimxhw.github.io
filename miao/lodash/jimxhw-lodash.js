@@ -547,7 +547,8 @@ var jimxhw = {
     intersectionWith: function (array, ...arguments) {
         let comparater = arguments.pop()
         let result = []
-        array.forEach(function (x) {
+        for (let i = 0; i < array.length; i++) {
+            var x = array[i]
             let flag = false
             for (let j = 0; j < arguments.length; j++) {
                 if (comparater(x, arguments[j])) {
@@ -559,7 +560,6 @@ var jimxhw = {
                 result.push(x)
             }
         }
-        )
         return result
     },
     pullAllBy(array, values, iteratee = jimxhw.identity) {
@@ -596,7 +596,8 @@ var jimxhw = {
     unionWith: function (array, ...arguments) {
         let comparater = arguments.pop()
         let result = array.slice()
-        arguments.forEach(function (x) {
+        for (let i = 0; i < arguments.length; i++) {
+            var x = arguments[i]
             let flag = false
             for (let j = 0; j < array.length; j++) {
                 if (comparater(x, array[j])) {
@@ -607,7 +608,7 @@ var jimxhw = {
             if (!flag) {
                 result.push(x)
             }
-        })
+        }
         return result
     },
     uniqBy: function (array, iteratee = jimxhw.identity) {
@@ -1376,7 +1377,7 @@ var jimxhw = {
         let temp = iteratee(value)
         for (let i = array.length - 1; i >= 0; i--) {
             if (iteratee(array[i]) <= temp) {
-                return i
+                return i + 1
             }
         }
         return 0
@@ -1410,7 +1411,7 @@ var jimxhw = {
         let result = []
         for (let i = array.length - 1; i >= 0; i--) {
             if (predicate(array[i])) {
-                result.push(array[i])
+                result.unshift(array[i])
             } else {
                 break
             }
