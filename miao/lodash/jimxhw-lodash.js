@@ -125,6 +125,14 @@ var jimxhw = {
         return result
     },
     indexOf: function (array, val, fromIndex = 0) {
+        if (jimxhw.isNaN(val)) {
+            for (let i = fromIndex; i < array.length; i++) {
+                if (jimxhw.isNaN(array[i])) {
+                    return i
+                }
+            }
+            return -1
+        }
         for (let i = fromIndex; i < array.length; i++) {
             if (array[i] === val) {
                 return i
@@ -144,6 +152,14 @@ var jimxhw = {
         return array[array.length - 1]
     },
     lastIndexOf: function (array, val, fromIndex = array.length - 1) {
+        if (jimxhw.isNaN(val)) {
+            for (let i = fromIndex; i >= 0; i--) {
+                if (jimxhw.isNaN(array[i])) {
+                    return i
+                }
+            }
+            return -1
+        }
         for (let i = fromIndex; i >= 0; i--) {
             if (array[i] === val) {
                 return i
@@ -238,6 +254,7 @@ var jimxhw = {
                 return i
             }
         }
+        return array.length
     },
     tail: function (array) {
         return array.slice(1)
@@ -531,20 +548,18 @@ var jimxhw = {
         let comparater = arguments.pop()
         let result = []
         array.forEach(function (x) {
-            for (let i = 0; i < x.length; i++) {
-                var char = x[i]
-                let flag = false
-                for (let j = 0; j < arguments.length; j++) {
-                    if (comparater(char, arguments[j])) {
-                        flag = true
-                        break
-                    }
-                }
-                if (flag) {
-                    result.push(char)
+            let flag = false
+            for (let j = 0; j < arguments.length; j++) {
+                if (comparater(x, arguments[j])) {
+                    flag = true
+                    break
                 }
             }
-        })
+            if (flag) {
+                result.push(x)
+            }
+        }
+        )
         return result
     },
     pullAllBy(array, values, iteratee = jimxhw.identity) {
@@ -580,20 +595,17 @@ var jimxhw = {
     },
     unionWith: function (array, ...arguments) {
         let comparater = arguments.pop()
-        let result = arguments.slice()
-        array.forEach(function (x) {
-            for (let i = 0; i < x.length; i++) {
-                var char = x[i]
-                let flag = false
-                for (let j = 0; j < arguments.length; j++) {
-                    if (comparater(char, arguments[j])) {
-                        flag = true
-                        break
-                    }
+        let result = array.slice()
+        arguments.forEach(function (x) {
+            let flag = false
+            for (let j = 0; j < array.length; j++) {
+                if (comparater(x, array[j])) {
+                    flag = true
+                    break
                 }
-                if (!flag) {
-                    result.push(char)
-                }
+            }
+            if (!flag) {
+                result.push(x)
             }
         })
         return result
@@ -1325,12 +1337,98 @@ var jimxhw = {
         if (jimxhw.isElement(value) || jimxhw.isFunction(value) || jimxhw.isWeakMap(value) || jimxhw.isError(value)) {
             return {}
         }
+        if (jimxhw.isRegExp(value)) {
+            let temp = value.source
+            return new RegExp(temp)
+        }
         if (jimxhw.isUndefined(value)) {
             return undefined
         }
         return JSON.parse(JSON.stringify(value))
-    }
-
+    },
+    sortedIndexBy: function (array, value, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let temp = iteratee(value)
+        for (let i = 0; i < array.length; i++) {
+            if (iteratee(array[i]) >= temp) {
+                return i
+            }
+        }
+        return array.length
+    },
+    sortedIndexOf: function (array, value) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i] === value) {
+                return i
+            }
+        }
+    },
+    sortedLastIndex: function (array, value) {
+        for (let i = array.length - 1; i >= 0; i--) {
+            if (array[i] <= value) {
+                return i + 1
+            }
+        }
+        return 0
+    },
+    sortedLastIndexBy: function (array, value, iteratee = jimxhw.identity) {
+        iteratee = jimxhw.iteratee(iteratee)
+        let temp = iteratee(value)
+        for (let i = array.length - 1; i >= 0; i--) {
+            if (iteratee(array[i]) <= temp) {
+                return i
+            }
+        }
+        return 0
+    },
+    sortedLastIndexOf: function (array, value) {
+        for (let i = array.length - 1; i >= 0; i--) {
+            if (array[i] === value) {
+                return i
+            }
+        }
+    },
+    sortedUniq: function (array) {
+        let a = new Set(array)
+        let b = Array.from(a)
+        return b
+    },
+    sortedUniqBy: function (array, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        let result = [], map = []
+        for (let i = 0; i < array.length; i++) {
+            let temp = iteratee(array[i])
+            if (!map.includes(temp)) {
+                map.push(temp)
+                result.push(array[i])
+            }
+        }
+        return result
+    },
+    takeRightWhile: function (array, predicate = jimxhw.identity) {
+        predicate = jimxhw.iteratee(predicate)
+        let result = []
+        for (let i = array.length - 1; i >= 0; i--) {
+            if (predicate(array[i])) {
+                result.push(array[i])
+            } else {
+                break
+            }
+        }
+        return result
+    },
+    takeWhile: function (array, predicate = jimxhw.identity) {
+        predicate = jimxhw.iteratee(predicate)
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            if (predicate(array[i])) {
+                result.push(array[i])
+            } else {
+                break
+            }
+        }
+        return result
+    },
 
 
 

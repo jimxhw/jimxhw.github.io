@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dots</title>
+</head>
+<style>
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+    }
+
+    div {
+        height: 10px;
+        width: 10px;
+        position: absolute;
+        border-radius: 100%;
+    }
+
+    #input1 {
+        z-index: 3;
+    }
+</style>
+
+<body>
+    <div id="input1">
+        <input type="color" value="#FF0000" id="Color">
+    </div>
+    <script>
+        let colorDot = document.getElementById("Color")
+        var dots = function (e) {
+            var dot = document.createElement("div")
+            dot.style.backgroundColor = colorDot.value
+            dot.style.left = (e.pageX - 5) + "px"
+            dot.style.top = (e.pageY - 5) + "px"
+            document.body.appendChild(dot)
+        }
+        addEventListener("mousedown", function (e) {
+            addEventListener("mousemove", dots)
+        })
+        addEventListener("mouseup", function (e) {
+            removeEventListener("mousemove", dots)
+        })
+
+    </script>
+</body>
+
+</html>

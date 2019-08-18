@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>拖住啊</title>
+</head>
+<style>
+    #one {
+        width: 200px;
+        height: 200px;
+        background-color: red;
+        position: absolute;
+        z-index: 0;
+    }
+
+    #two {
+        width: 200px;
+        height: 200px;
+        background-color: blue;
+        position: absolute;
+        left: 400px;
+        z-index: 0;
+    }
+</style>
+
+<body>
+    <div id="one"></div>
+    <div id="two"></div>
+    <script>
+        let d1 = document.getElementById("one")
+        let d2 = document.getElementById("two")
+        var gogo = function (e) {
+            this.style.left = (e.pageX - 100) + "px"
+            this.style.top = (e.pageY - 100) + "px"
+        }
+        var maxIndex = Math.max(d1.style.zIndex, d2.style.zIndex)
+        d1.addEventListener("mousedown", function (e) {
+            d1.style.zIndex = maxIndex + 1
+            maxIndex++
+            d1.addEventListener("mousemove", gogo)
+        })
+        d1.addEventListener("mouseup", function (e) {
+            d1.removeEventListener("mousemove", gogo)
+        })
+        d2.addEventListener("mousedown", function (e) {
+            d2.style.zIndex = maxIndex + 1
+            maxIndex++
+            d2.addEventListener("mousemove", gogo)
+        })
+        d2.addEventListener("mouseup", function (e) {
+            d2.removeEventListener("mousemove", gogo)
+        })
+
+    </script>
+</body>
+
+</html>

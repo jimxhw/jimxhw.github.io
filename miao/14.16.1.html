@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    input {
+        width: 400px;
+        height: 400px;
+        display: inline-block;
+        margin: 300px 600px;
+    }
+</style>
+
+<body>
+    <input type="text">
+    <script>
+        let inputChar = document.getElementsByTagName("input")[0]
+        inputChar.addEventListener("keydown", function (e) {
+            let keys = e.key
+            if (keys === "q" || keys === "w" || keys === "x") {
+                e.preventDefault()
+            }
+        })
+        inputChar.addEventListener("contextmenu", function (e) {
+            e.preventDefault()
+        })
+
+    </script>
+</body>
+
+</html>
