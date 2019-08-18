@@ -649,7 +649,8 @@ var jimxhw = {
                 temp--
             }
         }
-        return arguments[0][0].map((x, i) => { return arguments.map(j => j[i]) })
+        let res = arguments[0]
+        return res[0].map((x, i) => { return res.map(j => j[i]) })
     },
     countBy: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
