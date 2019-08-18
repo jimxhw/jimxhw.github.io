@@ -649,7 +649,7 @@ var jimxhw = {
                 temp--
             }
         }
-        return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
+        return arguments[0][0].map((x, i) => { return arguments.map(j => j[i]) })
     },
     countBy: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
@@ -1504,11 +1504,12 @@ var jimxhw = {
         let comparator = arguments.pop()
         let array = this.flatten(arguments)
         let res = []
-        for (let i = 0; i < array.length - 1; i++) {
+        for (let i = 0; i < array.length; i++) {
             let temp = array.slice(i + 1)
             let flag = false
             for (let j = 0; j < temp.length; j++) {
                 if (comparator(array[i], temp[j])) {
+                    flag = true
                     array.splice(i + j + 1, 1)
                 }
             }
