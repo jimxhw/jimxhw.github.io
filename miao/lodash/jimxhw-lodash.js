@@ -599,7 +599,7 @@ var jimxhw = {
     unionWith: function (array, ...arguments) {
         let comparater = arguments.pop()
         let result = array.slice()
-        for(let k = 0 ; k < arguments.length;k++){
+        for (let k = 0; k < arguments.length; k++) {
             var temp = arguments[k]
             for (let i = 0; i < temp.length; i++) {
                 var x = temp[i]
@@ -630,9 +630,25 @@ var jimxhw = {
         return result
     },
     zip: function (...arguments) {
+        let maxLength = arguments.reduce((x, y) => { return Math.max(x, y.length) }, 0)
+        for (let i = 0; i < arguments.length; i++) {
+            let temp = maxLength - arguments[i].length
+            while (temp > 0) {
+                arguments[i].push(undefined)
+                temp--
+            }
+        }
         return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
     },
     unzip: function (array) {
+        let maxLength = arguments.reduce((x, y) => { return Math.max(x, y.length) }, 0)
+        for (let i = 0; i < arguments.length; i++) {
+            let temp = maxLength - arguments[i].length
+            while (temp > 0) {
+                arguments[i].push(undefined)
+                temp--
+            }
+        }
         return array[0].map((x, i) => { return array.map(j => j[i]) })
     },
     countBy: function (collection, iteratee = jimxhw.identity) {
@@ -1435,6 +1451,72 @@ var jimxhw = {
             }
         }
         return result
+    },
+    uniqWith: function (array, comparator) {
+        let result = []
+        for (let i = 0; i < array.length; i++) {
+            let flag = false
+            for (let j = 0; j < result.length; j++) {
+                if (comparator(result[j], array[i])) {
+                    flag = true
+                    break
+                }
+            }
+            if (!flag) {
+                result.push(array[i])
+            }
+        }
+        return result
+    },
+    xorBy: function (...arguments) {
+        if (jimxhw.isArray(arguments[arguments.length - 1])) {
+            var iteratee = jimxhw.identity
+        } else {
+            var iteratee = arguments.pop()
+        }
+        iteratee = jimxhw.iteratee(iteratee)
+        let result = this.flatten(arguments)
+        let map = {}
+        for (let i = 0; i < result.length; i++) {
+            let temp = iteratee(result[i])
+            if (temp in map) {
+                map[temp]++
+            } else {
+                map[temp] = 1
+            }
+        }
+        let array = []
+        for (let keys in map) {
+            if (map[keys] === 1) {
+                array.push(+keys)
+            }
+        }
+        let Res = []
+        for (let i = 0; i < result.length; i++) {
+            let char = result[i]
+            if (array.includes(iteratee(char))) {
+                Res.push(result[i])
+            }
+        }
+        return Res
+    },
+    xorWith: function (...arguments) {
+        let comparator = arguments.pop()
+        let array = this.flatten(arguments)
+        let res = []
+        for (let i = 0; i < array.length - 1; i++) {
+            let temp = array.slice(i + 1)
+            let flag = false
+            for (let j = 0; j < temp.length; j++) {
+                if (comparator(array[i], temp[j])) {
+                    array.splice(i + j + 1, 1)
+                }
+            }
+            if (!flag) {
+                res.push(array[i])
+            }
+        }
+        return res
     },
 
 
