@@ -549,15 +549,18 @@ var jimxhw = {
         let result = []
         for (let i = 0; i < array.length; i++) {
             var x = array[i]
-            let flag = false
             for (let j = 0; j < arguments.length; j++) {
-                if (comparater(x, arguments[j])) {
-                    flag = true
-                    break
+                let flag = false
+                var temp = arguments[j]
+                for (let k = 0; k < temp.length; k++) {
+                    if (comparater(x, temp[k])) {
+                        flag = true
+                        break
+                    }
                 }
-            }
-            if (flag) {
-                result.push(x)
+                if (flag) {
+                    result.push(x)
+                }
             }
         }
         return result
@@ -596,17 +599,20 @@ var jimxhw = {
     unionWith: function (array, ...arguments) {
         let comparater = arguments.pop()
         let result = array.slice()
-        for (let i = 0; i < arguments.length; i++) {
-            var x = arguments[i]
-            let flag = false
-            for (let j = 0; j < array.length; j++) {
-                if (comparater(x, array[j])) {
-                    flag = true
-                    break
+        for(let k = 0 ; k < arguments.length;k++){
+            var temp = arguments[k]
+            for (let i = 0; i < temp.length; i++) {
+                var x = temp[i]
+                let flag = false
+                for (let j = 0; j < array.length; j++) {
+                    if (comparater(x, array[j])) {
+                        flag = true
+                        break
+                    }
                 }
-            }
-            if (!flag) {
-                result.push(x)
+                if (!flag) {
+                    result.push(x)
+                }
             }
         }
         return result
