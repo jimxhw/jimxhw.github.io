@@ -640,7 +640,7 @@ var jimxhw = {
         }
         return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
     },
-    unzip: function (array) {
+    unzip: function (...arguments) {
         let maxLength = arguments.reduce((x, y) => { return Math.max(x, y.length) }, 0)
         for (let i = 0; i < arguments.length; i++) {
             let temp = maxLength - arguments[i].length
@@ -649,7 +649,7 @@ var jimxhw = {
                 temp--
             }
         }
-        return array[0].map((x, i) => { return array.map(j => j[i]) })
+        return arguments[0].map((x, i) => { return arguments.map(j => j[i]) })
     },
     countBy: function (collection, iteratee = jimxhw.identity) {
         iteratee = this.iteratee(iteratee)
