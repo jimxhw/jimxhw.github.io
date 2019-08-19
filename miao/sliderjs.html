@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播图</title>
+</head>
+<style>
+    body {
+        background-color: aquamarine;
+    }
+
+    .img {
+        left: 200px;
+        width: 520px;
+        height: 280px;
+        position: relative;
+        margin-top: 200px;
+        cursor: pointer;
+    }
+
+    .img img {
+        position: absolute;
+        display: none;
+    }
+
+    .img>img:nth-of-type(1) {
+        display: block;
+    }
+
+    .inlicate {
+        position: absolute;
+        right: 215px;
+        bottom: -19px;
+        user-select: none;
+    }
+
+    li {
+        margin: 3px;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: grey;
+    }
+
+    .right {
+        position: absolute;
+        right: 0;
+        top: 45%;
+        color: black;
+        height: 25px;
+        width: 15px;
+        font-size: 20px;
+        opacity: 0;
+        user-select: none;
+    }
+
+    .left {
+        position: absolute;
+        left: 0;
+        top: 45%;
+        color: black;
+        height: 25px;
+        width: 15px;
+        font-size: 20px;
+        opacity: 0;
+        user-select: none;
+    }
+
+    .img:hover .left,
+    .img:hover .right {
+        opacity: 1;
+    }
+</style>
+
+<body>
+    <div class="img">
+        <img src="https://img.alicdn.com/tfs/TB112H5dAL0gK0jSZFAXXcA9pXa-520-280.jpg_q90_.webp" alt="">
+        <img src="https://aecpm.alicdn.com/simba/img/TB1XotJXQfb_uJkSnhJSuvdDVXa.jpg" alt="">
+        <img src="https://aecpm.alicdn.com/simba/img/TB1JNHwKFXXXXafXVXXSutbFXXX.jpg" alt="">
+        <img src="https://aecpm.alicdn.com/simba/img/TB183NQapLM8KJjSZFBSutJHVXa.jpg" alt="">
+        <img src="https://img.alicdn.com/tfs/TB1sesidbr1gK0jSZFDXXb9yVXa-520-280.jpg_q90_.webp" alt="">
+        <section class="right">&gt;</section>
+        <section class="left">&lt;</section>
+        <ul class="inlicate">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <script>
+        let divImg = Array.from(document.getElementsByTagName("img"))
+        let liLabel = Array.from(document.getElementsByTagName("li"))
+        let ulLabel = document.querySelector(".img ul")
+        let index = 0
+        liLabel[index].style.backgroundColor = "white"
+        var directionFun = function () {
+            let leftNode = document.querySelector(".left")
+            let rightNode = document.querySelector(".right")
+            leftNode.addEventListener("click", e => {
+                if (index === 0) {
+                    var curIdx = 4
+                    divImg[curIdx].style.display = "block"
+                    divImg[index].style = "none"
+                    index = 4
+                } else {
+                    curIdx = index - 1
+                    divImg[curIdx].style.display = "block"
+                    divImg[index].style = "none"
+                    index--
+                }
+            })
+            rightNode.addEventListener("click", e => {
+                if (index === 4) {
+                    var curIdx = 0
+                    divImg[curIdx].style.display = "block"
+                    divImg[index].style = "none"
+                    liLabel[index].style.backgroundColor = "grey"
+                    index = 0
+                    liLabel[index].style.backgroundColor = "white"
+                } else {
+                    curIdx = index + 1
+                    divImg[curIdx].style.display = "block"
+                    divImg[index].style.display = "none"
+                    liLabel[index].style.backgroundColor = "grey"
+                    index++
+                    liLabel[index].style.backgroundColor = "white"
+                }
+            })
+        }()
+        var inlicateFun = function () {
+            ulLabel.addEventListener("click", e => {
+                let targetNode = e.target
+                if (liLabel.includes(targetNode)) {
+                    let item = liLabel.indexOf(targetNode)
+                    divImg[index].style.display = "none"
+                    divImg[item].style.display = "block"
+                    liLabel[index].style.backgroundColor = "grey"
+                    index = item
+                    liLabel[index].style.backgroundColor = "white"
+                }
+            })
+        }()
+       
+    </script>
+</body>
+
+</html>
