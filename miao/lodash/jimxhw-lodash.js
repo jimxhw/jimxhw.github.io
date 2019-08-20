@@ -1523,7 +1523,7 @@ var jimxhw = {
     unzipWith: function (array, iteratee = jimxhw.identity) {
         let temp = this.unzip(array)
         iteratee = jimxhw.iteratee(iteratee)
-        return temp.map(x => x.reduce(iteratee)
+        return temp.map(x => x.reduce(iteratee))
     },
     zipObject: function (props = [], values = []) {
         let maxLength = Math.max(props.length, values.length)
