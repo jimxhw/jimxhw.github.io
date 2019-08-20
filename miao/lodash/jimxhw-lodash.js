@@ -1520,15 +1520,15 @@ var jimxhw = {
         }
         return res
     },
-    unzipWith:function(array, iteratee = jimxhw.identity) {
+    unzipWith: function (array, iteratee = jimxhw.identity) {
         let temp = this.unzip(array)
         iteratee = jimxhw.iteratee(iteratee)
-        return temp.map(x => x.reduce(iteratee(a,b)))
+        return temp.map(x => x.reduce(iteratee)
     },
-    zipObject:function(props=[], values=[]){
-        let maxLength = arguments.reduce((x, y) => { return Math.max(x, y.length) }, 0)
+    zipObject: function (props = [], values = []) {
+        let maxLength = Math.max(props.length, values.length)
         let res = {}
-        for(let i = 0 ; i < maxLength;i++){
+        for (let i = 0; i < maxLength; i++) {
             res[props[i]] = values[i]
         }
         return res
