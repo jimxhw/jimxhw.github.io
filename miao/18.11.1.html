@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>工作台</title>
+</head>
+<style>
+    div {
+        margin: 100px 400px;
+    }
+</style>
+
+<body>
+    <div>
+        <textarea name="content" id="workSpace" cols="40" rows="10"></textarea><br>
+        <button style="height:20px; width:304px"></button><br>
+        <textarea name="content" id="resultSpace" cols="40" rows="10"></textarea><br>
+    </div>
+    <script>
+        let cal = document.getElementsByTagName("button")[0]
+        let getContent = document.querySelector("#workSpace")
+        let answerContent = document.querySelector("#resultSpace")
+        cal.addEventListener("click", e => {
+            let temp = getContent.value
+            var fun = new Function(temp)
+            var fun2 = function () { throw fun() }
+            try {
+                fun2()
+            } catch (e) {
+                answerContent.value = e
+            }
+        })
+    </script>
+</body>
+
+</html>

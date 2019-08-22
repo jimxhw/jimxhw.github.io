@@ -1363,7 +1363,8 @@ var jimxhw = {
         }
         if (jimxhw.isRegExp(value)) {
             let temp = value.source
-            return new RegExp(temp)
+            let char = value.flags
+            return new RegExp(temp, char)
         }
         if (jimxhw.isUndefined(value)) {
             return undefined
@@ -1525,6 +1526,12 @@ var jimxhw = {
         iteratee = jimxhw.iteratee(iteratee)
         return temp.map(x => x.reduce(iteratee))
     },
+    zipWith: function (...arguments) {
+        let iteratee = arguments.pop()
+        iteratee = jimxhw.iteratee(iteratee)
+        let temp = this.zip(...arguments)
+        return temp.map(x => iteratee(...x))
+    },
     zipObject: function (props = [], values = []) {
         let maxLength = Math.max(props.length, values.length)
         let res = {}
@@ -1533,7 +1540,31 @@ var jimxhw = {
         }
         return res
     },
-
+    zipObjectDeep: function (props = [], values = []) {
+        if (props.length === 0 || values.length == 0) { return {} }
+        let obj = jimxhw.pathToObject(temp[0], values[0])
+        for (let i = 1; i < props.length; i++) {
+            jimxhw.property(props[i])(obj) = values[i]
+        }
+        return obj
+    },
+    pathToObject: function (path, value) {
+        if (path.length == 0) { return value }
+        if (typeof path == "string") {
+            path = jimxhw.toPath(path)
+        }
+        for (let i = 0; i < path.length; i++) {
+            if (/\d/.test(path[i])) {
+                let temp = new Array
+                temp[+path[i]] = jimxhw.pathToObject(path.slice(i + 1))
+                return temp
+            } else {
+                let temp = {}
+                temp[path[i]] = jimxhw.pathToObject(path.slice(i + 1))
+                return temp
+            }
+        }
+    },
 
 
 

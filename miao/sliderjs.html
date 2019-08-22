@@ -146,7 +146,10 @@
                 }
             })
         }()
-       
+        setInterval(function autoPlay(){
+            let rightNode = document.querySelector(".right")
+            rightNode.click()
+        }, 2000);
     </script>
 </body>
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>StarageNodes</title>
+</head>
+<style>
+    select{
+        width: 150px;
+        height: 17px;
+    }
+    button{
+        width: 78px;
+        height: 17px;
+    }
+</style>
+<body>
+    <select name="" id="selects"></select>
+    <button onclick="addNode()"></button><br>
+    <textarea name="" id="textareas" cols="30" rows="10"></textarea>
+</body>
+<script>
+    function addOption(name){
+        let option= document.createElement("option")
+        option.textContent = name
+        selects.appendChild(option)
+    }
+    nodes = JSON.parse(localStorage.getItem("nodes")) || {"shopping lists":"noteDown"}
+    for(let node in nodes){
+        addOption(node)
+    }
+    textareas.value = nodes[selects.value]
+    selects.addEventListener("change",e=>{
+        textareas.value = nodes[selects.value]
+    })
+    function saveStorage(){
+        localStorage.setItem("nodes",JSON.stringify(nodes))
+    }
+    textareas.addEventListener("change",e=>{
+        nodes[selects.value] = textareas.value
+        saveStorage()
+    })
+    function addNode(){
+        var temp = prompt("nodeName","")
+        if(!temp){return}
+        if(!nodes.hasOwnProperty(temp)){
+            addOption(temp)
+            nodes[temp]=""
+            saveStorage()
+        }
+        selects.value = temp
+        textareas.value = nodes[temp]
+    }
+
+
+</script>
+</html>

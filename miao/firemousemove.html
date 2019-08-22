@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+    <style>
+        span{
+            position:fixed;
+            background-color: red;
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+<body>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <script>
+        let circleX = 200
+        let circleY = 200
+        var fire = document.querySelectorAll("span")
+        addEventListener("mousemove",e=>{
+            console.log(e)
+            let time = Date.now()
+            var angle1 = time * 0.004 
+            var angle2 = angle1 + Math.PI/2
+            var angle3 = angle2 + Math.PI/2
+            var angle4 = angle3 + Math.PI/2
+            var x = e.clientX
+            var y = e.clientY
+            fire[0].style.left = Math.cos(angle1) * 100 + x + "px"
+            fire[0].style.top = Math.sin(angle1) * 100 + y + "px"
+            fire[1].style.left = Math.cos(angle2) * 100 + x + "px"
+            fire[1].style.top = Math.sin(angle2) * 100 + y + "px"
+            fire[2].style.left = Math.cos(angle3) * 100 + x + "px"
+            fire[2].style.top = Math.sin(angle3) * 100 + y + "px"
+            fire[3].style.left = Math.cos(angle4) * 100 + x + "px"
+            fire[3].style.top = Math.sin(angle4) * 100 + y + "px"
+        })
+
+    </script>
+</body>
+
+</html>
