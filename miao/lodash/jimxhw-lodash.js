@@ -1542,9 +1542,10 @@ var jimxhw = {
     },
     zipObjectDeep: function (props = [], values = []) {
         if (props.length === 0 || values.length == 0) { return {} }
-        let obj = jimxhw.pathToObject(temp[0], values[0])
+        let obj = jimxhw.pathToObject(props[0], values[0])
         for (let i = 1; i < props.length; i++) {
-            jimxhw.property(props[i])(obj) = values[i]
+            let obj2= jimxhw.pathToObject(props[i], values[i])
+            obj = jimxhw.mergeDeepObj(obj,obj2)
         }
         return obj
     },
@@ -1565,6 +1566,22 @@ var jimxhw = {
             }
         }
     },
+    mergeDeepObj:function(obj1,obj2,res = obj1){
+        for(let key1 in obj1){
+            var temp1 = key1
+        }
+        for(let key2 in obj2){
+            var temp2 = key2
+        }
+        if(temp1 ==temp2){
+            obj1 = obj1[temp1]
+            obj2 = obj2[temp2]
+            jimxhw.mergeDeepObj(obj,obj2,res)
+        }else{
+            obj1[temp2] = obj2[temp2]
+            return obj1
+        }
+    }
 
 
 
