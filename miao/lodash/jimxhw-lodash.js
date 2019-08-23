@@ -391,7 +391,16 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object RegExp]"
     },
     isNaN: function (value) {
-        return typeof value == "number" && +value != +value
+        return jimxhw.isNumber(value) && +value != +value
+    },
+    isArrayBuffer:function(value){
+        return Object.prototype.toString.call(value) === "[object ArrayBuffer]"
+    },
+    isArrayLike:function(value){
+        return !jimxhw.isFunction(value) && value.length
+    },
+    isArrayLikeObject:function(value){
+        return !jimxhw.isFunction(value) && value.length && typeof (value) === "object" 
     },
     isEqual: function (value, other) {
         if (value === other) {
@@ -929,43 +938,7 @@ var jimxhw = {
         return collection.length
     },
     sortBy: function (collection, iteratee = jimxhw.identity) {
-        function swap(ary, x, y) {
-            if (x != y) {
-                let temp = ary[x]
-                ary[x] = ary[y]
-                ary[y] = temp
-            }
-        }
-        function quickSort(ary, iteratee, start = 0, end = ary.length - 1) {
-            if (end - start <= 0) {
-                return ary
-            }
-
-            var pivotIndex = Math.floor(Math.random() * (end - start + 1) + start)
-            var pivot = ary[pivotIndex]
-
-            swap(ary, pivotIndex, end)
-
-            var i = start
-            for (var j = start; j < end; j++) {
-                if (iteratee(ary[j]) - iteratee(pivot) > 0) {
-                    swap(ary, i, j)
-                    i++
-                }
-            }
-
-            swap(ary, i, end)
-
-            quickSort(ary, iteratee, start, i - 1)
-            quickSort(ary, iteratee, i + 1, end)
-
-            return ary
-        }
-        iteratee = jimxhw.iteratee(iteratee)
-        if (this.isObject(collection)) {
-            collection = Object.entries(collection).map(x => x[1])
-        }
-        return quickSort(collection, iteratee)
+        return jimxhw.orderBy(collection, iteratee)
     },
     defer: function (func, ...args) {
         return setTimeout(func, ...args)
