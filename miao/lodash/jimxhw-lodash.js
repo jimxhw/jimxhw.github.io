@@ -446,7 +446,7 @@ var jimxhw = {
                 return false
             }
             for (var prop in value) {
-                if (jimxhw.isEqualWith(value[prop], other[prop], customizer)()) {
+                if (jimxhw.isEqualWith(value[prop], other[prop], customizer)) {
                     continue
                 } else {
                     return false
