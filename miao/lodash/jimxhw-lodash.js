@@ -1578,7 +1578,7 @@ var jimxhw = {
         if(temp1 ==temp2){
             obj1 = obj1[temp1]
             obj2 = obj2[temp2]
-            jimxhw.mergeDeepObj(obj,obj2)
+            jimxhw.mergeDeepObj(obj1,obj2)
         }else{
             obj1[temp2] = obj2[temp2]
             return 
