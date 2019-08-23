@@ -1654,6 +1654,35 @@ var jimxhw = {
         }
         return collection.map(item => path.call(item, ...args))
     },
+    orderBy: function (collection, iteratee = [jimxhw.identity], orders = []) {
+        function swap(collection, i, j) {
+            var temp = collection[i]
+            collection[i] = collection[j]
+            collection[j] = temp
+        }
+        var newCollection = Object.entries(collection)
+        var iters = iteratee.map(x => jimxhw.iteratee(x))
+        for (let i = iters.length - 1; i >= 0; i--) {
+            var iter = iters[i]
+            for (let j = newCollection.length - 1; j >= 0; j--) {
+                for (let k = 0; k < j; k++) {
+                    if (orders[i] == "desc") {
+                        if (iter(newCollection[k][1]) < iter(newCollection[k + 1][1])) {
+                            swap(newCollection, k, k + 1)
+                        }
+                    } else {
+                        if (iter(newCollection[k][1]) > iter(newCollection[k + 1][1])) {
+                            swap(newCollection, k, k + 1)
+                        }
+                    }
+                }
+            }
+        }
+        return newCollection.reduce(function (result, item) {
+            result.push(item[1])
+            return result
+        }, [])
+    },
 
 
 
