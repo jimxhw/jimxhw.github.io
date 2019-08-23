@@ -1545,8 +1545,8 @@ var jimxhw = {
         let obj = jimxhw.pathToObject(props[0], values[0])
         let head = obj
         for (let i = 1; i < props.length; i++) {
-            let obj2= jimxhw.pathToObject(props[i], values[i])
-            jimxhw.mergeDeepObj(obj,obj2)
+            let obj2 = jimxhw.pathToObject(props[i], values[i])
+            jimxhw.mergeDeepObj(obj, obj2)
             obj = head
         }
         return head
@@ -1559,42 +1559,50 @@ var jimxhw = {
         for (let i = 0; i < path.length; i++) {
             if (/\d/.test(path[i])) {
                 let temp = new Array
-                temp[+path[i]] = jimxhw.pathToObject(path.slice(i + 1),value)
+                temp[+path[i]] = jimxhw.pathToObject(path.slice(i + 1), value)
                 return temp
             } else {
                 let temp = {}
-                temp[path[i]] = jimxhw.pathToObject(path.slice(i + 1),value)
+                temp[path[i]] = jimxhw.pathToObject(path.slice(i + 1), value)
                 return temp
             }
         }
     },
-    mergeDeepObj:function(obj1,obj2){
-        for(let key1 in obj1){
+    mergeDeepObj: function (obj1, obj2) {
+        for (let key1 in obj1) {
             var temp1 = key1
         }
-        for(let key2 in obj2){
+        for (let key2 in obj2) {
             var temp2 = key2
         }
-        if(temp1 ==temp2){
+        if (temp1 == temp2) {
             obj1 = obj1[temp1]
             obj2 = obj2[temp2]
-            jimxhw.mergeDeepObj(obj1,obj2)
-        }else{
+            jimxhw.mergeDeepObj(obj1, obj2)
+        } else {
             obj1[temp2] = obj2[temp2]
-            return 
+            return
         }
     },
-    /* addPathValueto:function(obj,path,value){
-        if (typeof path == "string") {
-            path = jimxhw.toPath(path)
-        }
-        var head = obj
-        for(let keys in obj){
-            if(keys == path[0]){
-                obj = 
+    findLast: function (collection, predicate = jimxhw.identity, fromIndex = collection.length - 1) {
+        predicate = this.iteratee(predicate)
+        if (this.isArray(collection)) {
+            for (let i = fromIndex; i >= 0; i--) {
+                if (predicate(collection[i])) {
+                    return collection[i]
+                }
+            }
+        } else {
+            var temp = Object.keys(collection)
+            for (let i = fromIndex; i >= 0; i--) {
+                if (predicate(collection[temp[i]])) {
+                    return collection[temp[i]]
+                }
             }
         }
-    } */
+        return undefined
+    }
+
 
 
 
