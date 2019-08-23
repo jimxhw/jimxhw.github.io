@@ -393,14 +393,23 @@ var jimxhw = {
     isNaN: function (value) {
         return jimxhw.isNumber(value) && +value != +value
     },
-    isArrayBuffer:function(value){
+    isArrayBuffer: function (value) {
         return Object.prototype.toString.call(value) === "[object ArrayBuffer]"
     },
-    isArrayLike:function(value){
+    isMap: function (value) {
+        return Object.prototype.toString.call(value) === "[object Map]"
+    },
+    isArrayLike: function (value) {
         return !jimxhw.isFunction(value) && value !== undefined && value !== null && value.length >= 0 && value.length <= Number.MAX_SAFE_INTEGER
     },
-    isArrayLikeObject:function(value){
-        return !jimxhw.isFunction(value) && value.length && typeof (value) === "object" 
+    isArrayLikeObject: function (value) {
+        return !jimxhw.isFunction(value) && value.length && typeof (value) === "object"
+    },
+    isInteger: function (value) {
+        return jimxhw.isNumber(value) && (value | 0) === value
+    },
+    isLength: function (value) {
+        return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= Number.MAX_SAFE_INTEGER
     },
     isEqual: function (value, other) {
         if (value === other) {
@@ -426,8 +435,8 @@ var jimxhw = {
         }
         return value === other
     },// 深对比两个值是否相等
-    isEqualWith: function (value, other,customizer) {
-        if (customizer(value,other)) {
+    isEqualWith: function (value, other, customizer) {
+        if (customizer(value, other)()) {
             return true
         }
         if (typeof value == "object" && typeof other == "object") {
@@ -437,7 +446,7 @@ var jimxhw = {
                 return false
             }
             for (var prop in value) {
-                if (jimxhw.isEqualWith(value[prop], other[prop],customizer)) {
+                if (jimxhw.isEqualWith(value[prop], other[prop], customizer)()) {
                     continue
                 } else {
                     return false
@@ -445,7 +454,7 @@ var jimxhw = {
             }
             return true
         }
-        return customizer(value,other)
+        return customizer(value, other)()
     },
     differenceBy: function (array, ...arguments) {
         var iteratee
