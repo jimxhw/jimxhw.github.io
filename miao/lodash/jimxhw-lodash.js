@@ -397,7 +397,7 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object ArrayBuffer]"
     },
     isArrayLike:function(value){
-        return !jimxhw.isFunction(value) && value.length
+        return !jimxhw.isFunction(value) && value !== undefined && value !== null && value.length >= 0 && value.length <= Number.MAX_SAFE_INTEGER
     },
     isArrayLikeObject:function(value){
         return !jimxhw.isFunction(value) && value.length && typeof (value) === "object" 
@@ -426,6 +426,27 @@ var jimxhw = {
         }
         return value === other
     },// 深对比两个值是否相等
+    isEqualWith: function (value, other,customizer) {
+        if (customizer(value,other)) {
+            return true
+        }
+        if (typeof value == "object" && typeof other == "object") {
+            var valueKeys = Object.keys(value)
+            var otherKeys = Object.keys(other)
+            if (valueKeys.length != otherKeys.length) {
+                return false
+            }
+            for (var prop in value) {
+                if (jimxhw.isEqualWith(value[prop], other[prop],customizer)) {
+                    continue
+                } else {
+                    return false
+                }
+            }
+            return true
+        }
+        return customizer(value,other)
+    },
     differenceBy: function (array, ...arguments) {
         var iteratee
         let temp = arguments[arguments.length - 1]
