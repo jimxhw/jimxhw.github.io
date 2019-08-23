@@ -391,7 +391,7 @@ var jimxhw = {
         return Object.prototype.toString.call(value) === "[object RegExp]"
     },
     isNaN: function (value) {
-        return typeof value == "number" && value != value
+        return typeof value == "number" && +value != +value
     },
     isEqual: function (value, other) {
         if (value === other) {
@@ -864,7 +864,7 @@ var jimxhw = {
         return result
     },
     reduce: function (collection, iteratee, accumulator) {
-        if (jimxhw.isObject(collection)) {
+        if (!jimxhw.isArray(collection)) {
             for (let keys in collection) {
                 accumulator = iteratee(accumulator, collection[keys], keys, collection)
             }
