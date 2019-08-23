@@ -1601,8 +1601,59 @@ var jimxhw = {
             }
         }
         return undefined
-    }
-
+    },
+    forEachRight: function (collection, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        if (this.isArray(collection)) {
+            for (let i = collection.length - 1; i >= 0; i--) {
+                if (iteratee(collection[i], i, collection) === false) {
+                    break
+                }
+            }
+        } else {
+            var temp = Object.keys(collection)
+            for (let i = temp.length - 1; i >= 0; i--) {
+                if (iteratee(collection[temp[i]], temp[i], collection) === false) {
+                    break
+                }
+            }
+        }
+        return collection
+    },
+    includes: function (collection, value, fromIndex = 0) {
+        if (jimxhw.isObject(collection)) {
+            if (fromIndex >= 0) {
+                let idx = 0
+                for (let keys in collection) {
+                    if (idx >= fromIndex) {
+                        if (collection[keys] === value) {
+                            return true
+                        }
+                    }
+                    idx++
+                }
+                return false
+            } else {
+                var temp = Object.keys(collection)
+                temp = temp.slice(fromIndex)
+                for (let i = temp.length - 1; i >= 0; i--) {
+                    if (collection[temp[i]] === value) {
+                        return true
+                    }
+                }
+                return false
+            }
+        } else {
+            collection = collection.slice(fromIndex)
+            return collection.includes(value)
+        }
+    },
+    invokeMap: function (collection, path, ...args) {
+        if (typeof path == "string") {
+            path = collection[0][path]
+        }
+        return collection.map(item => path.call(item, ...args))
+    },
 
 
 
