@@ -436,7 +436,7 @@ var jimxhw = {
         return value === other
     },// 深对比两个值是否相等
     isEqualWith: function (value, other, customizer) {
-        if (customizer(value, other)()) {
+        if (value != value && other != other) {
             return true
         }
         if (typeof value == "object" && typeof other == "object") {
@@ -454,7 +454,7 @@ var jimxhw = {
             }
             return true
         }
-        return customizer(value, other)()
+        return customizer(value, other)
     },
     differenceBy: function (array, ...arguments) {
         var iteratee
