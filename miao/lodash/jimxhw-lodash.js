@@ -1545,7 +1545,7 @@ var jimxhw = {
         let obj = jimxhw.pathToObject(props[0], values[0])
         for (let i = 1; i < props.length; i++) {
             let obj2= jimxhw.pathToObject(props[i], values[i])
-            obj = jimxhw.mergeDeepObj(obj,obj2)
+            obj = jimxhw.mergeDeepObj(obj,obj2 ,res = obj)
         }
         return obj
     },
