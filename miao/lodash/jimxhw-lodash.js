@@ -1198,15 +1198,15 @@ var jimxhw = {
             path = jimxhw.toPath(path)
         }
         for (let i = 0; i < path.length; i++) {
-            if (obj === undefined ) {
+            if (obj === undefined) {
                 break
             }
             obj = obj[path[i]]
         }
-        if (obj === undefined ) {
-            if(jimxhw.isFunction(defaultVal)){
+        if (obj === undefined) {
+            if (jimxhw.isFunction(defaultVal)) {
                 return defaultVal()
-            }else{
+            } else {
                 return defaultVal
             }
         }
@@ -1233,7 +1233,10 @@ var jimxhw = {
         } else {
             var n = ((temps / (2 * t)) | 0) + 1
         }
-        string = char.repeat(n) + string + char.repeat(n)
+        string = char.repeat(n) + string
+        while (string.length < Length) {
+            string = string + char.repeat(n)
+        }
         return string.slice(0, Length)
     },
     padEnd: function (string = "", Length = 0, char = " ") {
@@ -1263,7 +1266,7 @@ var jimxhw = {
         } else {
             var n = temps / t
         }
-        return char.repeat(n).slice(0,temps) + string
+        return char.repeat(n).slice(0, temps) + string
     },
     repeat: function (string = '', n = 1) {
         if (n == 0) { return "" }
@@ -1329,8 +1332,9 @@ var jimxhw = {
     },
     times: function (n, iteratee = jimxhw.identity) {
         let result = []
-        while (n > 0) {
-            result.push(iteratee(n--))
+        let i = 0
+        while (i < n) {
+            result.push(iteratee(i++))
         }
         return result
     },
@@ -1582,102 +1586,102 @@ var jimxhw = {
     findLast: function (collection, predicate = jimxhw.identity, fromIndex = collection.length - 1) {
         predicate = this.iteratee(predicate)
         if (this.isArray(collection)) {
-    for (let i = fromIndex; i >= 0; i--) {
-        if (predicate(collection[i])) {
-            return collection[i]
+            for (let i = fromIndex; i >= 0; i--) {
+                if (predicate(collection[i])) {
+                    return collection[i]
+                }
+            }
+        } else {
+            var temp = Object.keys(collection)
+            for (let i = fromIndex; i >= 0; i--) {
+                if (predicate(collection[temp[i]])) {
+                    return collection[temp[i]]
+                }
+            }
         }
-    }
-} else {
-    var temp = Object.keys(collection)
-    for (let i = fromIndex; i >= 0; i--) {
-        if (predicate(collection[temp[i]])) {
-            return collection[temp[i]]
-        }
-    }
-}
-return undefined
+        return undefined
     },
-forEachRight: function (collection, iteratee = jimxhw.identity) {
-    iteratee = this.iteratee(iteratee)
-    if (this.isArray(collection)) {
-        for (let i = collection.length - 1; i >= 0; i--) {
-            if (iteratee(collection[i], i, collection) === false) {
-                break
+    forEachRight: function (collection, iteratee = jimxhw.identity) {
+        iteratee = this.iteratee(iteratee)
+        if (this.isArray(collection)) {
+            for (let i = collection.length - 1; i >= 0; i--) {
+                if (iteratee(collection[i], i, collection) === false) {
+                    break
+                }
+            }
+        } else {
+            var temp = Object.keys(collection)
+            for (let i = temp.length - 1; i >= 0; i--) {
+                if (iteratee(collection[temp[i]], temp[i], collection) === false) {
+                    break
+                }
             }
         }
-    } else {
-        var temp = Object.keys(collection)
-        for (let i = temp.length - 1; i >= 0; i--) {
-            if (iteratee(collection[temp[i]], temp[i], collection) === false) {
-                break
-            }
-        }
-    }
-    return collection
-},
-includes: function (collection, value, fromIndex = 0) {
-    if (jimxhw.isObject(collection)) {
-        if (fromIndex >= 0) {
-            let idx = 0
-            for (let keys in collection) {
-                if (idx >= fromIndex) {
-                    if (collection[keys] === value) {
+        return collection
+    },
+    includes: function (collection, value, fromIndex = 0) {
+        if (jimxhw.isObject(collection)) {
+            if (fromIndex >= 0) {
+                let idx = 0
+                for (let keys in collection) {
+                    if (idx >= fromIndex) {
+                        if (collection[keys] === value) {
+                            return true
+                        }
+                    }
+                    idx++
+                }
+                return false
+            } else {
+                var temp = Object.keys(collection)
+                temp = temp.slice(fromIndex)
+                for (let i = temp.length - 1; i >= 0; i--) {
+                    if (collection[temp[i]] === value) {
                         return true
                     }
                 }
-                idx++
+                return false
             }
-            return false
         } else {
-            var temp = Object.keys(collection)
-            temp = temp.slice(fromIndex)
-            for (let i = temp.length - 1; i >= 0; i--) {
-                if (collection[temp[i]] === value) {
-                    return true
-                }
-            }
-            return false
+            collection = collection.slice(fromIndex)
+            return collection.includes(value)
         }
-    } else {
-        collection = collection.slice(fromIndex)
-        return collection.includes(value)
-    }
-},
-invokeMap: function (collection, path, ...args) {
-    if (typeof path == "string") {
-        path = collection[0][path]
-    }
-    return collection.map(item => path.call(item, ...args))
-},
-orderBy: function (collection, iteratee = [jimxhw.identity], orders = []) {
-    function swap(collection, i, j) {
-        var temp = collection[i]
-        collection[i] = collection[j]
-        collection[j] = temp
-    }
-    var newCollection = Object.entries(collection)
-    var iters = iteratee.map(x => jimxhw.iteratee(x))
-    for (let i = iters.length - 1; i >= 0; i--) {
-        var iter = iters[i]
-        for (let j = newCollection.length - 1; j >= 0; j--) {
-            for (let k = 0; k < j; k++) {
-                if (orders[i] == "desc") {
-                    if (iter(newCollection[k][1]) < iter(newCollection[k + 1][1])) {
-                        swap(newCollection, k, k + 1)
-                    }
-                } else {
-                    if (iter(newCollection[k][1]) > iter(newCollection[k + 1][1])) {
-                        swap(newCollection, k, k + 1)
+    },
+    invokeMap: function (collection, path, ...args) {
+        if (typeof path == "string") {
+            path = collection[0][path]
+        }
+        return collection.map(item => path.call(item, ...args))
+    },
+    orderBy: function (collection, iteratee = [jimxhw.identity], orders = []) {
+        function swap(collection, i, j) {
+            var temp = collection[i]
+            collection[i] = collection[j]
+            collection[j] = temp
+        }
+        var newCollection = Object.entries(collection)
+        var iters = iteratee.map(x => jimxhw.iteratee(x))
+        for (let i = iters.length - 1; i >= 0; i--) {
+            var iter = iters[i]
+            for (let j = newCollection.length - 1; j >= 0; j--) {
+                for (let k = 0; k < j; k++) {
+                    if (orders[i] == "desc") {
+                        if (iter(newCollection[k][1]) < iter(newCollection[k + 1][1])) {
+                            swap(newCollection, k, k + 1)
+                        }
+                    } else {
+                        if (iter(newCollection[k][1]) > iter(newCollection[k + 1][1])) {
+                            swap(newCollection, k, k + 1)
+                        }
                     }
                 }
             }
         }
-    }
-    return newCollection.reduce(function (result, item) {
-        result.push(item[1])
-        return result
-    }, [])
-},
+        return newCollection.reduce(function (result, item) {
+            result.push(item[1])
+            return result
+        }, [])
+    },
 
 
 
