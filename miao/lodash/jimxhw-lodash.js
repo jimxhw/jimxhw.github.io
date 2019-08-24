@@ -1199,8 +1199,7 @@ var jimxhw = {
         }
         for (let i = 0; i < path.length; i++) {
             if (obj === undefined) {
-                obj = defaultVal
-                break
+                return defaultVal
             }
             obj = obj[path[i]]
         }
@@ -1568,6 +1567,12 @@ var jimxhw = {
             obj1[temp2] = obj2[temp2]
             return
         }
+    },
+    set:function(object,path,value){
+        let obj2 = jimxhw.pathToObject(path,value)
+        let head = object
+        jimxhw.mergeDeepObj(object,obj2)
+        return head
     },
     findLast: function (collection, predicate = jimxhw.identity, fromIndex = collection.length - 1) {
         predicate = this.iteratee(predicate)
