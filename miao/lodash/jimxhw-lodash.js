@@ -1221,9 +1221,6 @@ var jimxhw = {
     values: function (object) {
         return Object.entries(object).map(x => x[1])
     },
-    输入：pad("abc",8,"_-")
-输出："_-_-abc_"
-期望："_-abc_-_"
     pad: function (string = "", Length = 0, char = " ") {
         let l = string.length
         if (l >= Length) {
