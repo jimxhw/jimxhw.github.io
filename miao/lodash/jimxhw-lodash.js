@@ -1131,8 +1131,11 @@ var jimxhw = {
     invert: function (object) {
         let array = Object.entries(object)
         let result = {}
-        array.reduce((x, y) => { return x[y[1]] = y[0] }, result)
-        return result
+        return array.reduce((x, y) => {
+            x[y[1]] = y[0]
+            return x
+        }, result)
+
     },
     invoke: function (object, path, ...args) {
         if (jimxhw.isString(path)) {
