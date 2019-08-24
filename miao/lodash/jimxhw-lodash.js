@@ -1342,9 +1342,6 @@ var jimxhw = {
         let s = ("" + Math.random()).slice(3, 6)
         return prefix + s
     },
-    constant: function (value) {
-        return value
-    },
     propertyof: function (object) {
         return function (path) {
             return jimxhw.get(object, path, defaultVal)
@@ -1682,7 +1679,32 @@ var jimxhw = {
             return result
         }, [])
     },
-
+    escape: function (str) {
+        var map = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "'": "&#39;",
+            '"': "&quot;"
+        }
+        var res = ''
+        for (var i = 0; i < str.length; i++) {
+            if (str[i] in map) {
+                res += map[str[i]]
+            } else {
+                res += str[i]
+            }
+        }
+        return res
+    },
+    unescape: function (string = "") {
+        return string.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&apos;", "'")
+    },
+    constant: function (value) {
+        return function () {
+            return value 
+        }
+    }
 
 
 

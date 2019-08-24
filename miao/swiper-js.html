@@ -1,24 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>白蛇轮播图</title>
 </head>
+<style>
+    .img {
+        position: relative;
+        margin: 60px 350px;
+        cursor: pointer;
+        width: 1000px;
+        height: 800px;
+        overflow: hidden;
+    }
+
+    .img>.swapImg {
+        position: absolute;
+        height: 800px;
+        left: -100%;
+    }
+
+    .img>.swapImg img {
+        width: 1000px;
+        height: 100%;
+        float: left;
+    }
+
+    .img>.inlicate {
+        position: absolute;
+        width: 160px;
+        right: 50%;
+        bottom: 5px;
+        transform: translateX(50%);
+        user-select: none;
+        box-shadow: 0 0 3px -3px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .img>.inlicate li {
+        margin: 3px;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: rgb(223, 215, 215);
+    }
+
+    .img>.inlicate li.active {
+        background-color: orange;
+    }
+
+    .img>.right {
+        position: absolute;
+        right: 0;
+        top: 45%;
+        color: rgba(124, 236, 231, 0.897);
+        height: 50px;
+        width: 30px;
+        font-size: 40px;
+        opacity: 0;
+        user-select: none;
+    }
+
+    .img>.left {
+        position: absolute;
+        left: 0;
+        top: 45%;
+        color: rgba(124, 236, 231, 0.897);
+        height: 50px;
+        width: 30px;
+        font-size: 40px;
+        opacity: 0;
+        user-select: none;
+    }
+
+    .img:hover .left,
+    .img:hover .right {
+        opacity: 1;
+    }
+</style>
+
 <body>
-    <div><span>1</span><span>2</span><span>3</span><span>4</span></div>
+    <div class="img">
+        <div class="swapImg">
+            <img src="https://img.ivsky.com/img/bizhi/pre/201901/22/white_snake-010.jpg" alt="">
+            <img src="https://img.ivsky.com/img/bizhi/pre/201901/22/white_snake-015.jpg" alt="">
+            <img src="https://img.ivsky.com/img/bizhi/pre/201901/22/white_snake-009.jpg" alt="">
+            <img src="https://img.ivsky.com/img/bizhi/pre/201901/22/white_snake-004.jpg" alt="">
+            <img src="https://img.ivsky.com/img/bizhi/pre/201901/22/white_snake-001.jpg" alt="">
+            <img src="http://source.upupoo.com/theme/2000115048/preview.jpg" alt="">
+            <img src="http://b-ssl.duitang.com/uploads/item/201901/22/20190122101442_wiued.jpg" alt="">
+            <img src="http://5b0988e595225.cdn.sohucs.com/images/20190114/53e2b201504c49d3a23503d1a35fbdaa.jpeg" alt="">
+            <img src="http://i0.hdslb.com/bfs/article/43d2e8128319e9a20ec4d499585c207ebd1ad6f4.jpg" alt="">
+            <img src="http://ws4.sinaimg.cn/large/007kZovQly1fzcad84f7uj31kw0nuti4.jpg" alt="">
+        </div>
+        <section class="right">&gt;</section>
+        <section class="left">&lt;</section>
+        <ul class="inlicate">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
     <script>
-        let div = document.querySelector("div")
-        addEventListener("keydown",e=>{
-            console.log(div.childNodes)
-            if(e.code === "ArrowRight"){
-                div.prepend(div.lastChild)
-            }
-            if(e.code === "ArrowLeft"){
-                div.appendChild(div.firstChild)
-            }
+        let divImg = document.querySelector(".img")
+        let divSwapImg = document.querySelector(".img>.swapImg")
+        let images = divSwapImg.children
+        let sectionLeft = document.querySelector(".img>.left")
+        let sectionRight = document.querySelector(".img>.right")
+        let ulLabel = document.querySelector(".img>.inlicate")
+        let ulLabelChildren = Array.from(ulLabel.children)
+        let liLabel = document.querySelector(".img>.inlicate li")
+        let picNum = images.length
+        let curIdx = 1
+        removeText(ulLabel)
+        removeText(divSwapImg)
+        ulLabelChildren[curIdx].classList.add("active")
+        divSwapImg.style.width = picNum * 1000 + "px"
+        sectionLeft.addEventListener("click", e => {
+            curIdx = (curIdx + picNum - 1) % picNum
+            divSwapImg.style.transition = "0.5s"
+            divSwapImg.style.left = "-200%"
+            setTimeout(
+                () => {
+                    divSwapImg.style.transition = "none"
+                    divSwapImg.appendChild(divSwapImg.firstChild)
+                    divSwapImg.style.left = "-100%"
+                }, 600
+            )
+            lableColor()
         })
+        sectionRight.addEventListener("click", e => {
+            curIdx = (curIdx + picNum + 1) % picNum
+            divSwapImg.style.transition = "0.5s"
+            divSwapImg.style.left = "0"
+            setTimeout(
+                () => {
+                    divSwapImg.style.transition = "none"
+                    divSwapImg.prepend(divSwapImg.lastChild)
+                    divSwapImg.style.left = "-100%"
+                }, 600
+            )
+            lableColor()
+        })
+        function lableColor() {
+            ulLabelChildren.forEach(x => {
+                x.classList.remove("active")
+            })
+            ulLabelChildren[curIdx].classList.add("active")
+        }
+        function removeText(node) {
+            Array.from(node.childNodes).forEach(x => {
+                if (x.nodeName === "#text") {
+                    node.removeChild(x)
+                }
+            })
+        }
+        ulLabel.addEventListener("click", e => {
+            if (e.target.nodeName === "LI") {
+                let temp = e.target
+                let tempIdx = ulLabelChildren.indexOf(temp)
+                let diff = tempIdx - curIdx
+                curIdx = tempIdx
+                if (diff > 0) {
+                    divSwapImg.style.left = -100 % + diff * 100 % + ""
+                    console.log(divSwapImg.style.left)
+                    while (diff) {
+                        divSwapImg.appendChild(divSwapImg.firstChild)
+                        diff--
+                    }
+                } else {
+                    divSwapImg.style.left = -100 % - diff * 100 % + ""
+                    diff = 0 - diff
+                    while (diff) {
+                        divSwapImg.prepend(divSwapImg.lastChild)
+                        diff--
+                    }
+                }
+                divSwapImg.style.left = "-100%"
+            }
+            lableColor()
+        })
+        let timeId = setInterval(() => {
+            sectionRight.click()
+        }, 2000)
+
+        divImg.addEventListener("mouseenter", e => {
+            clearInterval(timeId)
+        })
+        divImg.addEventListener("mouseleave", e => {
+            timeId = setInterval(() => {
+                sectionRight.click()
+            }, 2000)
+        })
+
+
+
+
     </script>
 </body>
+
+</html>
+
 </html>
