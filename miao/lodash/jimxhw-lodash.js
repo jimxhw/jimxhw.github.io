@@ -1221,6 +1221,9 @@ var jimxhw = {
     values: function (object) {
         return Object.entries(object).map(x => x[1])
     },
+    输入：pad("abc",8,"_-")
+输出："_-_-abc_"
+期望："_-abc_-_"
     pad: function (string = "", Length = 0, char = " ") {
         let l = string.length
         if (l >= Length) {
@@ -1229,9 +1232,9 @@ var jimxhw = {
         let temps = Length - l
         let t = char.length
         if (temps % (2 * t)) {
-            var n = ((temps / (2 * t)) | 0) + 1
-        } else {
             var n = temps / (2 * t)
+        } else {
+            var n = ((temps / (2 * t)) | 0) + 1
         }
         string = char.repeat(n) + string + char.repeat(n)
         return string.slice(0, Length)
@@ -1263,8 +1266,7 @@ var jimxhw = {
         } else {
             var n = temps / t
         }
-        string = char.repeat(n) + string
-        return string.slice(string.length - Length)
+        return char.repeat(n).slice(0,temps) + string
     },
     repeat: function (string = '', n = 1) {
         if (n == 0) { return "" }
@@ -1331,8 +1333,7 @@ var jimxhw = {
     times: function (n, iteratee = jimxhw.identity) {
         let result = []
         while (n > 0) {
-            result.push(iteratee())
-            n--
+            result.push(iteratee(n--))
         }
         return result
     },
