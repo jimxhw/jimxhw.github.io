@@ -1198,16 +1198,20 @@ var jimxhw = {
             path = jimxhw.toPath(path)
         }
         for (let i = 0; i < path.length; i++) {
-            if (obj === undefined) {
-                return defaultVal
+            if (obj === undefined ) {
+                break
             }
             obj = obj[path[i]]
         }
+        if (obj === undefined ) {
+            if(jimxhw.isFunction(defaultVal)){
+                return defaultVal()
+            }else{
+                return defaultVal
+            }
+        }
         if (jimxhw.isFunction(obj)) {
             return obj.bind(this)()
-        }
-        if (obj === undefined) {
-            return defaultVal
         }
         return obj
     },
