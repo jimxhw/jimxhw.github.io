@@ -1704,7 +1704,7 @@ var jimxhw = {
         return function () {
             return value 
         }
-    }
+    },
 
 
 

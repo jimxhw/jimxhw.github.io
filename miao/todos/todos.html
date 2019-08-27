@@ -5,117 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <script src="./iconfont.js"></script>
-    <style>
-        .icon {
-            width: 1em;
-            height: 1em;
-            vertical-align: -0.15em;
-            fill: currentColor;
-            overflow: hidden;
-        }
-
-        #global {
-            position: absolute;
-            left: 200px;
-            top: 200px;
-            border: 1px solid grey;
-            text-align: center;
-        }
-
-        #global>.search {
-            outline: 1px solid grey;
-        }
-
-        #global>.search>svg {
-            color: black;
-            user-select: none;
-        }
-
-        .search>input {
-            height: 50px;
-            width: 300px;
-            font-size: 20px;
-        }
-
-        #global>.newElement {
-            height: 50px;
-            width: 349px;
-            outline: 1px solid grey;
-            user-select: none;
-        }
-
-        #global>.newElement>.leftS {
-            display: inline-block;
-            height: 50px;
-            width: 46px;
-            outline: 1px solid grey;
-        }
-
-        #global>.newElement>.rightS {
-            display: inline-block;
-            height: 50px;
-            width: 303px;
-            text-align: left;
-            vertical-align: bottom;
-            font-size: 30px;
-        }
-    </style>
+    <title>todus</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+<style>
+
+</style>
 
 <body>
-    <div id="global">
-        <div class="search">
-            <svg class="icon" aria-hidden="true" style="width: 40px">
-                <use xlink:href="#icon-xiangxia"></use>
-            </svg>
-            <input type="text" placeholder="What need to be done?">
-        </div>
+    <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+    <div class="row">
+        <div class="col-xs-12 col-md-8">.col-xs-12 .col-md-8</div>
+        <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
     </div>
-    <script>
-        var global = document.querySelector("#global")
-        var inputNode = document.querySelector(".search>input")
-        let svgE = document.querySelector("#global>.search>svg")
-        function addNodes() {
-            let temp = document.createElement("div")
-            temp.classList.add("newElement","active","uncompleted")
-            global.appendChild(temp)
-            let temp2 = document.createElement("span")
-            temp2.classList.add("leftS")
-            let temp3 = document.createElement("span")
-            temp3.classList.add("rightS")
-            temp.appendChild(temp2)
-            temp.appendChild(temp3)
-        }
-        inputNode.addEventListener("change", e => {
-            let textNode = inputNode.value
-            inputNode.value = ""
-            addNodes()
-            let newDiv = Array.from(document.querySelectorAll("#global>.newElement"))
-            newDiv[newDiv.length - 1].children[1].textContent = textNode
-            leftNodeclick()
-            svgClick()
-        })
-        function leftNodeclick() {
-            let leftNodes = Array.from(document.querySelectorAll("#global>.newElement>.leftS"))
-            leftNodes.forEach(x => {
-                x.addEventListener("click", e => {
-                    x.parentNode.style.display = "none"
-                })
-            })
-        }
-        function svgClick(){
-            let newDiv = Array.from(document.querySelectorAll("#global>.newElement"))
-            svgE.addEventListener("click", e => {
-                if (newDiv.every(x => { return x.style.display === "none" })) {
-                    newDiv.forEach(x => { x.style.display = "block" })
-                } else {
-                    newDiv.forEach(x => { x.style.display = "none" })
-                }
-            })
-        }
-    </script>
+
+    <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+    <div class="row">
+        <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+        <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+        <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+    </div>
+
+    <!-- Columns are always 50% wide, on mobile and desktop -->
+    <div class="row">
+        <div class="col-xs-6">.col-xs-6</div>
+        <div class="col-xs-6">.col-xs-6</div>
+    </div>
 
 </body>
 
