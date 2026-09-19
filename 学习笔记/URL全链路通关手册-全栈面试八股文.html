@@ -22,7 +22,7 @@
   --accent-soft:#eaf1fe;
   --accent-deep:#1b4bb8;
 
-  /* 六个阶段 */
+  /* 五个阶段 */
   --p0:#2563eb;  --p0s:#e8f0fe;
   --p1:#7c3aed;  --p1s:#f2ecfe;
   --p2:#0f766e;  --p2s:#e4f5f3;
@@ -225,7 +225,7 @@ pre{background:#1b2030;color:#dbe4f5;border-radius:var(--radius-sm);padding:16px
 pre code{background:none;color:inherit;padding:0;white-space:pre}
 
 /* 链路带 */
-.chain{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:24px 0}
+.chain{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:24px 0}
 .chain-col{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm)}
 .chain-hd{padding:10px 12px;color:#fff;font-size:12.5px;font-weight:800;line-height:1.35}
 .chain-hd small{display:block;font-size:10px;font-weight:700;opacity:.85;letter-spacing:.08em;margin-bottom:2px}
@@ -390,15 +390,15 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     <div class="nav-group" data-page-node-id="3pDzzh3uCVaqH0uSy1SN4k"><a href="#s3" data-page-node-id="4XjBvpIrJ1ZBp0XagmPMfn"><span class="dot d1" data-page-node-id="FIhJxb5IVWNib8tkbXWKRZ"></span>关 3 · DNS 域名解析</a></div>
     <div class="nav-group" data-page-node-id="6NDWM0hU8ipPiZ5BWeNbMh"><a href="#s4" data-page-node-id="zZCOw6Bf8bxb7WoGPZF6yr"><span class="dot d1" data-page-node-id="NGfFDlxBC9Ufs80a9TpJMo"></span>关 4 · TCP 三次握手</a></div>
     <div class="nav-group" data-page-node-id="mOoDMFMDkRstL7BLssEszR"><a href="#s5" data-page-node-id="EEyFCBGAyhLmcIKjbGzE6P"><span class="dot d1" data-page-node-id="JrCBsSLSApI8nYXLixDTGC"></span>关 5 · TLS 握手与 HTTPS</a></div>
+    <div class="nav-group" data-page-node-id="u1uz13PXAVRqHh8BWgHrLZ"><a href="#s6" data-page-node-id="K2G1nVwpLdrjOFEePkm0nT"><span class="dot d1" data-page-node-id="lx6FgGSdcv5TmDqQBo4HER"></span>关 6 · HTTP 请求构造与协议</a></div>
+    <div class="nav-group" data-page-node-id="6DcRuoPoRV4V9DJdN22CzE"><a href="#s7" data-page-node-id="3NWSF18DsS4LnmgjJLcjRe"><span class="dot d1" data-page-node-id="KpddVELTjNtGYRYDU0Y5Oo"></span>关 7 · CDN / 负载均衡 / 网关</a></div>
 
-    <div class="nav-sec" data-page-node-id="6RnVitJmiPc8El0URzUETA">③ 请求上行</div>
-    <div class="nav-group" data-page-node-id="u1uz13PXAVRqHh8BWgHrLZ"><a href="#s6" data-page-node-id="K2G1nVwpLdrjOFEePkm0nT"><span class="dot d2" data-page-node-id="lx6FgGSdcv5TmDqQBo4HER"></span>关 6 · HTTP 请求构造与协议</a></div>
-    <div class="nav-group" data-page-node-id="6DcRuoPoRV4V9DJdN22CzE"><a href="#s7" data-page-node-id="3NWSF18DsS4LnmgjJLcjRe"><span class="dot d2" data-page-node-id="KpddVELTjNtGYRYDU0Y5Oo"></span>关 7 · CDN / 负载均衡 / 网关</a></div>
-
-    <div class="nav-sec" data-page-node-id="mealBYXsw7CuGylkiGwpa5">④ 服务端处理</div>
+    <div class="nav-sec" data-page-node-id="mealBYXsw7CuGylkiGwpa5">③ 服务端处理</div>
     <div class="nav-group" data-page-node-id="WvDfKHcMEVT51adtM7Hhzh"><a href="#s8" data-page-node-id="2NMGAmwDkXWB7ItdQspAPY"><span class="dot d3" data-page-node-id="qBrOVN2MiAQmXBCFxAzLs3"></span>关 8 · 内核到应用：epoll 与 Tomcat</a></div>
     <div class="nav-group" data-page-node-id="9ZiSDyM46ff6YxJsMNxli8"><a href="#s9" data-page-node-id="cza07CLlQ23gf6EmkjjX4b"><span class="dot d3" data-page-node-id="JyYdaz0N8uzsZ2m7zZwLm1"></span>关 9 · Filter → DispatcherServlet → Controller</a></div>
     <div class="nav-group" data-page-node-id="4zBJkWYMLbtVTPTb8we3Qj"><a href="#s10" data-page-node-id="W7xjZxRCfPpcI1HtRZR1cx"><span class="dot d3" data-page-node-id="CbcyhcoulUfF7CIzylSI1Y"></span>关 10 · Service 业务、事务与数据层</a></div>
+
+    <div class="nav-sec">④ 响应返回</div>
     <div class="nav-group" data-page-node-id="FS3VfHS4fP3dLMNsYNpe0R"><a href="#s11" data-page-node-id="OHdLDFargptwQUhtjEBMGd"><span class="dot d4" data-page-node-id="LWpUIC7NkXliNgFDtJmRfe"></span>关 11 · 响应序列化与返回</a></div>
 
     <div class="nav-sec" data-page-node-id="1AkI2ScJl0vpG4OUq2r927">⑤ 浏览器渲染</div>
@@ -461,7 +461,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
       <h6 data-page-node-id="ZhA1rihbiAx3GcNOCliaPp">① 先背骨架（10 分钟）</h6>
       <ul data-page-node-id="z7k5kmsI7WXRkBIToPwdXr">
         <li data-page-node-id="o0mKZNhWD1NwKQoOIVdifI">只看本页的「全链路总览图」和「18 字口诀」</li>
-        <li data-page-node-id="1MeqCNCiZRbWtaEUVHS5xm">目标是能空手默画出六个阶段和它们的顺序</li>
+        <li data-page-node-id="1MeqCNCiZRbWtaEUVHS5xm">目标是能空手默画出五个阶段和它们的顺序</li>
         <li data-page-node-id="DJmF5NHYKqEPCqE2XM2ifB">骨架错了，后面细节再多也是散沙</li>
       </ul>
     </div>
@@ -484,7 +484,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     <div class="gcard" data-page-node-id="ut4Vl8HFDcJBzJFbqFdbfa">
       <h6 data-page-node-id="z67mfvoWqFuYHofGbh0DEV">④ 面试时的答题结构</h6>
       <ul data-page-node-id="kcx0VRdq3rb328PNM6Oy5u">
-        <li data-page-node-id="S5PtmUPCgkW5cB7vEOyPgY"><strong data-page-node-id="RWrSGZbYEjjJqUKymkuTNR">第一层（30 秒）</strong>：六个阶段说清顺序</li>
+        <li data-page-node-id="S5PtmUPCgkW5cB7vEOyPgY"><strong data-page-node-id="RWrSGZbYEjjJqUKymkuTNR">第一层（30 秒）</strong>：五个阶段说清顺序</li>
         <li data-page-node-id="AwZFLnV7b6uw1RGtrt6qKg"><strong data-page-node-id="hICGt1C3UJq97jOC1NIDvQ">第二层（2 分钟）</strong>：每阶段点一到两个关键机制</li>
         <li data-page-node-id="jJiKAN8i4IlPu9KVn3OGh6"><strong data-page-node-id="UejjJmzLIhxgenXaoH1diG">第三层（等追问）</strong>：被问到哪儿往哪儿钻，钻深</li>
         <li data-page-node-id="dYbuf8zhAgg0mRv4O9PI69"><strong data-page-node-id="1fRPgsrcRwHqElZDkuIuwA">禁忌</strong>：一上来就讲 DNS 细节，格局先丢了</li>
@@ -506,9 +506,9 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
       <thead data-page-node-id="SOXc5rDpyIZMUnq7YlwNkB"><tr data-page-node-id="JUS6M1DiW5eBgndQBn0mCx"><th style="width:130px" data-page-node-id="sGniMIqjCj5oiacfaYbn7J">阶段</th><th data-page-node-id="Fxeqsqr7nAfPwAn2SxcSAc">覆盖的知识领域</th><th style="width:80px" data-page-node-id="XXBj9fDsIcknWmbfa35esO">面试热度</th></tr></thead>
       <tbody data-page-node-id="NH1ciqY9HpXQDM3EUVeGTB">
         <tr data-page-node-id="A7ZxfzTvFuEDTcF7zoi5fC"><td data-page-node-id="Q4QP57nGgkL1yDpL97TWnK"><strong data-page-node-id="L5IDA4zKbO1oFDseZtGjEW">① 浏览器发起</strong></td><td data-page-node-id="aM0SEkdhUa0BggRvhB3jm9">浏览器多进程架构、URL 规范与编码、导航流程、HTTP 缓存、Service Worker、PWA</td><td data-page-node-id="qkz9epx03PoNS9o6tIOEuG">★★★★</td></tr>
-        <tr data-page-node-id="w37UkEVAVSmcE2lOcnE1YH"><td data-page-node-id="b1BvpjQUPVdX8As8DTv0tk"><strong data-page-node-id="nigCfeXjXhfBdkcWLXnZFy">② 网络传输</strong></td><td data-page-node-id="pyHueDvbxQygZVNirN3k3D">DNS 体系与优化、TCP 三次握手与状态机、TLS/HTTPS、证书链、HTTP/2 与 QUIC</td><td data-page-node-id="vasLCSHjQ7mZnW3Cy7YSaU">★★★★★</td></tr>
-        <tr data-page-node-id="2n18ymhpObKFm4purfenJL"><td data-page-node-id="NgDVWTjXXopS26QeRTaZuH"><strong data-page-node-id="Cbd07FXvBA2fSrBa2NYqGV">③ 请求上行</strong></td><td data-page-node-id="W5BAIU80711CnPo0wkU7FI">HTTP 报文、Cookie/Session、CORS 预检、CDN 调度、四层/七层负载均衡、Nginx、API 网关</td><td data-page-node-id="N1FEaPAWvA0XAkkWdsRF3u">★★★★★</td></tr>
-        <tr data-page-node-id="UFrpaAgSuM2TdEvg8JplJa"><td data-page-node-id="LyXcS1RRJl5YVL2s8L941J"><strong data-page-node-id="lSRi3MeZePT8s0OmZSYKrD">④ 服务端处理</strong></td><td data-page-node-id="Z6LVBejXQ7VJDoA6DNFVIw">Linux 内核网络栈、epoll、Tomcat 线程模型、Servlet、Spring IoC/AOP、MVC 流程、事务、缓存、MQ、RPC</td><td data-page-node-id="8tHXuKwe4Ai46mZOOYMUdY">★★★★★</td></tr>
+        <tr data-page-node-id="w37UkEVAVSmcE2lOcnE1YH"><td data-page-node-id="b1BvpjQUPVdX8As8DTv0tk"><strong data-page-node-id="nigCfeXjXhfBdkcWLXnZFy">② 网络传输</strong></td><td data-page-node-id="pyHueDvbxQygZVNirN3k3D">DNS 体系与优化、TCP 三次握手与状态机、TLS/HTTPS 与证书链、HTTP/2 与 QUIC、HTTP 报文与 Cookie、CORS 预检、CDN 调度、四层/七层负载均衡、Nginx、API 网关</td><td data-page-node-id="vasLCSHjQ7mZnW3Cy7YSaU">★★★★★</td></tr>
+        <tr data-page-node-id="UFrpaAgSuM2TdEvg8JplJa"><td data-page-node-id="LyXcS1RRJl5YVL2s8L941J"><strong data-page-node-id="lSRi3MeZePT8s0OmZSYKrD">③ 服务端处理</strong></td><td data-page-node-id="Z6LVBejXQ7VJDoA6DNFVIw">Linux 内核网络栈、epoll、Tomcat 线程模型、Servlet、Spring IoC/AOP、MVC 流程、事务、缓存、MQ、RPC</td><td data-page-node-id="8tHXuKwe4Ai46mZOOYMUdY">★★★★★</td></tr>
+        <tr><td><strong>④ 响应返回</strong></td><td>JSON 序列化与内容协商、统一响应包装、gzip/br 压缩、HTTP 缓存头（Cache-Control / ETag）、CORS 响应头、连接复用</td><td>★★★★</td></tr>
         <tr data-page-node-id="I9NIUSb85DFL2MZIpcpNR6"><td data-page-node-id="Loe6SktoUPDS2HBXHkR7lB"><strong data-page-node-id="evWHFgkjeXexlCJBwDq2Iu">⑤ 浏览器渲染</strong></td><td data-page-node-id="W6Tj2iuR0bXsCb3sCzDfrL">DOM/CSSOM、层叠与样式计算、JS 引擎与事件循环、Layout、Paint、Composite、性能指标</td><td data-page-node-id="DK3DDqtGMAc6gdqXLm0ZtY">★★★★★</td></tr>
         <tr data-page-node-id="p84cLNw0BQ4eJBQfVKiCl4"><td data-page-node-id="mmaX2dtkYk27jg5aLjBs88"><strong data-page-node-id="1lMRZUasT928HJVG8ioL9w">⑥ 面试速答</strong></td><td data-page-node-id="xDDnmAxf35lEAIzHUpPC7J">表达结构、反问陷阱、边界与取舍</td><td data-page-node-id="eiLHWcCh6XklQiTnHmepjj">★★★</td></tr>
       </tbody>
@@ -520,7 +520,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
 <section id="map" data-page-node-id="m9mxyDHAfH1tKfUlxGZrGl">
   <div class="sec-head" data-page-node-id="bYWWDGoGY48i0XUYD2lD7X">
     <div class="sec-kicker" style="color:var(--pg)" data-page-node-id="WQph3ISrBvXefPhg39NdXL">总纲 · 全局</div>
-    <h2 data-page-node-id="qB7l5Xl3LC96nLeCPX2KOe">全链路总览：六个阶段，17 个关卡</h2>
+    <h2 data-page-node-id="qB7l5Xl3LC96nLeCPX2KOe">全链路总览：五个阶段，17 个关卡</h2>
     <p class="desc" data-page-node-id="BBqWJiUoYFf8raXV8W3diF">先看这张图。它决定了你面试时开口的前 30 秒能给人什么印象。</p>
   </div>
 
@@ -538,25 +538,16 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     <div class="chain-col" data-page-node-id="iDIkio4YlRrnaFUhIjvUNr">
       <div class="chain-hd bg1" data-page-node-id="mGsJgQqeSO29rQdfwFZOCK"><small data-page-node-id="nFcGyLGM4MozTIhwK87U79">阶段 ②</small>网络传输</div>
       <div class="chain-bd" data-page-node-id="GpW2ORc13QoVjACt1GSBvW">
-        <span data-page-node-id="yQjfryI9fKVjUu9ydLo5ii">DNS 递归解析</span>
-        <span data-page-node-id="OFaHnEAqmnE1DDh0LzZfvq">ARP / 路由选路</span>
-        <span data-page-node-id="f5A9q9rllxHM0cne50ihnL">TCP 三次握手</span>
-        <span data-page-node-id="xyE0rIs2rha9yp6kRNyTkE">TLS 握手 + 证书校验</span>
-        <span data-page-node-id="a6ARVTHkGUfbqRWE2PbqCX">ALPN 协商协议</span>
-      </div>
-    </div>
-    <div class="chain-col" data-page-node-id="RpmHF7hgIZap1WT16qk6U1">
-      <div class="chain-hd bg2" data-page-node-id="524ztdicNJMEEBocvDhlbZ"><small data-page-node-id="hZXa9O3m9aMry5pjdKMo3p">阶段 ③</small>请求上行</div>
-      <div class="chain-bd" data-page-node-id="vw3A2Zu1NRHj4X2HsJGSop">
-        <span data-page-node-id="Le5AFEP1bjQMt3XlEHL7Ri">HTTP 请求报文</span>
-        <span data-page-node-id="gVAj6hYtlk98h2JDFNaS9C">Cookie / 预检请求</span>
-        <span data-page-node-id="D6eHbrF3pVrDVHpV9FazGE">CDN 边缘节点</span>
-        <span data-page-node-id="sFAsVXfWAUGEbABGC9z4Wn">LVS / Nginx 负载均衡</span>
-        <span data-page-node-id="REaHxizPK3ZOPGJZKKBdXb">API 网关鉴权限流</span>
+        <span>DNS 递归解析</span>
+        <span>TCP 三次握手</span>
+        <span>TLS 握手 + 证书校验</span>
+        <span>HTTP 请求报文 + 预检</span>
+        <span>CDN 边缘节点</span>
+        <span>负载均衡 / API 网关</span>
       </div>
     </div>
     <div class="chain-col" data-page-node-id="U5NqONhRF4hNihouhsmBAs">
-      <div class="chain-hd bg3" data-page-node-id="e3ypv2Hars9y4k3A1s8FR8"><small data-page-node-id="8CCfdCnRwNhslG4qtMQDhQ">阶段 ④</small>服务端处理</div>
+      <div class="chain-hd bg3" data-page-node-id="e3ypv2Hars9y4k3A1s8FR8"><small data-page-node-id="8CCfdCnRwNhslG4qtMQDhQ">阶段 ③</small>服务端处理</div>
       <div class="chain-bd" data-page-node-id="Jit3gGCEVMtaxsbc0sSGmF">
         <span data-page-node-id="T66EzqhJqHcrPEjsZoDCUH">网卡 → 内核协议栈</span>
         <span data-page-node-id="gOedEWlVeO7oPOOWdgQPw8">epoll → accept → 线程</span>
@@ -566,7 +557,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
       </div>
     </div>
     <div class="chain-col" data-page-node-id="4ool6CbQwqFVkkM1mMbHFs">
-      <div class="chain-hd bg4" data-page-node-id="gY2vDoLPkeBMNPCFPAycYn"><small data-page-node-id="gjCWCYNzci6li31mgQ2Uen">阶段 ⑤</small>响应返回</div>
+      <div class="chain-hd bg4" data-page-node-id="gY2vDoLPkeBMNPCFPAycYn"><small data-page-node-id="gjCWCYNzci6li31mgQ2Uen">阶段 ④</small>响应返回</div>
       <div class="chain-bd" data-page-node-id="8qP9JqnrohNhah48AWozBv">
         <span data-page-node-id="7FWoZCM4V4sp5ahVRRfSbl">JSON 序列化</span>
         <span data-page-node-id="5YwQNuj1tjAWhFyOCoMviJ">统一响应包装</span>
@@ -576,7 +567,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
       </div>
     </div>
     <div class="chain-col" data-page-node-id="PZk9yaGP4B5sJRcZTNXFii">
-      <div class="chain-hd bg5" data-page-node-id="aizFWw90DB3gq6B4IWR1vp"><small data-page-node-id="UiLQ41Oz0CAkxbT3fbjEEK">阶段 ⑥</small>浏览器渲染</div>
+      <div class="chain-hd bg5" data-page-node-id="aizFWw90DB3gq6B4IWR1vp"><small data-page-node-id="UiLQ41Oz0CAkxbT3fbjEEK">阶段 ⑤</small>浏览器渲染</div>
       <div class="chain-bd" data-page-node-id="AYYOxG5TKJR8D1nAocEck1">
         <span data-page-node-id="0C2hEiChwH1qHal2Pm5V0t">HTML 解析建 DOM</span>
         <span data-page-node-id="erpS4NVn7SPlSH8dn557l7">CSS 解析建 CSSOM</span>
@@ -659,8 +650,8 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
   <h3 data-page-node-id="9UXxoBhbZ7dM6XKleDOpTP">三层记忆法：为什么这样背不会忘</h3>
   <div class="tl" data-page-node-id="aiHU66QHvWcIaRejr67E9X">
     <div class="tl-item" data-page-node-id="9bxDPnTAAEO9kuYJtZIoKR">
-      <h6 data-page-node-id="D5gB4pP5L1GBYqF7bA0GyD">第一层：位置记忆（记 6 个阶段）</h6>
-      <p data-page-node-id="OJbBU47LMpHp8X0VcInOrm">浏览器发起 → 网络传输 → 请求上行 → 服务端处理 → 响应返回 → 浏览器渲染。这 6 个词是<strong data-page-node-id="LuhsAfxjEh5JQhecIc6mTh">物理顺序</strong>，只要按「数据在哪儿」去想就不会乱。</p>
+      <h6 data-page-node-id="D5gB4pP5L1GBYqF7bA0GyD">第一层：位置记忆（记 5 个阶段）</h6>
+      <p data-page-node-id="OJbBU47LMpHp8X0VcInOrm">浏览器发起 → 网络传输 → 服务端处理 → 响应返回 → 浏览器渲染。这 5 个词是<strong data-page-node-id="LuhsAfxjEh5JQhecIc6mTh">物理顺序</strong>，只要按「数据在哪儿」去想就不会乱。</p>
     </div>
     <div class="tl-item" data-page-node-id="Wz1ssKiIiKA8VdOTaKyJBn">
       <h6 data-page-node-id="PLukHCRqGXfWbpgASqcF2S">第二层：口诀记忆（记 18 个字）</h6>
@@ -676,7 +667,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     <span class="lbl" data-page-node-id="xIXm9tSQExZrTasYfoUvKA">一个常见错误，务必避开</span>
     很多人把这条链路背成「DNS → TCP → HTTP → 渲染」，一共四步。
     这样答<strong data-page-node-id="frHJfJYAbTHWGKxyZ4UEME">格局太小</strong>，因为它把「服务端处理」整段吞掉了——而服务端恰恰是全栈面试官最想考你的部分。
-    正确的骨架必须是六段，其中「服务端处理」和「浏览器渲染」各占三段，权重相当。
+    正确的骨架必须是五段，其中「服务端处理」这一段要占到整段回答的三分之一以上——它才是面试官最想深挖的部分。
   </div>
 </section>
 
@@ -698,14 +689,13 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
   <h3>时间分配：5 分钟怎么切</h3>
   <p>
     这张表是整份稿子的节奏控制。注意两件事：<strong>服务端处理占 1 分 31 秒</strong>，仍是全场最重的一段；
-    而 DNS + TCP + TLS 加起来只有 37 秒。<strong>这个配比本身就是一种表态</strong>——它告诉面试官你知道哪里才是系统真正的复杂度。
+    而整段网络传输（DNS、TCP、TLS、报文与网关）加起来只有 1 分 8 秒。<strong>这个配比本身就是一种表态</strong>——它告诉面试官你知道哪里才是系统真正的复杂度。
   </p>
 
   <div class="timer-bar">
     <span class="bg0" style="width:6.7%"></span>
     <span class="bg0" style="width:9.7%"></span>
-    <span class="bg1" style="width:12.3%"></span>
-    <span class="bg2" style="width:10.3%"></span>
+    <span class="bg1" style="width:22.6%"></span>
     <span class="bg3" style="width:30.3%"></span>
     <span class="bg4" style="width:6.3%"></span>
     <span class="bg5" style="width:16.0%"></span>
@@ -724,28 +714,23 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
       <div class="w">≈132 字</div>
     </div>
     <div class="timer-row">
-      <div class="t">0:49 – 1:26</div>
-      <div class="n">② 网络传输<small>关 3–5 · DNS 递归、三次握手、TLS 与 QUIC</small></div>
-      <div class="w">≈171 字</div>
-    </div>
-    <div class="timer-row">
-      <div class="t">1:26 – 1:57</div>
-      <div class="n">③ 请求上行<small>关 6–7 · 报文构造、协议版本、CDN 与网关</small></div>
-      <div class="w">≈143 字</div>
+      <div class="t">0:49 – 1:57</div>
+      <div class="n">② 网络传输<small>关 3–7 · DNS 递归、三次握手、TLS 与 QUIC、报文构造、CDN 与网关</small></div>
+      <div class="w">≈314 字</div>
     </div>
     <div class="timer-row">
       <div class="t">1:57 – 3:28</div>
-      <div class="n">④ 服务端处理<small>关 8–10 · 内核收包、epoll、Tomcat、Spring、事务与数据库</small></div>
+      <div class="n">③ 服务端处理<small>关 8–10 · 内核收包、epoll、Tomcat、Spring、事务与数据库</small></div>
       <div class="w">≈421 字</div>
     </div>
     <div class="timer-row">
       <div class="t">3:28 – 3:47</div>
-      <div class="n">⑤ 响应返回<small>关 11 · 序列化、统一包装、压缩与缓存头</small></div>
+      <div class="n">④ 响应返回<small>关 11 · 序列化、统一包装、压缩与缓存头</small></div>
       <div class="w">≈90 字</div>
     </div>
     <div class="timer-row">
       <div class="t">3:47 – 4:35</div>
-      <div class="n">⑥ 浏览器渲染<small>关 12–17 · 解析、样式、事件循环、渲染管线与指标</small></div>
+      <div class="n">⑤ 浏览器渲染<small>关 12–17 · 解析、样式、事件循环、渲染管线与指标</small></div>
       <div class="w">≈222 字</div>
     </div>
     <div class="timer-row">
@@ -760,11 +745,10 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     <a href="#talk0"><b>0:00</b> 开场定调</a>
     <a href="#talk1"><b>①</b> 浏览器发起</a>
     <a href="#talk2"><b>②</b> 网络传输</a>
-    <a href="#talk3"><b>③</b> 请求上行</a>
-    <a href="#talk4"><b>④</b> 服务端处理</a>
-    <a href="#talk5"><b>⑤</b> 响应返回</a>
-    <a href="#talk6"><b>⑥</b> 浏览器渲染</a>
-    <a href="#talk7"><b>5:00</b> 收尾</a>
+    <a href="#talk3"><b>③</b> 服务端处理</a>
+    <a href="#talk4"><b>④</b> 响应返回</a>
+    <a href="#talk5"><b>⑤</b> 浏览器渲染</a>
+    <a href="#talk6"><b>5:00</b> 收尾</a>
   </div>
 
   <div class="callout warn">
@@ -785,7 +769,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     </div>
     <div class="seg-bd">
       <div class="script">
-        <p>这道题我按数据流动的顺序讲，分六段：浏览器发起、网络传输、请求上行、服务端处理、响应返回、浏览器渲染。</p>
+        <p>这道题我按数据流动的顺序讲，分五段：浏览器发起、网络传输、服务端处理、响应返回、浏览器渲染。</p>
         <p>先说全局：耗时并不平均，DNS、TCP、TLS 加起来不到一百毫秒，大头在服务端和渲染——而且<b>缓存命中时，链路在第一段就结束了</b>。</p>
       </div>
       <div class="cue">
@@ -818,38 +802,19 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
   </div>
 
   <!-- ======== ② 网络传输 ======== -->
-  <h3 id="talk2">② 网络传输（0:49 – 1:26）</h3>
+  <h3 id="talk2">② 网络传输（0:49 – 1:57）</h3>
 
   <div class="seg">
     <div class="seg-hd">
-      <span class="seg-clock bg1">0:49 – 1:26</span>
-      <h4>DNS 递归、三次握手、TLS 与 QUIC</h4>
-      <span class="secs">关 3–5 · ≈171 字</span>
+      <span class="seg-clock bg1">0:49 – 1:57</span>
+      <h4>DNS 递归、三次握手、TLS、报文与网关</h4>
+      <span class="secs">关 3–7 · ≈314 字</span>
     </div>
     <div class="seg-bd">
       <div class="script">
         <p>接下来 <b>DNS</b> 把域名变成 IP：先查本地缓存和 hosts，没有就交给本地 DNS 服务器递归查询，最后拿到权威服务器的 A 记录。</p>
         <p>拿到 IP 后是<b>三次握手</b>：<span class="k">SYN</span>、<span class="k">SYN + ACK</span>、<span class="k">ACK</span>。为什么必须三次？<b>一是防止历史连接的残留报文建出无效连接，二是确认双方的收发能力都正常</b>——只握两次，服务端不知道自己的 SYN+ACK 有没有被收到。</p>
         <p>HTTPS 还要叠加 <b>TLS 握手</b>：客户端发 <span class="k">ClientHello</span>，带 <span class="k">SNI</span> 和 <span class="k">ALPN</span>；服务端下发证书链，客户端校验签发链和域名。价值就三件事：<b>防窃听、防篡改、防冒充</b>。</p>
-      </div>
-      <div class="cue">
-        <span class="lbl">旁白</span>
-        这一段是全链路里最容易被追问细节的地方，但不要主动展开。<b>三次握手只讲「为什么三次」，TLS 只讲「客户端校验了什么」</b>，其余等追问。如果面试官问「为什么不两次」，你刚才那句话已经答完了。
-      </div>
-    </div>
-  </div>
-
-  <!-- ======== ③ 请求上行 ======== -->
-  <h3 id="talk3">③ 请求上行（1:26 – 1:57）</h3>
-
-  <div class="seg">
-    <div class="seg-hd">
-      <span class="seg-clock bg2">1:26 – 1:57</span>
-      <h4>报文构造、协议版本、CDN 与网关</h4>
-      <span class="secs">关 6–7 · ≈143 字</span>
-    </div>
-    <div class="seg-bd">
-      <div class="script">
         <p>连接建好后组装 <b>HTTP 报文</b>：请求行、请求头、空行、请求体。</p>
         <p>这里澄清一个高频误区：<b>跨域是浏览器的行为，不是服务端拒绝</b>——请求其实已经发出去了，只是响应被浏览器拦下。</p>
         <p>协议上，HTTP/1.1 有<b>队头阻塞</b>，HTTP/2 用多路复用解决，但 TCP 层的队头阻塞要靠 HTTP/3。</p>
@@ -857,13 +822,14 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
       </div>
       <div class="cue">
         <span class="lbl">旁白</span>
-        这一段最重要的其实是那句<b>「跨域是浏览器的行为，不是服务端拒绝」</b>——这是高频的表述错误，讲对了立刻显专业。另外「越靠前越便宜」是一句很有分量的总结，值得放慢语气说。
+        这一段是全链路里最容易被追问细节的地方，但不要主动展开。<b>三次握手只讲「为什么三次」，TLS 只讲「客户端校验了什么」</b>，其余等追问。后半段的关键是那句<b>「跨域是浏览器的行为，不是服务端拒绝」</b>——高频表述错误，讲对了立刻显专业；「越靠前越便宜」值得放慢语气说。
       </div>
     </div>
   </div>
 
-  <!-- ======== ④ 服务端处理 ======== -->
-  <h3 id="talk4">④ 服务端处理（1:57 – 3:28）</h3>
+
+  <!-- ======== ③ 服务端处理 ======== -->
+  <h3 id="talk3">③ 服务端处理（1:57 – 3:28）</h3>
 
   <div class="seg">
     <div class="seg-hd">
@@ -889,8 +855,8 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     </div>
   </div>
 
-  <!-- ======== ⑤ 响应返回 ======== -->
-  <h3 id="talk5">⑤ 响应返回（3:28 – 3:47）</h3>
+  <!-- ======== ④ 响应返回 ======== -->
+  <h3 id="talk4">④ 响应返回（3:28 – 3:47）</h3>
 
   <div class="seg">
     <div class="seg-hd">
@@ -906,8 +872,8 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
     </div>
   </div>
 
-  <!-- ======== ⑥ 浏览器渲染 ======== -->
-  <h3 id="talk6">⑥ 浏览器渲染（3:47 – 4:35）</h3>
+  <!-- ======== ⑤ 浏览器渲染 ======== -->
+  <h3 id="talk5">⑤ 浏览器渲染（3:47 – 4:35）</h3>
 
   <div class="seg">
     <div class="seg-hd">
@@ -931,7 +897,7 @@ footer.foot{border-top:1px solid var(--border);padding:32px 0 0;color:var(--text
   </div>
 
   <!-- ======== 收尾 ======== -->
-  <h3 id="talk7">收尾：三条主线与主动留钩（4:35 – 5:00）</h3>
+  <h3 id="talk6">收尾：三条主线与主动留钩（4:35 – 5:00）</h3>
 
   <div class="seg">
     <div class="seg-hd">
@@ -1318,13 +1284,18 @@ scheme    userinfo        host         port     path          query    fragment<
 <section id="stage2" data-page-node-id="bHjSEHBDFjhOBMlKsMCoOK">
   <div class="sec-head" data-page-node-id="h3C0yHyYK0yCFKGmxj34Rj">
     <div class="sec-kicker" style="color:var(--p1)" data-page-node-id="o90oB00Y6wzMaTcgBTiho6">阶段 ② · 网络传输</div>
-    <h2 data-page-node-id="cI7noXeNMRuK1wfCZOyRnv">出门上路：寻、握、密</h2>
-    <p class="desc" data-page-node-id="YUJiqFT5gqfI5w8owMbD37">本地没有缓存，浏览器就必须真正去网络上取。这一阶段要解决三个问题：<strong data-page-node-id="TLtSaoSRsxIfHv7DUxEz9k">对方在哪（DNS）</strong>、<strong data-page-node-id="ffJir3rEzZCbugCDUM1owt">能不能通话（TCP）</strong>、<strong data-page-node-id="UdAyo9qRygUE4XY9N3gas8">通话安不安全（TLS）</strong>。</p>
+    <h2 data-page-node-id="cI7noXeNMRuK1wfCZOyRnv">出门上路：寻、握、密、发、转</h2>
+    <p class="desc" data-page-node-id="YUJiqFT5gqfI5w8owMbD37">本地没有缓存，浏览器就必须真正去网络上取。这一阶段要解决五个问题：<strong data-page-node-id="TLtSaoSRsxIfHv7DUxEz9k">对方在哪（DNS）</strong>、<strong data-page-node-id="ffJir3rEzZCbugCDUM1owt">能不能通话（TCP）</strong>、<strong>通话安不安全（TLS）</strong>，以及连上之后——<strong>请求长什么样（HTTP 报文）</strong>、<strong>它要穿过哪几道关卡（CDN / 负载均衡 / 网关）</strong>。</p>
   </div>
   <p data-page-node-id="QSU1WmCeWsRHejgC7Nz3Jt">
     这是整条链路里<strong data-page-node-id="vcUV9Jbl3BaxCfvHAGJZsV">理论最深、追问最多</strong>的一段。特点也很鲜明：它几乎完全由协议规范决定，没有业务可讲，
     所以面试官一旦追问，问的都是「为什么这样设计」。回答这类问题的诀窍是：
     <strong data-page-node-id="Q007ILEC8ij1mW7nZjMqxQ">先给结论，再讲它解决了什么矛盾</strong>——比复述流程要好得多。
+  </p>
+  <p>
+    连接建好了，终于可以把请求发出去了。但请求不会直接落到你的应用上——<strong>它要先穿过 CDN、负载均衡、Nginx、网关四道关卡</strong>，每一道都可能改写它、拒绝它、或者把它转给别的机器。
+    这一段是全栈面试的交叉区：前端关心 CORS 与 Cookie，后端关心网关与限流，运维关心负载均衡。
+    <strong>能把「请求在到达你的代码之前经历了什么」讲清楚的人，通常会被认为有线上思维。</strong>
   </p>
 </section>
 
@@ -1902,26 +1873,14 @@ scheme    userinfo        host         port     path          query    fragment<
   </div>
 </article>
 
-<!-- ============ 阶段 ③ ============ -->
-<section id="stage3" data-page-node-id="VOyJf1ew31r6tG9Zo3k1Jq">
-  <div class="sec-head" data-page-node-id="TeTAKwFV4erU0Z2KannAPh">
-    <div class="sec-kicker" style="color:var(--p2)" data-page-node-id="uY6Xi4EpOY6REOUDFKV3RB">阶段 ③ · 请求上行</div>
-    <h2 data-page-node-id="kpHHb6EFwBRXnCR9V3gk2C">敲门：发、转</h2>
-    <p class="desc" data-page-node-id="IsJbdyg0kBzjAScb31kqvL">连接建好了，终于可以把请求发出去了。但请求不会直接落到你的应用上——<strong data-page-node-id="2JDrhcWjy1IIf2dUMLFGGe">它要先穿过 CDN、负载均衡、Nginx、网关四道关卡</strong>，每一道都可能改写它、拒绝它、或者把它转给别的机器。</p>
-  </div>
-  <p data-page-node-id="SWEmfiEQYlAOzpFyrpEDe8">
-    这一阶段是全栈面试的交叉区：前端关心 CORS 与 Cookie，后端关心网关与限流，运维关心负载均衡。
-    <strong data-page-node-id="EbZP98FjFrIll2dPSdyBME">能把「请求在到达你的代码之前经历了什么」讲清楚的人，通常会被认为有线上思维。</strong>
-  </p>
-</section>
 
 <!-- ================= 关 6 ================= -->
 <article class="station" id="s6" data-page-node-id="kKCcrB7r8e4BgRoHG8CBNb">
   <header class="st-head" data-page-node-id="TyewgdXXINqP6t7gmGTJ6C">
-    <div class="st-num bg2" data-page-node-id="YRPGGioON27B3DpvRZznjc">06</div>
+    <div class="st-num bg1" data-page-node-id="YRPGGioON27B3DpvRZznjc">06</div>
     <div class="st-meta" data-page-node-id="Jlukaz0uIgxfsxWjejksen">
       <div class="st-top" data-page-node-id="vN4L5959DT2okAILCrXD1C">
-        <span class="ph ph2" data-page-node-id="yGYfRfHoiDg53RkKaROjS9">阶段 ③ 请求上行</span>
+        <span class="ph ph1" data-page-node-id="yGYfRfHoiDg53RkKaROjS9">阶段 ② 网络传输</span>
         <span class="st-title" data-page-node-id="1kXxgRQV1Knm6Lr1VpHfGV">HTTP 请求构造、报文与协议版本</span>
       </div>
       <p class="st-sub" data-page-node-id="HDcmEWzwXXcpwTAM1NxFXE">最熟悉的协议，但面试问的往往是它的语义而非格式</p>
@@ -2109,10 +2068,10 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
 <!-- ================= 关 7 ================= -->
 <article class="station" id="s7" data-page-node-id="KHGQA7xpSWDPAzvhabgAML">
   <header class="st-head" data-page-node-id="hTLIj8ljaI1EAc3da7ggkH">
-    <div class="st-num bg2" data-page-node-id="1eoKnL2ieF4X31b71HaroW">07</div>
+    <div class="st-num bg1" data-page-node-id="1eoKnL2ieF4X31b71HaroW">07</div>
     <div class="st-meta" data-page-node-id="0G3q6XCyPmXeTLRySCV8As">
       <div class="st-top" data-page-node-id="Z8MzjqD8Xm4IN6nT5tobe6">
-        <span class="ph ph2" data-page-node-id="esDiVigFGlles0iRMY5blK">阶段 ③ 请求上行</span>
+        <span class="ph ph1" data-page-node-id="esDiVigFGlles0iRMY5blK">阶段 ② 网络传输</span>
         <span class="st-title" data-page-node-id="cifwlYPRru9ZqJDzUWMYLb">CDN · 负载均衡 · Nginx · API 网关</span>
       </div>
       <p class="st-sub" data-page-node-id="H6kNfHqZeMAY6gRfcJKigm">请求到达你的代码之前的四道关卡；也是「高可用」的第一层体现</p>
@@ -2307,10 +2266,10 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
   </div>
 </article>
 
-<!-- ============ 阶段 ④ ============ -->
-<section id="stage4" data-page-node-id="LdS2YazKnTplj8xtRrF6zV">
+<!-- ============ 阶段 ③ ============ -->
+<section id="stage3" data-page-node-id="LdS2YazKnTplj8xtRrF6zV">
   <div class="sec-head" data-page-node-id="AKIklBM2LXBSvMVznQxVUV">
-    <div class="sec-kicker" style="color:var(--p3)" data-page-node-id="x0IqFNPiQmpMIuQiFmmbfU">阶段 ④ · 服务端处理</div>
+    <div class="sec-kicker" style="color:var(--p3)" data-page-node-id="x0IqFNPiQmpMIuQiFmmbfU">阶段 ③ · 服务端处理</div>
     <h2 data-page-node-id="O2WamvBWoOqDn4AkZ9yQZW">进门：收、路、务、库</h2>
     <p class="desc" data-page-node-id="fgJZHmF8wAnXktuj0cH9S0">从这里开始，请求离开了网络世界，进入了你的代码。<strong data-page-node-id="NmabsKyNxVgmXBRmHEB761">这一段是整条链路上唯一「你能完全控制」的部分，也是面试官最想深挖的部分</strong>——因为只有这里能体现你的工程能力。</p>
   </div>
@@ -2327,7 +2286,7 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
     <div class="st-num bg3" data-page-node-id="Lu8v1SlbfYbjMCq8QLAK7R">08</div>
     <div class="st-meta" data-page-node-id="dhMqyMOubABAwgFEcUS8EF">
       <div class="st-top" data-page-node-id="mjmzZ20WRiXt6eaTtuKQ5B">
-        <span class="ph ph3" data-page-node-id="XnEbXB6o4dHvFkQzdadHq1">阶段 ④ 服务端处理</span>
+        <span class="ph ph3" data-page-node-id="XnEbXB6o4dHvFkQzdadHq1">阶段 ③ 服务端处理</span>
         <span class="st-title" data-page-node-id="EtQhguHeL33zvICBZNLGsc">内核到应用：epoll 与 Tomcat 线程模型</span>
       </div>
       <p class="st-sub" data-page-node-id="SvFwy5WhHAkUu3x8CO4ayN">字节流如何被唤醒成一个 Java 对象；回答「高并发」类问题的地基</p>
@@ -2483,7 +2442,7 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
     <div class="st-num bg3" data-page-node-id="1rft2vbx6cPAkZReEHiRav">09</div>
     <div class="st-meta" data-page-node-id="MLiHrvQGTIOOFPAWokHTwP">
       <div class="st-top" data-page-node-id="dA3Huqur83Pc8yqGM8kBaM">
-        <span class="ph ph3" data-page-node-id="BanJZinPH11pOdB59qXoXu">阶段 ④ 服务端处理</span>
+        <span class="ph ph3" data-page-node-id="BanJZinPH11pOdB59qXoXu">阶段 ③ 服务端处理</span>
         <span class="st-title" data-page-node-id="mP5XCZvzk44fuoe830AXQI">Filter → DispatcherServlet → Controller</span>
       </div>
       <p class="st-sub" data-page-node-id="LBxBptDu3HYK1IxPyp3tT3">请求在你的代码里的第一段旅程：穿过一串「关卡」找到那个方法</p>
@@ -2651,7 +2610,7 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
     <div class="st-num bg3" data-page-node-id="RfYtZXPgRGAOrDUn5uPVE1">10</div>
     <div class="st-meta" data-page-node-id="x5cXuA0w1J1ZJOyTLr4cNp">
       <div class="st-top" data-page-node-id="vaA8zWDAZjY6ohTOkjseiQ">
-        <span class="ph ph3" data-page-node-id="ppYAJe1sJn8GXCD6IvYRQl">阶段 ④ 服务端处理</span>
+        <span class="ph ph3" data-page-node-id="ppYAJe1sJn8GXCD6IvYRQl">阶段 ③ 服务端处理</span>
         <span class="st-title" data-page-node-id="wNQpVXBeW0HFsmxxOtrlgo">Service 业务、事务与数据层</span>
       </div>
       <p class="st-sub" data-page-node-id="IEQJyKqgridrXP1VduEvoO">链路中耗时最长、变数最大的一段；也是后端真正的「主战场」</p>
@@ -2883,13 +2842,28 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
   </div>
 </article>
 
+<!-- ============ 阶段 ④ ============ -->
+<section id="stage4">
+  <div class="sec-head">
+    <div class="sec-kicker" style="color:var(--p4)">阶段 ④ · 响应返回</div>
+    <h2>回程：返</h2>
+    <p class="desc">数据拿到了，但还没回到浏览器。<strong>编码格式、响应体积、可缓存性、跨域可用性，全在序列化与响应头这一层定死</strong>——它决定了这个接口「好不好用」，而不只是「能不能用」。</p>
+  </div>
+  <p>
+    很多人把它当成「服务端处理的尾巴」，其实是独立的一环：<strong>服务端写出的响应，还要沿原路穿过网关与反向代理</strong>，
+    而响应头里写下的 <code>Cache-Control</code>、<code>Content-Encoding</code>、<code>ETag</code>，
+    会持续影响之后每一次请求。面试时主动提「响应头设计」与「压缩策略」，是很容易被记住的加分点。
+  </p>
+</section>
+
+
 <!-- ================= 关 11 ================= -->
 <article class="station" id="s11" data-page-node-id="GyNipOLXJ3YrfNVEsRWuAH">
   <header class="st-head" data-page-node-id="LK0YZvaFGmRo4ZAspGkRfb">
     <div class="st-num bg4" data-page-node-id="5PLkikI4j1kDhlSTgqM0f7">11</div>
     <div class="st-meta" data-page-node-id="TOZPIoijupAmtYIHrCaOMM">
       <div class="st-top" data-page-node-id="E99iZZ1gRCETrygojd0s0K">
-        <span class="ph ph4" data-page-node-id="cCY59EIT8Gn91tHPjCkNXx">阶段 ⑤ 响应返回</span>
+        <span class="ph ph4" data-page-node-id="cCY59EIT8Gn91tHPjCkNXx">阶段 ④ 响应返回</span>
         <span class="st-title" data-page-node-id="dmjnUwwvnd7tjvXam6zaTM">序列化、包装与响应回程</span>
       </div>
       <p class="st-sub" data-page-node-id="HRtiPZVL6uxHzH3xMso5wR">把 Java 对象变回字节流，原路返回——这一步的细节决定接口「好不好用」</p>
@@ -3835,11 +3809,10 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
         <thead data-page-node-id="Oa8HI7z8ngcDACVxpVrJhJ"><tr data-page-node-id="slCtQtFniD8RnvrxkoYuOZ"><th style="width:130px" data-page-node-id="HBkQakytgdi2PcHBSA5V9x">阶段</th><th data-page-node-id="O59eiYaqyM2SJfLHAo6QHY">优化手段</th><th style="width:110px" data-page-node-id="hvIOZJ4CUQGz4ed7Tq7Vj4">主要收益指标</th></tr></thead>
         <tbody data-page-node-id="vZA5FTdmrUF1HBGDYZKGtt">
           <tr data-page-node-id="kdcLXR41J4CsO1n6rG5WOI"><td data-page-node-id="brsHEXvspjmJfuC3DrvzYG"><strong data-page-node-id="lvgxkghQfzFHxDXpZpShgA">① 浏览器发起</strong></td><td data-page-node-id="rMsfX6atnPCB9g10C2C4Dr">强缓存长期化 + 文件名内容哈希；HTML 用 <code data-page-node-id="BaReKKiuYFqpt6TGMPN9hg">no-cache</code>；Service Worker 离线包</td><td data-page-node-id="bCvnk0RKHVk8uRsFRvZoLN">全指标（复访几乎瞬时）</td></tr>
-          <tr data-page-node-id="KGlcPDHPK4DrYd50ezo8Ul"><td data-page-node-id="xOC5qA6DwwW9lb8cNJtkk0"><strong data-page-node-id="mR2Cr0dwhASPCYS20DmwWc">② 网络传输</strong></td><td data-page-node-id="dGz5cZuSMibFEjjn6640rE"><code data-page-node-id="OeRBORF99yqBud8jddTFAk">preconnect</code> / <code data-page-node-id="k4ee3ngemBYZACakWFdHT8">dns-prefetch</code>；HTTP/2 或 HTTP/3；TLS 1.3 + 会话复用；OCSP Stapling</td><td data-page-node-id="B0LxKITeC4L0LOI79s2SQq">TTFB、FCP、LCP</td></tr>
-          <tr data-page-node-id="7cG4CItpwDg7xkdXBPCizh"><td data-page-node-id="YM1Aj7L11yiA4CHiaLyB9C"><strong data-page-node-id="7pxMaxIm9AAI0UGFYewZ5E">③ 请求上行</strong></td><td data-page-node-id="24X7U9SvKBDMAWANQpnAQY">域名收敛；CDN 静态加速；接口合并与 BFF 聚合；预检缓存（<code data-page-node-id="RpSQNKaH1ru0yIM8JHVxwH">Max-Age</code>）</td><td data-page-node-id="hiCoL8bS6Q8Z22gr0HUn9e">TTFB、LCP</td></tr>
-          <tr data-page-node-id="q6AZa8nfMPwQT45hS4v3MB"><td data-page-node-id="HOlOrQJiEAbzmcwvTOGsA7"><strong data-page-node-id="HLHyJ3bJtDFqNM8ilEjaHK">④ 服务端处理</strong></td><td data-page-node-id="Tk3gDUV1GgeKpFf4sj4GwC">缓存（Redis / 本地缓存）；索引优化；SQL 治理；连接池调优；异步化（MQ）；接口响应裁剪与分页</td><td data-page-node-id="jEyFglTrY46RHkjutzonA3"><b data-page-node-id="ZwSqWIhlANJD4jQsou440d">TTFB（收益最大）</b></td></tr>
-          <tr data-page-node-id="iBxzmBHtDUZHuOtCkNLMoY"><td data-page-node-id="oi6rdPaLaCvCPIsvQDVqPE"><strong data-page-node-id="HIpUhUAWIx9glQZ1EPXgkr">⑤ 响应返回</strong></td><td data-page-node-id="jWyr7ieOYo0vWZnNVCym18">gzip / br 压缩；字段裁剪减少体积；<code data-page-node-id="GpyDzT78zD6Ac3grdAm4ys">Cache-Control</code> 精细化；大结果异步导出</td><td data-page-node-id="l0RJuznDTJGp0wVNfAZn5y">TTFB、LCP</td></tr>
-          <tr data-page-node-id="2h9Jr5dm1jElxmbzaxGjrS"><td data-page-node-id="pu6iEKcfCxwgXFZB3wUZMG"><strong data-page-node-id="7W7rD7jUq8KxbeyF39q4li">⑥ 渲染</strong></td><td data-page-node-id="6IGaNCx2WeEszyeWG4CnPy">关键 CSS 内联；非关键 JS 用 <code data-page-node-id="0Hm6NPyWUpbYZSlnUFPs4U">defer</code> / 动态 <code data-page-node-id="YaZwEojFcqHdE7aqSMgG83">import()</code>；图片尺寸预留防 CLS；<code data-page-node-id="qdEVro6Uvn6rBxqk0n1mAh">font-display: swap</code>；长任务切片；虚拟列表</td><td data-page-node-id="aidX741cBN3grhvnR9juE1">FCP、LCP、CLS、INP</td></tr>
+          <tr data-page-node-id="KGlcPDHPK4DrYd50ezo8Ul"><td data-page-node-id="xOC5qA6DwwW9lb8cNJtkk0"><strong data-page-node-id="mR2Cr0dwhASPCYS20DmwWc">② 网络传输</strong></td><td data-page-node-id="dGz5cZuSMibFEjjn6640rE"><code data-page-node-id="OeRBORF99yqBud8jddTFAk">preconnect</code> / <code data-page-node-id="k4ee3ngemBYZACakWFdHT8">dns-prefetch</code>；HTTP/2 或 HTTP/3；TLS 1.3 + 会话复用；OCSP Stapling；域名收敛；CDN 静态加速；接口合并与 BFF 聚合；预检缓存（<code>Max-Age</code>）</td><td data-page-node-id="B0LxKITeC4L0LOI79s2SQq">TTFB、FCP、LCP</td></tr>
+          <tr data-page-node-id="q6AZa8nfMPwQT45hS4v3MB"><td data-page-node-id="HOlOrQJiEAbzmcwvTOGsA7"><strong data-page-node-id="HLHyJ3bJtDFqNM8ilEjaHK">③ 服务端处理</strong></td><td data-page-node-id="Tk3gDUV1GgeKpFf4sj4GwC">缓存（Redis / 本地缓存）；索引优化；SQL 治理；连接池调优；异步化（MQ）；接口响应裁剪与分页</td><td data-page-node-id="jEyFglTrY46RHkjutzonA3"><b data-page-node-id="ZwSqWIhlANJD4jQsou440d">TTFB（收益最大）</b></td></tr>
+          <tr data-page-node-id="iBxzmBHtDUZHuOtCkNLMoY"><td data-page-node-id="oi6rdPaLaCvCPIsvQDVqPE"><strong data-page-node-id="HIpUhUAWIx9glQZ1EPXgkr">④ 响应返回</strong></td><td data-page-node-id="jWyr7ieOYo0vWZnNVCym18">gzip / br 压缩；字段裁剪减少体积；<code data-page-node-id="GpyDzT78zD6Ac3grdAm4ys">Cache-Control</code> 精细化；大结果异步导出</td><td data-page-node-id="l0RJuznDTJGp0wVNfAZn5y">TTFB、LCP</td></tr>
+          <tr data-page-node-id="2h9Jr5dm1jElxmbzaxGjrS"><td data-page-node-id="pu6iEKcfCxwgXFZB3wUZMG"><strong data-page-node-id="7W7rD7jUq8KxbeyF39q4li">⑤ 浏览器渲染</strong></td><td data-page-node-id="6IGaNCx2WeEszyeWG4CnPy">关键 CSS 内联；非关键 JS 用 <code data-page-node-id="0Hm6NPyWUpbYZSlnUFPs4U">defer</code> / 动态 <code data-page-node-id="YaZwEojFcqHdE7aqSMgG83">import()</code>；图片尺寸预留防 CLS；<code data-page-node-id="qdEVro6Uvn6rBxqk0n1mAh">font-display: swap</code>；长任务切片；虚拟列表</td><td data-page-node-id="aidX741cBN3grhvnR9juE1">FCP、LCP、CLS、INP</td></tr>
         </tbody>
       </table>
     </div>
@@ -3950,7 +3923,7 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
   <div class="cards" data-page-node-id="HsWPiqrSRRXfA9mB6AibJh">
     <div class="card30 p" data-page-node-id="kMHqVzpSkU3YiVHQqxkTT8">
       <div class="q" data-page-node-id="3fUdLK6k6wIqDEtAD5xu97">输入 URL 到页面展示，中间发生了什么？</div>
-      <div class="a" data-page-node-id="WKl7M0cm1TCE1l5fvgG6tU">六个阶段：<b data-page-node-id="rLWPD4azup8OtOLTbFFuNi">浏览器发起</b>（解析 URL、查缓存）→ <b data-page-node-id="e7MYJNjv8flisNpAEgUbxY">网络传输</b>（DNS、TCP 握手、TLS 握手）→ <b data-page-node-id="NigxYFeyTvHdE3ODJAZxcu">请求上行</b>（HTTP 报文、CDN、负载均衡、网关）→ <b data-page-node-id="jABiWrUaiqRRqKzXfY3ePe">服务端处理</b>（内核 epoll → Tomcat → Filter → DispatcherServlet → Service → 数据库）→ <b data-page-node-id="1CGe7F7NS6FUMp7XlnoGjJ">响应返回</b>（序列化、压缩）→ <b data-page-node-id="Rk11W3OCNuqDuQFgEyiVI2">浏览器渲染</b>（DOM、CSSOM、样式计算、JS 执行、布局、绘制、合成）。<b data-page-node-id="ojP3cbN4U0md4zZBaNWO09">说完骨架等追问，不要主动展开细节。</b></div>
+      <div class="a" data-page-node-id="WKl7M0cm1TCE1l5fvgG6tU">五个阶段：<b data-page-node-id="rLWPD4azup8OtOLTbFFuNi">浏览器发起</b>（解析 URL、查缓存）→ <b data-page-node-id="e7MYJNjv8flisNpAEgUbxY">网络传输</b>（DNS、TCP 握手、TLS 握手、HTTP 报文、CDN 与负载均衡、网关）→ <b data-page-node-id="jABiWrUaiqRRqKzXfY3ePe">服务端处理</b>（内核 epoll → Tomcat → Filter → DispatcherServlet → Service → 数据库）→ <b data-page-node-id="1CGe7F7NS6FUMp7XlnoGjJ">响应返回</b>（序列化、压缩）→ <b data-page-node-id="Rk11W3OCNuqDuQFgEyiVI2">浏览器渲染</b>（DOM、CSSOM、样式计算、JS 执行、布局、绘制、合成）。<b data-page-node-id="ojP3cbN4U0md4zZBaNWO09">说完骨架等追问，不要主动展开细节。</b></div>
     </div>
     <div class="card30 p" data-page-node-id="4pwrGnw4hCx4x3IBQPeOzc">
       <div class="q" data-page-node-id="dUV5BWg8OlzA7a3OphGlKi">为什么 TCP 握手是三次而不是两次？</div>
@@ -4162,7 +4135,7 @@ If-None-Match: "a3f8c2"          ← 协商缓存校验
   <div class="tl" data-page-node-id="CvbyBDiaOxCWz06JyXwEDu">
     <div class="tl-item" data-page-node-id="rZ3Qi1455IsnQHEmQytUVF">
       <h6 data-page-node-id="vRDubhU8ZLINqJblxjFDMa">第一层（30 秒）：给骨架</h6>
-      <p data-page-node-id="jR6xT28Uxs3lAgUl8BawvS">只讲六个阶段的名字与顺序，<b data-page-node-id="67bYaF2CdBLzkhye4Zmf2r">不展开任何细节</b>。目的是让面试官看到你有全局观。这一层就决定了他是「继续聊」还是「换一题」。</p>
+      <p data-page-node-id="jR6xT28Uxs3lAgUl8BawvS">只讲五个阶段的名字与顺序，<b data-page-node-id="67bYaF2CdBLzkhye4Zmf2r">不展开任何细节</b>。目的是让面试官看到你有全局观。这一层就决定了他是「继续聊」还是「换一题」。</p>
     </div>
     <div class="tl-item" data-page-node-id="cNWze2txjL6sLYhQKOv91N">
       <h6 data-page-node-id="YlKXcTCenQuefxvCxLWUnR">第二层（2 分钟）：每阶段一个亮点</h6>
