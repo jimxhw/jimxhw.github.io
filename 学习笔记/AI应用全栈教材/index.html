@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 应用全栈开发 · 作者 DeepSeek</title>
+<meta name="description" content="《AI 应用全栈开发》——从客服工作平台出发的 AI 应用全栈教材，五篇二十章。作者 DeepSeek。">
+<script>
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('aifs-theme'); } catch(e){}
+  if (!t) { t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<style>
+  :root{
+    --paper:#FBFAF5; --ink:#1C1B18; --ink2:#54524C; --ink3:#8F8C83;
+    --line:rgba(0,0,0,0.16); --line2:rgba(0,0,0,0.075);
+    --accent:#1F4E4A; --accent-soft:#EAF1EF;
+    --art-tp:#E2ECE9; --art-lf:#C6D8D3; --art-rt:#D4E2DE; --art-ct:#7FA69B; --art-edge:#5E9086;
+    --art-axis:rgba(31,78,74,0.26); --art-shadow:rgba(31,78,74,0.10);
+    --grain:.052; --blend:multiply;
+    --grad:rgba(31,78,74,0.055);
+  }
+  html[data-theme="dark"]{
+    --paper:#121316; --ink:#EAE8E0; --ink2:#A8A69D; --ink3:#7B7971;
+    --line:rgba(255,255,255,0.17); --line2:rgba(255,255,255,0.08);
+    --accent:#8CC0B3; --accent-soft:#182724;
+    --art-tp:#1F2E2A; --art-lf:#101917; --art-rt:#162421; --art-ct:#40645C; --art-edge:#5C8D81;
+    --art-axis:rgba(140,192,179,0.34); --art-shadow:rgba(0,0,0,0.55);
+    --grain:.07; --blend:screen;
+    --grad:rgba(140,192,179,0.05);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper); color:var(--ink); overflow-x:hidden;
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",SimSun,serif;
+    -webkit-font-smoothing:antialiased;
+    transition:background .3s ease, color .3s ease;
+  }
+  .sans,h1,h2,h3,h4,.meta,.toc-head,.p-en,.st,.eyebrow,.en-sub,.foot{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  a{color:inherit; text-decoration:none}
+
+  /* ---------- 纸纹 ---------- */
+  .grain{
+    position:fixed; inset:0; width:100%; height:100%; z-index:3;
+    pointer-events:none; opacity:var(--grain); mix-blend-mode:var(--blend);
+  }
+  .vignette{
+    position:fixed; inset:0; z-index:2; pointer-events:none;
+    background:radial-gradient(120% 90% at 62% 26%, transparent 38%, var(--grad) 100%);
+  }
+
+  /* ---------- 主题按钮 ---------- */
+  .theme-toggle{
+    position:fixed; top:20px; right:20px; z-index:20; width:38px; height:38px;
+    border:1px solid var(--line); border-radius:50%; background:var(--paper);
+    color:var(--ink2); display:grid; place-items:center; cursor:pointer;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .theme-toggle:hover{background:var(--accent-soft); color:var(--accent); border-color:var(--accent)}
+  .theme-toggle svg{width:17px; height:17px}
+  .i-sun{display:none}
+  html[data-theme="dark"] .i-sun{display:block}
+  html[data-theme="dark"] .i-moon{display:none}
+
+  /* ---------- 封面 ---------- */
+  .cover{
+    position:relative; min-height:100vh; min-height:100svh; display:flex; flex-direction:column;
+    padding:26px clamp(22px,4.6vw,64px) 30px; overflow:hidden;
+  }
+  /* 裁切标记：印刷物的四角记号 */
+  .marks i{position:absolute; width:15px; height:15px; border-color:var(--line); border-style:solid; border-width:0}
+  .marks .tl{left:24px; top:24px; border-left-width:1px; border-top-width:1px}
+  .marks .tr{right:24px; top:24px; border-right-width:1px; border-top-width:1px}
+  .marks .bl{left:24px; bottom:24px; border-left-width:1px; border-bottom-width:1px}
+  .marks .br{right:24px; bottom:24px; border-right-width:1px; border-bottom-width:1px}
+
+  .topbar{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+    font-size:10.5px; letter-spacing:.3em; color:var(--ink3);
+    padding-bottom:16px; border-bottom:1px solid var(--line2);
+  }
+
+  .cover-body{
+    flex:1; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(20px,3vw,48px); align-items:center;
+    padding:clamp(16px,2.4vh,30px) 0 clamp(30px,6.4vh,72px);
+  }
+
+  .eyebrow{
+    font-size:10.5px; letter-spacing:.42em; color:var(--accent);
+    margin-bottom:clamp(16px,2.6vh,30px);
+  }
+  h1{
+    font-size:clamp(37px,6.4vw,74px); line-height:1.16; font-weight:600;
+    letter-spacing:.055em;
+  }
+  h1 .ln{display:block}
+  h1 .ai{letter-spacing:.14em}
+  .en-sub{
+    margin-top:clamp(14px,2.2vh,24px); font-size:10px; letter-spacing:.3em;
+    color:var(--ink3); text-transform:uppercase;
+  }
+  .rule{width:52px; height:1px; background:var(--ink); margin:clamp(18px,2.6vh,30px) 0}
+  .lede{
+    font-size:clamp(14px,1.35vw,16.5px); line-height:2.1; color:var(--ink2);
+    max-width:30em;
+  }
+  .lede em{font-style:normal; color:var(--ink); border-bottom:1px solid var(--line)}
+
+  .start{
+    display:inline-flex; align-items:center; gap:10px; margin-top:clamp(20px,2.8vh,30px);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+    font-size:12px; letter-spacing:.16em; color:var(--accent);
+    padding-bottom:4px; border-bottom:1px solid var(--line);
+    transition:border-color .2s ease, gap .2s ease;
+  }
+  .start:hover{border-color:var(--accent); gap:15px}
+  .start svg{width:13px; height:13px}
+
+  .meta{
+    margin-top:clamp(22px,3.2vh,38px); display:flex; flex-wrap:wrap;
+    gap:9px 22px; font-size:11.5px; letter-spacing:.12em; color:var(--ink3);
+  }
+  .meta .who{color:var(--ink); font-weight:600}
+  .meta span{display:inline-flex; align-items:center; gap:9px}
+  .meta .dot{width:3px; height:3px; border-radius:50%; background:var(--ink3); opacity:.7}
+
+  /* 主视觉 */
+  .art-wrap{position:relative; display:flex; flex-direction:column; align-items:center}
+  .art{width:100%; max-width:470px; height:auto; overflow:visible}
+  .art .shadow{fill:var(--art-shadow); opacity:.8}
+  .art .axis{stroke:var(--art-axis); stroke-width:1; stroke-dasharray:2 6}
+  .art .lf{fill:var(--art-lf)}
+  .art .rt{fill:var(--art-rt)}
+  .art .tp{fill:var(--art-tp); stroke:var(--art-edge); stroke-width:1.1}
+  .art .ct{fill:none; stroke:var(--art-ct); stroke-width:.85; opacity:.62}
+  .art .lead{stroke:var(--art-edge); stroke-width:.8; opacity:.55}
+  .art .num{
+    font-family:"Songti SC","Source Han Serif SC",SimSun,serif;
+    font-size:13px; fill:var(--art-edge); letter-spacing:.1em; opacity:.85;
+  }
+  .art .lay5 .tp{stroke-width:1.5}
+  /* 制图题注 */
+  .plate{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+    font-size:9px; letter-spacing:.28em; color:var(--ink3); text-align:center;
+    margin-top:-4px; text-transform:uppercase;
+  }
+
+  /* 竖排副题 */
+  .vtext{
+    position:absolute; right:-10px; top:46%; transform:translateY(-50%);
+    writing-mode:vertical-rl; font-size:11px; letter-spacing:.5em;
+    color:var(--ink3); opacity:.9; user-select:none;
+  }
+
+  /* 封面底部 */
+  .cover-foot{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:16px;
+    padding-top:16px; border-top:1px solid var(--line2);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+    font-size:10.5px; letter-spacing:.24em; color:var(--ink3);
+  }
+  .scroll-cue{display:inline-flex; align-items:center; gap:11px}
+  .scroll-cue i{
+    display:block; width:34px; height:1px; background:var(--line);
+    position:relative; overflow:hidden;
+  }
+  .scroll-cue i::after{
+    content:""; position:absolute; inset:0; width:12px;
+    background:var(--accent); animation:slide 2.4s cubic-bezier(.5,0,.5,1) infinite;
+  }
+  @keyframes slide{0%{transform:translateX(-14px)}55%{transform:translateX(34px)}100%{transform:translateX(34px)}}
+
+  /* 入场：轻微上浮，一次即止 */
+  @keyframes rise{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
+  .cover-text>*{animation:rise .78s cubic-bezier(.2,.7,.2,1) both}
+  .cover-text>*:nth-child(1){animation-delay:.04s}
+  .cover-text>*:nth-child(2){animation-delay:.1s}
+  .cover-text>*:nth-child(3){animation-delay:.18s}
+  .cover-text>*:nth-child(4){animation-delay:.24s}
+  .cover-text>*:nth-child(5){animation-delay:.3s}
+  .cover-text>*:nth-child(6){animation-delay:.4s}
+  .cover-text>*:nth-child(7){animation-delay:.48s}
+  .art{animation:rise 1.05s cubic-bezier(.2,.7,.2,1) .16s both}
+
+  /* ---------- 目录 ---------- */
+  .toc{max-width:1000px; margin:0 auto; padding:clamp(56px,9vh,110px) clamp(22px,4.6vw,64px) 40px}
+  .toc-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:20px; padding-bottom:18px; border-bottom:1px solid var(--ink);
+  }
+  .toc-head h2{
+    font-family:"Songti SC",serif; font-size:clamp(26px,3.4vw,34px);
+    font-weight:600; letter-spacing:.3em;
+  }
+  .toc-head .en{display:block; font-size:9.5px; letter-spacing:.34em; color:var(--ink3); margin-top:8px; font-weight:400}
+  .prog{text-align:right; font-size:10.5px; letter-spacing:.16em; color:var(--ink3); white-space:nowrap}
+  .prog b{font-size:15px; color:var(--accent); font-weight:600; letter-spacing:.04em}
+  .bar{width:112px; height:2px; background:var(--line2); margin-top:9px; margin-left:auto; overflow:hidden}
+  .bar i{display:block; height:100%; background:var(--accent)}
+
+  .part{
+    display:grid; grid-template-columns:132px minmax(0,1fr); gap:clamp(14px,2.4vw,32px);
+    padding:clamp(26px,4vh,40px) 0; border-bottom:1px solid var(--line2);
+  }
+  .part:last-of-type{border-bottom:none}
+  .p-mark{display:flex; flex-direction:column; gap:8px}
+  .p-cn{
+    font-family:"Songti SC",serif; font-size:30px; line-height:1; color:var(--accent);
+    letter-spacing:.08em; opacity:.9;
+  }
+  .p-en{font-size:8.5px; letter-spacing:.2em; color:var(--ink3); line-height:1.6}
+  .p-name{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+    font-size:16.5px; font-weight:600; letter-spacing:.04em; margin-bottom:16px;
+  }
+  .ch-list{list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:2px 26px}
+  .ch-list li{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif; font-size:13.5px}
+  .ch-list a,.ch-list li.off{
+    display:flex; align-items:baseline; gap:10px; padding:7px 8px 7px 0;
+    border-radius:3px; transition:color .18s ease, background .18s ease;
+  }
+  .ch-list .no{
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:10.5px; color:var(--ink3);
+    flex:0 0 auto; width:1.6em; letter-spacing:.02em; padding-top:1px;
+  }
+  .ch-list .nm{flex:1; min-width:0}
+  .ch-list .st{
+    font-size:9px; letter-spacing:.12em; color:var(--ink3); opacity:0;
+    flex:0 0 auto; transition:opacity .18s ease;
+  }
+  .ch-list li.on a{color:var(--ink); border-bottom:1px solid transparent}
+  .ch-list li.on a:hover{color:var(--accent); background:var(--accent-soft)}
+  .ch-list li.on a:hover .st{opacity:.75}
+  .ch-list li.on a:hover .no{color:var(--accent)}
+  .ch-list li.off{color:var(--ink3); opacity:.62}
+
+  /* ---------- 收尾 ---------- */
+  .colophon{
+    max-width:1000px; margin:0 auto; padding:0 clamp(22px,4.6vw,64px) 90px;
+  }
+  .colophon-inner{
+    border-top:1px solid var(--ink); padding-top:26px;
+    display:grid; grid-template-columns:132px minmax(0,1fr); gap:clamp(14px,2.4vw,32px);
+  }
+  .colophon .lb{font-size:9.5px; letter-spacing:.24em; color:var(--ink3); font-family:-apple-system,sans-serif; padding-top:4px}
+  .colophon p{font-size:14px; line-height:2.15; color:var(--ink2); max-width:34em}
+  .colophon p+p{margin-top:12px}
+  .colophon .sig{
+    margin-top:26px; font-family:-apple-system,sans-serif; font-size:10.5px;
+    letter-spacing:.26em; color:var(--ink3); display:flex; gap:16px; align-items:center;
+  }
+  .colophon .sig b{color:var(--ink); font-weight:600; letter-spacing:.14em}
+
+  @media (max-width:900px){
+    .cover-body{grid-template-columns:1fr; gap:20px; padding:24px 0 16px}
+    .art-wrap{order:-1; margin-bottom:2px}
+    .art{max-width:min(74vw,320px)}
+    .vtext{display:none}
+    .marks{display:none}
+    .topbar{padding-right:48px}
+    .lede{max-width:none}
+    .part{grid-template-columns:1fr; gap:12px}
+    .p-mark{flex-direction:row; align-items:baseline; gap:12px}
+    .p-cn{font-size:22px}
+    .colophon-inner{grid-template-columns:1fr; gap:12px}
+  }
+  @media (max-width:700px){
+    .plate{letter-spacing:.2em}
+  }
+  @media (max-width:600px){
+    .ch-list{grid-template-columns:1fr; gap:1px}
+    .topbar{font-size:9px; letter-spacing:.2em}
+    .cover-foot{font-size:9px; letter-spacing:.16em}
+    h1{letter-spacing:.03em}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .scroll-cue i::after{animation:none}
+    .cover-text>*,.art{animation:none !important}
+    html{scroll-behavior:auto}
+  }
+  @media print{
+    .theme-toggle,.grain,.vignette,.scroll-cue{display:none}
+    .cover{min-height:auto; page-break-after:always}
+  }
+</style>
+</head>
+<body>
+
+<svg class="grain" aria-hidden="true">
+  <filter id="gr"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+  <feColorMatrix type="saturate" values="0"/></filter>
+  <rect width="100%" height="100%" filter="url(#gr)"/>
+</svg>
+<div class="vignette" aria-hidden="true"></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换深色 / 浅色">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.8 6.8 0 0 0 11 11z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></svg>
+</button>
+
+<!-- ============================ 封面 ============================ -->
+<header class="cover">
+  <div class="marks" aria-hidden="true"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+
+  <div class="topbar">
+    <span>教材 · 二〇二六</span>
+    <span>五篇 · 二十章</span>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-text">
+      <div class="eyebrow">从客服工作平台出发</div>
+      <h1><span class="ln"><span class="ai">AI</span> 应用</span><span class="ln">全栈开发</span></h1>
+      <div class="en-sub">Full-Stack AI Application Development</div>
+      <div class="rule"></div>
+      <p class="lede">从一个模型调用，到一件<em>能被交付</em>的东西。<br>
+      写给已经在写代码、但不满足于只写页面的人。</p>
+      <a class="start" href="第01章-大模型应用的基本形态.html">从第 1 章开始
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </a>
+      <div class="meta">
+        <span>作者 <b class="who">DeepSeek</b></span>
+        <span class="dot"></span>
+        <span>2026</span>
+        <span class="dot"></span>
+        <span>从模型到交付</span>
+      </div>
+    </div>
+
+    <div class="art-wrap">
+      <svg class="art" viewBox="0 0 560 545" role="img" aria-label="五层堆叠示意图，对应全书五篇">
+          <title>五层堆叠</title>
+          <defs><filter id="soft" x="-40%" y="-120%" width="180%" height="340%"><feGaussianBlur stdDeviation="11"/></filter></defs>
+          <ellipse class="shadow" cx="300" cy="516" rx="168" ry="18" filter="url(#soft)"/>
+          <line class="axis" x1="300" y1="-7" x2="300" y2="534"/>
+          <g class="lay lay0">
+            <path class="lf" d="M115,390 L300,495 L300,508 L115,403 Z"/>
+            <path class="rt" d="M300,495 L485,390 L485,403 L300,508 Z"/>
+            <path class="tp" d="M300,285 L485,390 L300,495 L115,390 Z"/>
+            <path class="ct" d="M300,310.2 L440.6,390 L300,469.8 L159.4,390 Z"/>
+            <path class="ct" d="M300,333.3 L399.9,390 L300,446.7 L200.1,390 Z"/>
+            <path class="ct" d="M300,356.4 L359.2,390 L300,423.6 L240.8,390 Z"/>
+            <path class="ct" d="M300,376.35 L324.05,390 L300,403.65 L275.95,390 Z"/>
+            <path class="lead" d="M109,390 L89,390"/>
+            <text class="num" x="81" y="395.5" text-anchor="end">一</text>
+          </g>
+          <g class="lay lay1">
+            <path class="lf" d="M117.22,322 L300,425.74 L300,438.74 L117.22,335 Z"/>
+            <path class="rt" d="M300,425.74 L482.78,322 L482.78,335 L300,438.74 Z"/>
+            <path class="tp" d="M300,218.26 L482.78,322 L300,425.74 L117.22,322 Z"/>
+            <path class="ct" d="M300,243.158 L438.913,322 L300,400.842 L161.087,322 Z"/>
+            <path class="ct" d="M300,265.98 L398.701,322 L300,378.02 L201.299,322 Z"/>
+            <path class="ct" d="M300,288.803 L358.49,322 L300,355.197 L241.51,322 Z"/>
+            <path class="ct" d="M300,308.514 L323.761,322 L300,335.486 L276.239,322 Z"/>
+            <path class="lead" d="M111.22,322 L91.22,322"/>
+            <text class="num" x="83.22" y="327.5" text-anchor="end">二</text>
+          </g>
+          <g class="lay lay2">
+            <path class="lf" d="M119.44,254 L300,356.48 L300,369.48 L119.44,267 Z"/>
+            <path class="rt" d="M300,356.48 L480.56,254 L480.56,267 L300,369.48 Z"/>
+            <path class="tp" d="M300,151.52 L480.56,254 L300,356.48 L119.44,254 Z"/>
+            <path class="ct" d="M300,176.115 L437.226,254 L300,331.885 L162.774,254 Z"/>
+            <path class="ct" d="M300,198.661 L397.502,254 L300,309.339 L202.498,254 Z"/>
+            <path class="ct" d="M300,221.206 L357.779,254 L300,286.794 L242.221,254 Z"/>
+            <path class="ct" d="M300,240.678 L323.473,254 L300,267.322 L276.527,254 Z"/>
+            <path class="lead" d="M113.44,254 L93.44,254"/>
+            <text class="num" x="85.44" y="259.5" text-anchor="end">三</text>
+          </g>
+          <g class="lay lay3">
+            <path class="lf" d="M121.66,186 L300,287.22 L300,300.22 L121.66,199 Z"/>
+            <path class="rt" d="M300,287.22 L478.34,186 L478.34,199 L300,300.22 Z"/>
+            <path class="tp" d="M300,84.78 L478.34,186 L300,287.22 L121.66,186 Z"/>
+            <path class="ct" d="M300,109.073 L435.538,186 L300,262.927 L164.462,186 Z"/>
+            <path class="ct" d="M300,131.341 L396.304,186 L300,240.659 L203.696,186 Z"/>
+            <path class="ct" d="M300,153.61 L357.069,186 L300,218.39 L242.931,186 Z"/>
+            <path class="ct" d="M300,172.841 L323.184,186 L300,199.159 L276.816,186 Z"/>
+            <path class="lead" d="M115.66,186 L95.66,186"/>
+            <text class="num" x="87.66" y="191.5" text-anchor="end">四</text>
+          </g>
+          <g class="lay lay4">
+            <path class="lf" d="M123.88,118 L300,217.96 L300,230.96 L123.88,131 Z"/>
+            <path class="rt" d="M300,217.96 L476.12,118 L476.12,131 L300,230.96 Z"/>
+            <path class="tp" d="M300,18.04 L476.12,118 L300,217.96 L123.88,118 Z"/>
+            <path class="ct" d="M300,42.0304 L433.851,118 L300,193.97 L166.149,118 Z"/>
+            <path class="ct" d="M300,64.0216 L395.105,118 L300,171.978 L204.895,118 Z"/>
+            <path class="ct" d="M300,86.0128 L356.358,118 L300,149.987 L243.642,118 Z"/>
+            <path class="ct" d="M300,105.005 L322.896,118 L300,130.995 L277.104,118 Z"/>
+            <path class="lead" d="M117.88,118 L97.88,118"/>
+            <text class="num" x="89.88" y="123.5" text-anchor="end">五</text>
+          </g>
+        </svg>
+      <div class="plate">Fig. 01 — 五层 · 五篇</div>
+      <div class="vtext" aria-hidden="true">从模型到交付</div>
+    </div>
+  </div>
+
+  <div class="cover-foot">
+    <span class="scroll-cue"><i></i>向下 · 目录</span>
+    <span>2 / 20 章</span>
+  </div>
+</header>
+
+<!-- ============================ 目录 ============================ -->
+<section class="toc" id="toc">
+  <div class="toc-head">
+    <h2>目录<span class="en">Contents</span></h2>
+    <div class="prog">
+      已完成 <b>2</b> / 20 章
+      <div class="bar"><i style="width:10.0%"></i></div>
+    </div>
+  </div>
+
+      <section class="part">
+        <div class="p-mark">
+          <span class="p-cn">一</span>
+          <span class="p-en">MODEL & DATA</span>
+        </div>
+        <div class="p-main">
+          <h3 class="p-name">模型与数据</h3>
+          <ol class="ch-list">
+            <li class="on"><a href="第01章-大模型应用的基本形态.html"><span class="no">01</span><span class="nm">大模型应用的基本形态</span><span class="st">已写</span></a></li>
+            <li class="on"><a href="第02章-提示工程的最小充分集.html"><span class="no">02</span><span class="nm">提示工程的最小充分集</span><span class="st">已写</span></a></li>
+            <li class="off"><span class="no">03</span><span class="nm">面向评估的数据处理</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">04</span><span class="nm">第一次评估实践</span><span class="st">待写</span></li>
+          </ol>
+        </div>
+      </section>
+      <section class="part">
+        <div class="p-mark">
+          <span class="p-cn">二</span>
+          <span class="p-en">INTERFACE</span>
+        </div>
+        <div class="p-main">
+          <h3 class="p-name">界面</h3>
+          <ol class="ch-list">
+            <li class="off"><span class="no">05</span><span class="nm">流式输出</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">06</span><span class="nm">生成中的状态管理</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">07</span><span class="nm">人机协作界面</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">08</span><span class="nm">交互度量</span><span class="st">待写</span></li>
+          </ol>
+        </div>
+      </section>
+      <section class="part">
+        <div class="p-mark">
+          <span class="p-cn">三</span>
+          <span class="p-en">SERVICE</span>
+        </div>
+        <div class="p-main">
+          <h3 class="p-name">服务</h3>
+          <ol class="ch-list">
+            <li class="off"><span class="no">09</span><span class="nm">从脚本到服务</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">10</span><span class="nm">异步与并发</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">11</span><span class="nm">缓存与成本</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">12</span><span class="nm">容器化部署</span><span class="st">待写</span></li>
+          </ol>
+        </div>
+      </section>
+      <section class="part">
+        <div class="p-mark">
+          <span class="p-cn">四</span>
+          <span class="p-en">RETRIEVAL & TOOLS</span>
+        </div>
+        <div class="p-main">
+          <h3 class="p-name">检索与工具</h3>
+          <ol class="ch-list">
+            <li class="off"><span class="no">13</span><span class="nm">向量检索</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">14</span><span class="nm">RAG 全链路</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">15</span><span class="nm">工具调用</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">16</span><span class="nm">Agent 编排</span><span class="st">待写</span></li>
+          </ol>
+        </div>
+      </section>
+      <section class="part">
+        <div class="p-mark">
+          <span class="p-cn">五</span>
+          <span class="p-en">EVAL & PRODUCTION</span>
+        </div>
+        <div class="p-main">
+          <h3 class="p-name">评估与生产</h3>
+          <ol class="ch-list">
+            <li class="off"><span class="no">17</span><span class="nm">评估体系</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">18</span><span class="nm">可观测性</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">19</span><span class="nm">安全与合规</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">20</span><span class="nm">把项目讲成能力</span><span class="st">待写</span></li>
+            <li class="off"><span class="no">A</span><span class="nm">附录　Java 够用版速查</span><span class="st">待写</span></li>
+          </ol>
+        </div>
+      </section>
+
+</section>
+
+<!-- ============================ 跋 ============================ -->
+<section class="colophon">
+  <div class="colophon-inner">
+    <div class="lb">关于本书</div>
+    <div>
+      <p>这本书的每一章都从一个具体的失败开始：一个答得很准却没人用的问答机器人，一段把人耗到放弃的等待，一次自相矛盾的日志丢掉的信任。技术讲解只占一半，另一半是判断——在什么位置做、做到哪一层就够、以及怎样证明它真的有效。</p>
+      <p>全书五篇二十章，按「模型与数据 → 界面 → 服务 → 检索与工具 → 评估与生产」推进。每一节末尾给出答案，因为练习的价值在于对照，不在于憋着。</p>
+      <div class="sig"><b>DeepSeek</b><span>2026 · 武汉</span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var html = document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    try { localStorage.setItem('aifs-theme', next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

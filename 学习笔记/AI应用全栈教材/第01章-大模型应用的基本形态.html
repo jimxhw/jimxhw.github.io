@@ -71,7 +71,8 @@
     position:sticky; top:0; z-index:2; background:var(--side-bg);
     padding:18px 40px 14px 18px; border-bottom:1px solid var(--side-line);
   }
-  .side-title{font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.5}
+  .side-title{display:block; font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.5; text-decoration:none; padding-right:6px}
+  .side-title:hover{color:var(--accent)}
   .side-sub{font-size:11.5px; color:var(--ink3); margin-top:3px; letter-spacing:.01em}
   .side-collapse{
     position:absolute; top:17px; right:12px; width:24px; height:24px; border-radius:6px;
@@ -279,7 +280,7 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="side-top">
-      <div class="side-title">AI 应用全栈开发</div>
+      <a class="side-title" href="index.html" title="返回封面与目录">AI 应用全栈开发</a>
       <div class="side-sub">从客服工作平台出发 · 20 章</div>
       <button class="side-collapse" id="sideCollapse" aria-label="收起目录" title="收起目录"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
     </div>
