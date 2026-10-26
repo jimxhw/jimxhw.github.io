@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 5 章 流式输出 · AI 应用全栈开发</title>
+<meta name="description" content="AI 应用全栈开发教材第 5 章：TTFT 与等待感知、SSE 解析与中文拆包、增量渲染的三个坑、中断与降级、服务端代理的必要性。">
+<script>
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('aifs-theme'); } catch(e){}
+  if (!t) { t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+  if (window.innerWidth >= 1024) document.documentElement.classList.add('nav-open');
+})();
+</script>
+<style>
+
+  :root{
+    --paper:#FDFCF8; --card:#FFFFFF; --ink:#1C1B18; --ink2:#54524C; --ink3:#8A877E;
+    --line:rgba(0,0,0,0.13); --line2:rgba(0,0,0,0.07);
+    --accent:#1F4E4A; --accent-bg:#EAF1EF; --accent-line:#B9CFC9;
+    --warn:#7A4A12; --warn-bg:#FBF3E4; --warn-ink:#4A2E0A;
+    --code-bg:#F6F5F0; --code-line:rgba(0,0,0,0.06);
+    --obj-ink:#1a3d3a; --pre-ink:#2A2A26;
+    --ans-bg:#F2F7F5; --ans-ink:#22302D;
+    --k:#7A3E12; --s:#3A6B3A; --c:#91908A;
+    --side-bg:#F7F6F1; --side-line:rgba(0,0,0,0.09);
+    --side-hover:rgba(0,0,0,0.045); --side-active:#EAF1EF;
+    --shadow:0 6px 22px rgba(0,0,0,0.08);
+    --side-w:292px;
+  }
+  html[data-theme="dark"]{
+    --paper:#141518; --card:#1B1D21; --ink:#E7E5DE; --ink2:#A6A49B; --ink3:#7E7C74;
+    --line:rgba(255,255,255,0.15); --line2:rgba(255,255,255,0.07);
+    --accent:#7FB3A8; --accent-bg:#1A2A27; --accent-line:#35524C;
+    --warn:#D8A45E; --warn-bg:#251E14; --warn-ink:#D9C6A4;
+    --code-bg:#1A1C20; --code-line:rgba(255,255,255,0.06);
+    --obj-ink:#BBD3CD; --pre-ink:#D6D4CD;
+    --ans-bg:#1A2A27; --ans-ink:#C7D5D1;
+    --k:#D8A45E; --s:#93B98F; --c:#6F6D66;
+    --side-bg:#101114; --side-line:rgba(255,255,255,0.08);
+    --side-hover:rgba(255,255,255,0.055); --side-active:#1A2A27;
+    --shadow:0 6px 22px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",SimSun,serif;
+    font-size:16.5px; line-height:1.95; -webkit-font-smoothing:antialiased;
+    transition:background .22s ease, color .22s ease;
+  }
+  h1,h2,h3,h4,h5,.sans{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  a{color:var(--accent)}
+
+  /* ---------- 侧边栏 ---------- */
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:var(--side-w); z-index:60;
+    background:var(--side-bg); border-right:1px solid var(--side-line);
+    overflow-y:auto; overscroll-behavior:contain;
+    transform:translateX(-100%); visibility:hidden;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear .26s;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    padding-bottom:48px;
+  }
+  html.nav-open .sidebar{transform:none; visibility:visible;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s}
+  .side-top{
+    position:sticky; top:0; z-index:2; background:var(--side-bg);
+    padding:18px 40px 14px 18px; border-bottom:1px solid var(--side-line);
+  }
+  .side-title{display:block; font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.5; text-decoration:none; padding-right:6px}
+  .side-title:hover{color:var(--accent)}
+  .side-sub{font-size:11.5px; color:var(--ink3); margin-top:3px; letter-spacing:.01em}
+  .side-collapse{
+    position:absolute; top:17px; right:12px; width:24px; height:24px; border-radius:6px;
+    border:1px solid var(--line2); background:transparent; color:var(--ink3);
+    cursor:pointer; display:grid; place-items:center;
+  }
+  .side-collapse svg{width:13px; height:13px; display:block}
+  .side-collapse:hover{background:var(--side-hover); color:var(--ink2)}
+
+  .side-nav{padding:12px 10px 0}
+  .ng{margin-bottom:1px}
+  .ng-btn{
+    width:100%; display:flex; align-items:center; gap:6px; padding:9px 10px;
+    border:none; background:none; cursor:pointer; text-align:left; border-radius:6px;
+    font-family:inherit; font-size:11.5px; font-weight:600; color:var(--ink3);
+    letter-spacing:.06em; line-height:1.5;
+  }
+  .ng-btn:hover{background:var(--side-hover); color:var(--ink2)}
+  .ng-btn .cv{margin-left:auto; display:flex; align-items:center; opacity:.5; transition:transform .2s ease}
+  .ng-btn .cv svg{width:10px; height:10px; display:block}
+  .ng.open .ng-btn .cv{transform:rotate(90deg)}
+  .ng-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .24s ease}
+  .ng.open .ng-body{grid-template-rows:1fr}
+  .ng-body>div{overflow:hidden}
+
+  .ch{margin:1px 0}
+  .ch-link{
+    display:block; padding:6px 10px 6px 18px; font-size:12.8px; line-height:1.55;
+    color:var(--ink2); text-decoration:none; border-radius:6px;
+  }
+  .ch-link:hover{background:var(--side-hover); color:var(--ink)}
+  .ch-link.cur{color:var(--accent); font-weight:600; background:var(--side-active)}
+  .ch-link.soon{color:var(--ink3); opacity:.6; cursor:default}
+  .ch-link.soon:hover{background:none; color:var(--ink3)}
+
+  .sec-list{margin:1px 0 8px}
+  .sec-list a{
+    display:block; padding:5px 10px 5px 32px; font-size:12.2px; line-height:1.55;
+    color:var(--ink3); text-decoration:none; border-radius:5px;
+    border-left:2px solid transparent;
+  }
+  .sec-list a:hover{color:var(--ink2); background:var(--side-hover)}
+  .sec-list a.active{color:var(--accent); background:var(--side-active); border-left-color:var(--accent)}
+
+  /* ---------- 浮动按钮 ---------- */
+  .nav-toggle,.theme-toggle{
+    position:fixed; top:16px; z-index:70; width:38px; height:38px; cursor:pointer;
+    border:1px solid var(--line); background:var(--card); color:var(--ink2);
+    display:grid; place-items:center; box-shadow:var(--shadow);
+    transition:opacity .2s ease, transform .2s ease, background .2s ease;
+  }
+  .nav-toggle{left:16px; border-radius:10px; opacity:0; pointer-events:none; transform:translateX(-6px)}
+  html:not(.nav-open) .nav-toggle{opacity:1; pointer-events:auto; transform:none}
+  .nav-toggle:hover,.theme-toggle:hover{background:var(--accent-bg); color:var(--accent)}
+  .theme-toggle{right:18px; border-radius:50%}
+  .theme-toggle svg,.nav-toggle svg{width:17px; height:17px}
+  .i-sun{display:none}
+  html[data-theme="dark"] .i-sun{display:block}
+  html[data-theme="dark"] .i-moon{display:none}
+
+  .scrim{
+    position:fixed; inset:0; z-index:55; background:rgba(0,0,0,.42);
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+
+  /* ---------- 正文 ---------- */
+  .content{transition:margin-left .26s cubic-bezier(.4,0,.2,1)}
+  html.nav-open .content{margin-left:var(--side-w)}
+  .wrap{max-width:820px; margin:0 auto; padding:64px 36px 100px}
+
+  .chapter-head{border-bottom:2px solid var(--ink); padding-bottom:22px; margin-bottom:34px}
+  .ch-no{font-family:-apple-system,sans-serif; font-size:13px; color:var(--accent); letter-spacing:.14em; margin-bottom:10px}
+  .ch-title{font-family:-apple-system,sans-serif; font-size:32px; font-weight:600; line-height:1.35; letter-spacing:-.01em}
+  .ch-sub{font-family:-apple-system,sans-serif; font-size:15px; color:var(--ink2); margin-top:10px}
+
+  h2{font-family:-apple-system,sans-serif; font-size:23px; font-weight:600; margin:56px 0 4px; padding-left:14px; border-left:4px solid var(--accent); line-height:1.4; scroll-margin-top:28px}
+  h3{font-family:-apple-system,sans-serif; font-size:17px; font-weight:600; margin:34px 0 10px; scroll-margin-top:28px}
+  h4{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin:24px 0 8px; color:var(--accent)}
+  p{margin-bottom:17px}
+  .lead{color:var(--ink2)}
+
+  ul,ol{margin:0 0 18px 0; padding-left:24px}
+  li{margin-bottom:9px}
+  li::marker{color:var(--accent)}
+  strong{font-weight:600}
+
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13.8px; background:rgba(0,0,0,0.045); padding:1px 4px; border-radius:3px}
+  html[data-theme="dark"] code{background:rgba(255,255,255,0.08)}
+
+  .obj{background:var(--accent-bg); border-radius:5px; padding:16px 22px; margin:22px 0 26px; font-family:-apple-system,sans-serif; font-size:14px; color:var(--obj-ink); line-height:1.9}
+  .obj .h{font-weight:600; font-size:12.5px; letter-spacing:.05em; margin-bottom:7px}
+  .obj div{margin-bottom:2px}
+  .dep{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin:-14px 0 26px; letter-spacing:.02em}
+
+  .story{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:24px 28px; margin:22px 0; font-size:16px}
+  .story .tag{font-family:-apple-system,sans-serif; font-size:11.5px; color:var(--ink3); letter-spacing:.1em; margin-bottom:10px; display:block}
+  .story p:last-child{margin-bottom:0}
+
+  .exam{background:var(--code-bg); border-radius:6px; margin:22px 0; overflow:hidden; border:1px solid var(--code-line)}
+  .exam .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--accent); padding:12px 20px 0; letter-spacing:.03em}
+  .exam pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.8px; line-height:1.8; white-space:pre-wrap; padding:12px 20px 18px; color:var(--pre-ink)}
+  .exam .out{padding:12px 20px 16px; border-top:1px dashed var(--line); font-family:-apple-system,sans-serif; font-size:13px; color:var(--ink2); background:rgba(0,0,0,0.015)}
+  .exam .out b{color:var(--accent); font-weight:600}
+  html[data-theme="dark"] .exam .out{background:rgba(255,255,255,0.02)}
+  .k{color:var(--k); font-weight:500}
+  .s{color:var(--s)}
+  .c{color:var(--c); font-style:italic}
+
+  .caution{background:var(--warn-bg); border-radius:6px; padding:18px 22px; margin:24px 0; font-size:15.5px}
+  .caution .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--warn); margin-bottom:9px; letter-spacing:.05em}
+  .caution ol{margin:0; padding-left:20px; color:var(--warn-ink)}
+  .caution li{margin-bottom:9px}
+
+  .drill{margin:22px 0; font-size:15.5px}
+  .drill .g{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); font-weight:600; margin:16px 0 7px; letter-spacing:.05em}
+  .drill ol{padding-left:22px; margin-bottom:4px}
+
+  .qa{margin:20px 0 4px}
+  .qa .q{font-size:15.5px; margin-bottom:0}
+  .qa .q b{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); letter-spacing:.05em; margin-right:6px}
+  .ans{background:var(--ans-bg); border-left:3px solid var(--accent-line); border-radius:0 4px 4px 0; padding:13px 18px; margin:9px 0 20px; font-size:14.8px; line-height:1.85; color:var(--ans-ink)}
+  .ans .al{font-family:-apple-system,sans-serif; font-size:11.5px; font-weight:600; color:var(--accent); letter-spacing:.08em; display:block; margin-bottom:5px}
+  .ans p{margin-bottom:7px}
+  .ans p:last-child{margin-bottom:0}
+  .ans ul,.ans ol{margin:4px 0 6px; padding-left:20px}
+  .ans li{margin-bottom:4px}
+  .ans code{font-size:13px}
+  .ans .hl{color:var(--accent); font-weight:600}
+  .ans pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.5px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,0.04); padding:10px 12px; border-radius:4px; margin:8px 0; color:var(--pre-ink)}
+  html[data-theme="dark"] .ans pre{background:rgba(255,255,255,0.045)}
+
+  .note{border-left:2px solid var(--accent-line); padding:4px 0 4px 18px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px; margin:20px 0; font-family:-apple-system,sans-serif}
+  th{text-align:left; font-weight:600; font-size:12.5px; color:var(--ink3); padding:0 12px 9px 0; border-bottom:1px solid var(--line); letter-spacing:.02em}
+  td{padding:12px 12px 12px 0; border-bottom:1px solid var(--line2); vertical-align:top; line-height:1.7}
+  tr:last-child td{border-bottom:none}
+
+  .fig{margin:26px 0; text-align:center}
+  .fig svg{max-width:100%; height:auto}
+  .fig .cap{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin-top:10px; line-height:1.7}
+
+  /* SVG 深色适配：按原始 fill/stroke 值反相 */
+  html[data-theme="dark"] .fig svg [fill="#F2F7F5"]{fill:#16211F}
+  html[data-theme="dark"] .fig svg [fill="#EAF1EF"]{fill:#1A2927}
+  html[data-theme="dark"] .fig svg [fill="#DFEBE8"]{fill:#1E302D}
+  html[data-theme="dark"] .fig svg [fill="#B9CFC9"]{fill:#3A5F58}
+  html[data-theme="dark"] .fig svg [fill="#8FB3AA"]{fill:#4F8278}
+  html[data-theme="dark"] .fig svg [fill="#1F4E4A"]{fill:#7FB3A8}
+  html[data-theme="dark"] .fig svg [fill="#1C1B18"]{fill:#DCDAD3}
+  html[data-theme="dark"] .fig svg [fill="#54524C"]{fill:#A6A49B}
+  html[data-theme="dark"] .fig svg [fill="#8A877E"]{fill:#827F77}
+  html[data-theme="dark"] .fig svg [fill="#FBF3E4"]{fill:#241D13}
+  html[data-theme="dark"] .fig svg [fill="#D8BE92"]{fill:#6B5636}
+  html[data-theme="dark"] .fig svg [fill="#7A4A12"]{fill:#D8A45E}
+  html[data-theme="dark"] .fig svg [fill="#A8442A"]{fill:#E08866}
+  html[data-theme="dark"] .fig svg [stroke="#B9CFC9"]{stroke:#3A5F58}
+  html[data-theme="dark"] .fig svg [stroke="#8FB3AA"]{stroke:#4F8278}
+  html[data-theme="dark"] .fig svg [stroke="#1F4E4A"]{stroke:#7FB3A8}
+  html[data-theme="dark"] .fig svg [stroke="#D5D3CC"]{stroke:#4A4B44}
+  html[data-theme="dark"] .fig svg [stroke="#D8BE92"]{stroke:#6B5636}
+  html[data-theme="dark"] .fig svg [stroke="#B4B2A9"]{stroke:#4E4F49}
+
+  .summary{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:26px 30px; margin:34px 0}
+  .summary .h{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin-bottom:14px; color:var(--accent)}
+  .summary ul{margin-bottom:0}
+  .summary li{font-size:15.5px}
+
+  .pagefoot{margin-top:70px; padding-top:20px; border-top:1px solid var(--line); font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+  .pagefoot a{color:var(--ink2); text-decoration:none}
+  .pagefoot a:hover{color:var(--accent)}
+
+  @media (max-width:1023px){
+    html.nav-open .content{margin-left:0}
+    .sidebar{box-shadow:0 0 40px rgba(0,0,0,.25)}
+    html.nav-open .scrim{opacity:1; pointer-events:auto}
+    .wrap{padding:74px 26px 80px}
+  }
+  @media (max-width:680px){
+    .wrap{padding:70px 20px 70px}
+    body{font-size:16px}
+    .ch-title{font-size:25px}
+    h2{font-size:20px}
+    .story{padding:18px 20px}
+    .obj,.summary{padding:16px 18px}
+    table{font-size:13.5px}
+  }
+  @media print{
+    .sidebar,.nav-toggle,.theme-toggle,.scrim{display:none !important}
+    html.nav-open .content{margin-left:0}
+    .wrap{max-width:none; padding:0}
+  }
+
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" id="navToggle" aria-label="展开目录" title="展开目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换深色 / 浅色">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.8 6.8 0 0 0 11 11z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></svg>
+</button>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="side-top">
+      <a class="side-title" href="index.html" title="返回封面与目录">AI 应用全栈开发</a>
+      <div class="side-sub">从客服工作平台出发 · 20 章</div>
+      <button class="side-collapse" id="sideCollapse" aria-label="收起目录" title="收起目录"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    </div>
+
+    <nav class="side-nav">
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第一篇 · 模型与数据<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第01章-大模型应用的基本形态.html">第 1 章　大模型应用的基本形态</a></div>
+          <div class="ch"><a class="ch-link" href="第02章-提示工程的最小充分集.html">第 2 章　提示工程的最小充分集</a></div>
+          <div class="ch"><a class="ch-link" href="第03章-面向评估的数据处理.html">第 3 章　面向评估的数据处理</a></div>
+          <div class="ch"><a class="ch-link" href="第04章-第一次评估实践.html">第 4 章　第一次评估实践</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng open">
+        <button class="ng-btn" type="button">第二篇 · 界面<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch">
+            <a class="ch-link cur" href="#top" aria-current="page">第 5 章　流式输出</a>
+            <div class="sec-list">
+              <a href="#s1">5.1　8 秒的两种过法</a>
+              <a href="#s2">5.2　SSE</a>
+              <a href="#s3">5.3　增量渲染</a>
+              <a href="#s4">5.4　中断、失败与降级</a>
+              <a href="#s5">5.5　密钥不能在前端</a>
+              <a href="#ex">本章综合习题</a>
+            </div>
+          </div>
+          <div class="ch"><a class="ch-link" href="第06章-生成中的状态管理.html">第 6 章　生成中的状态管理</a></div>
+          <div class="ch"><a class="ch-link" href="第07章-人机协作界面.html">第 7 章　人机协作界面</a></div>
+          <div class="ch"><a class="ch-link" href="第08章-交互度量.html">第 8 章　交互度量</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第三篇 · 服务<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第09章-从脚本到服务.html">第 9 章　从脚本到服务</a></div>
+          <div class="ch"><a class="ch-link" href="第10章-异步与并发.html">第 10 章　异步与并发</a></div>
+          <div class="ch"><a class="ch-link" href="第11章-缓存与成本.html">第 11 章　缓存与成本</a></div>
+          <div class="ch"><a class="ch-link" href="第12章-容器化部署.html">第 12 章　容器化部署</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第四篇 · 检索与工具<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第13章-向量检索.html">第 13 章　向量检索</a></div>
+          <div class="ch"><a class="ch-link" href="第14章-RAG全链路.html">第 14 章　RAG 全链路</a></div>
+          <div class="ch"><a class="ch-link" href="第15章-工具调用.html">第 15 章　工具调用</a></div>
+          <div class="ch"><a class="ch-link" href="第16章-Agent编排.html">第 16 章　Agent 编排</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第五篇 · 评估与生产<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第17章-评估体系.html">第 17 章　评估体系</a></div>
+          <div class="ch"><a class="ch-link" href="第18章-可观测性.html">第 18 章　可观测性</a></div>
+          <div class="ch"><a class="ch-link" href="第19章-安全与合规.html">第 19 章　安全与合规</a></div>
+          <div class="ch"><a class="ch-link" href="第20章-把项目讲成能力.html">第 20 章　把项目讲成能力</a></div>
+          <div class="ch"><a class="ch-link" href="附录-Java够用版速查.html">附录　Java 够用版速查</a></div>
+        </div></div>
+      </div>
+
+    </nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+
+<main class="content">
+<article class="wrap">
+<span id="top"></span>
+<div class="chapter-head">
+    <div class="ch-no">第二篇 · 界面</div>
+    <div class="ch-title">第 5 章　流式输出</div>
+    <div class="ch-sub">它解决的从来不是速度问题，是等待的问题</div>
+  </div>
+
+  <p class="lead">第一篇建立了尺子，也拿到了第一份数字。从这一章开始进入你的主场：界面。流式输出是 AI 交互里最容易被低成本实现、又最容易被做坏的一层。多数团队只加了 <code>stream: true</code> 就以为做完了，然后在真实使用中遇到卡顿、乱码、半截代码块、反复闪烁——这些问题没有一个出在模型侧。</p>
+
+  <div class="obj">
+    <div class="h">本章学习目标</div>
+    <div><strong>理解</strong>　为什么「总耗时相同、首字更早」的实现体感快得多</div>
+    <div><strong>掌握</strong>　SSE 的解析循环，包括中文被拆包时的处理</div>
+    <div><strong>掌握</strong>　增量渲染的三个坑：半截语法、重排抖动、代码块未闭合</div>
+    <div><strong>掌握</strong>　中断、重试与降级：如何让流式失败不像崩溃</div>
+    <div><strong>了解</strong>　为什么密钥绝不能出现在浏览器里</div>
+  </div>
+
+  <h2 id="s1">5.1　8 秒的两种过法</h2>
+
+  <div class="story">
+    <span class="tag">场景</span>
+    <p>客服工作台的右侧有一个「会话摘要」面板。改造之前，坐席点「生成摘要」，按钮变成转圈，8 秒后整段摘要一次性出现。改造之后，文字以每秒约 200 字的速度吐出来，2 秒内出现第一个字，9 秒才全部完成。</p>
+    <p>总耗时变长了 1 秒。但两周后的埋点数据显示：改造前面板的日均打开次数 43 次，改造后 210 次；摘要采纳率从 24% 升到 39%。</p>
+    <p>有个坐席在访谈里说了一句很关键的话：「以前我不知道它在干什么，我会去点别的，回来就忘了要干什么了。」</p>
+  </div>
+
+  <p>这段访谈解释了流式的真实作用。它不是在「让用户少等」，因为总时间没有减少；它是<strong>把一段没有信息的等待，换成一段有信息的等待</strong>。人忍受不确定的能力很差，忍受确定的进展的能力很好——同样 8 秒，转圈是前者，逐字输出是后者。</p>
+
+  <p>有三个数字值得记住，它们是设计流式的依据：</p>
+
+  <table>
+    <tr><th>时间点</th><th>用户的状态</th><th>设计含义</th></tr>
+    <tr><td>0–1 秒</td><td>注意力还在上一个动作上</td><td>不需要任何反馈，加骨架屏反而显得闪</td></tr>
+    <tr><td>1–3 秒</td><td>开始怀疑是不是没点上</td><td>必须有可见变化（按钮态、光标的第一个字）</td></tr>
+    <tr><td>&gt; 5 秒无变化</td><td>判定为卡住，开始重复点击</td><td>重复点击会带来并发请求，这是后续第 6 章要处理的问题</td></tr>
+  </table>
+
+  <p>由此得到一个具体的设计规则：<strong>首字时间（TTFT）比总耗时重要得多，应当作为独立的性能指标来优化。</strong>把 TTFT 从 4 秒降到 1.5 秒，即使总耗时不变，体感提升也远大于把总耗时从 9 秒降到 7 秒。</p>
+
+  <div class="fig">
+    <svg viewBox="0 0 700 250" width="700" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>两种等待的时间轴</title>
+      <desc>非流式与流式在同样的总耗时下，用户感知到的进展完全不同</desc>
+      <text x="8" y="24" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#54524C">非流式</text>
+      <rect x="80" y="10" width="580" height="26" rx="4" fill="#F2F7F5" stroke="#B9CFC9"/>
+      <rect x="80" y="10" width="580" height="26" rx="4" fill="#DFEBE8"/>
+      <text x="370" y="28" text-anchor="middle" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#8A877E">无任何信息　8.0 秒</text>
+      <text x="666" y="28" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#A8442A">8.0s</text>
+
+      <text x="8" y="76" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#54524C">流式</text>
+      <rect x="80" y="62" width="580" height="26" rx="4" fill="#F2F7F5" stroke="#B9CFC9"/>
+      <rect x="80" y="62" width="120" height="26" rx="4" fill="#EAF1EF"/>
+      <rect x="200" y="62" width="460" height="26" rx="0" fill="#B9CFC9"/>
+      <text x="140" y="80" text-anchor="middle" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#8A877E">等待</text>
+      <text x="430" y="80" text-anchor="middle" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#1F4E4A">可见的进展　7.2 秒</text>
+      <text x="666" y="80" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#A8442A">9.0s</text>
+
+      <line x1="200" y1="56" x2="200" y2="96" stroke="#1F4E4A" stroke-width="1.4" stroke-dasharray="3 3"/>
+      <text x="204" y="112" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#1F4E4A">TTFT 1.8s ← 真正的优化目标</text>
+
+      <rect x="8" y="132" width="684" height="48" rx="5" fill="#FBF3E4" stroke="#D8BE92"/>
+      <text x="24" y="152" font-family="-apple-system,PingFang SC,sans-serif" font-size="12" fill="#7A4A12">流式的代价是真的存在：</text>
+      <text x="24" y="171" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#7A4A12">服务端要支持长连接、客户端要处理半截状态、错误处理复杂度上升、断线后的续接更难。</text>
+
+      <text x="8" y="204" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#54524C">所以判断标准不是「能不能流式」，是「这段等待有没有被用户感知」：</text>
+      <text x="8" y="224" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#8A877E">后台批处理、用户已离开的异步任务、结果将被程序消费的调用 → 不需要流式</text>
+      <text x="8" y="242" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#8A877E">用户正在盯着、且结果会被立即使用的调用 → 必须流式</text>
+    </svg>
+    <div class="cap">图 5-1　同样的输出，等待的结构不同，体感就完全不同</div>
+  </div>
+
+  <h2 id="s2">5.2　SSE：一条长连接上的分帧</h2>
+
+  <p>流式传输的事实标准是 SSE（Server-Sent Events）。它的好处是纯 HTTP、无需协议升级、能穿过大多数代理。代价是单向（只能服务端推）、文本协议（二进制要编解码）、以及<strong>没有内置的重连语义</strong>——断了就是断了。</p>
+
+  <p>数据格式极简，每一帧是 <code>data: </code> 加内容加两个换行。但实际使用中有三个陷阱，全部出在「网络会把字节流切成任意大小」这件事上。</p>
+
+  <div class="exam">
+    <div class="h">例题 5-1　浏览器侧的正确读法</div>
+    <pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'/api/summarize'</span>, {
+  method: <span class="s">'POST'</span>,
+  headers: { <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span> },
+  body: JSON.stringify({ ticketId }),
+  signal: controller.signal,          <span class="c">// 用于中断</span>
+});
+
+<span class="k">const</span> reader = res.body.getReader();
+<span class="k">const</span> dec = <span class="k">new</span> TextDecoder(<span class="s">'utf-8'</span>);
+<span class="k">let</span> buf = <span class="s">''</span>;
+
+<span class="k">while</span> (<span class="k">true</span>) {
+  <span class="k">const</span> { done, value } = <span class="k">await</span> reader.read();
+  <span class="k">if</span> (done) <span class="k">break</span>;
+
+  <span class="c">// stream:true 让不完整的 UTF-8 字节留在 decoder 内部</span>
+  buf += dec.decode(value, { stream: <span class="k">true</span> });
+
+  <span class="c">// 只按完整帧切分，剩下的留在 buf</span>
+  <span class="k">let</span> idx;
+  <span class="k">while</span> ((idx = buf.indexOf(<span class="s">'\n\n'</span>)) &gt;= <span class="s">0</span>) {
+    <span class="k">const</span> frame = buf.slice(<span class="s">0</span>, idx);
+    buf = buf.slice(idx + <span class="s">2</span>);
+    <span class="k">if</span> (frame.startsWith(<span class="s">'data: '</span>)) {
+      <span class="k">const</span> payload = frame.slice(<span class="s">6</span>);
+      <span class="k">if</span> (payload === <span class="s">'[DONE]'</span>) <span class="k">return</span>;
+      onDelta(JSON.parse(payload).text);
+    }
+  }
+}</pre>
+    <div class="out">两个必须有的东西：<b>decoder 的 stream 选项</b>，以及<b>跨帧的缓冲区</b>。<br>
+    少了第一个：一个中文字在 UTF-8 里占 3 字节，被切成 2+1 时两个都不合法，输出乱码。<br>
+    少了第二个：一帧可能被切成两次到达，<code>JSON.parse</code> 直接抛错——这是流式最常见的线上故障。</div>
+  </div>
+
+  <p>乱码这个坑特别值得强调，因为它在英文环境里几乎不会出现，而在中文业务里必然出现。表现是：大部分内容正常，偶尔蹦出一个 <code>�</code>，或者某句话的头两个字母不见了。日志里看不出来，只有肉眼看界面能发现，而它通常出现在快速滚动时。</p>
+
+  <p>还有一个更隐蔽的问题：<strong>服务端也用了缓冲区</strong>。即使你的代码是逐块 write，前面的 Nginx、负载均衡、甚至某些运行时的默认行为，都可能把小块攒成大块再发出去。这时你会发现「流式」变成了每 2 秒来一大段。</p>
+
+  <div class="exam">
+    <div class="h">例题 5-2　让流真的流起来</div>
+    <pre><span class="c"># 服务端（FastAPI）：三个 header 缺一不可</span>
+<span class="k">return</span> StreamingResponse(
+    gen(),
+    media_type=<span class="s">'text/event-stream'</span>,
+    headers={
+        <span class="s">'Cache-Control'</span>: <span class="s">'no-cache, no-transform'</span>,   <span class="c"># no-transform 禁止代理压缩改写</span>
+        <span class="s">'X-Accel-Buffering'</span>: <span class="s">'no'</span>,                  <span class="c"># 关掉 Nginx 的缓冲</span>
+        <span class="s">'Connection'</span>: <span class="s">'keep-alive'</span>,
+    },
+)</pre>
+    <div class="out">如果上线后发现「还是一大段一大段地来」，先检查这三行，再检查 CDN 有没有开压缩。<br>
+    <b>这类问题在本地开发环境 100% 不会出现</b>，因为本地没有反向代理。</div>
+  </div>
+
+  <h2 id="s3">5.3　增量渲染：三个必须处理的半截状态</h2>
+
+  <p>拿到增量文本之后，多数人做的第一件事是 <code>setState(prev =&gt; prev + delta)</code>。这在纯文本上没问题，但 AI 的输出几乎总是 Markdown——而 Markdown 的语法是<strong>跨越字符的</strong>，流式到达时会出现大量「语法未闭合」的中间状态。</p>
+
+  <h3>坑一：半截语法导致渲染跳变</h3>
+
+  <p>假设模型正在输出一个加粗的词。到达的字节序列依次是：<code>这是</code> → <code>**重</code> → <code>**重要**</code> → <code>的</code>。在第二个时刻，界面上会先出现两个字面星号 <code>**重</code>，然后突然变成加粗的「重要」。</p>
+
+  <p>用户的感受是「文字在跳」。每次格式切换都会引起一次重排，一段 300 字的回复里可能跳十几次。</p>
+
+  <p>处理方式有两种，按成本排序：</p>
+
+  <ul>
+    <li><strong>简单方案：流式期间用纯文本渲染</strong>，结束后再切到 Markdown。实现成本几乎为零，代价是最后有一次整体重绘——如果回复长，这次重绘很明显。</li>
+    <li><strong>更好方案：只对「已闭合」的片段做 Markdown 解析</strong>，未闭合的尾部按纯文本输出。也就是把文本切成「安全前缀 + 不稳定尾部」，只渲染前缀。</li>
+  </ul>
+
+  <div class="exam">
+    <div class="h">例题 5-3　安全前缀切分</div>
+    <pre><span class="k">function</span> splitSafe(text) {
+  <span class="c">// 未闭合的行内标记：** __ ` ~~ 以及链接的 [</span>
+  <span class="k">const</span> inline = [<span class="s">'**'</span>, <span class="s">'__'</span>, <span class="s">'`'</span>, <span class="s">'~~'</span>];
+  <span class="k">for</span> (<span class="k">const</span> m <span class="k">of</span> inline) {
+    <span class="k">const</span> n = text.split(m).length - <span class="s">1</span>;
+    <span class="k">if</span> (n % <span class="s">2</span> === <span class="s">1</span>) {                    <span class="c">// 奇数个 → 最后一个未闭合</span>
+      <span class="k">const</span> i = text.lastIndexOf(m);
+      <span class="k">return</span> [text.slice(<span class="s">0</span>, i), text.slice(i)];
+    }
+  }
+  <span class="c">// 未闭合的代码块：``` 计数为奇数</span>
+  <span class="k">const</span> fences = (text.match(/```/g) || []).length;
+  <span class="k">if</span> (fences % <span class="s">2</span> === <span class="s">1</span>) {
+    <span class="k">const</span> i = text.lastIndexOf(<span class="s">'```'</span>);
+    <span class="k">return</span> [text.slice(<span class="s">0</span>, i), text.slice(i)];
+  }
+  <span class="k">return</span> [text, <span class="s">''</span>];
+}</pre>
+    <div class="out">稳定前缀交给 Markdown 渲染器，尾部当纯文本。<br>
+    代价是尾部那一小段会短暂丢失格式，但因为它是「正在被写出来」的地方，用户反而觉得自然。</div>
+  </div>
+
+  <h3>坑二：每次都全量重渲染</h3>
+
+  <p>每来一个 delta 就整段重新解析 Markdown 并替换 DOM，在 300 字以内还行，超过 800 字就会开始掉帧。原因是 Markdown 解析是 O(n)，而 delta 有几百个，总复杂度是 O(n²)。</p>
+
+  <p>两个改法，都不复杂：</p>
+
+  <ol>
+    <li><strong>按块增量</strong>：以空行为界，把文本切成块，已经结束的块解析一次后缓存起来（用块内容的哈希做 key），只重算最后一块。</li>
+    <li><strong>按时间节流</strong>：不是每个 delta 都渲染，而是每 16–50ms 合并一次。人眼分辨不出 20ms 的差异，但渲染次数能降一个数量级。</li>
+  </ol>
+
+  <p>节流的阈值有讲究。低于 16ms 没有意义（还不如一帧），高于 100ms 会看出「一段一段跳」。<strong>40ms 左右是舒服的区间</strong>：视觉上连续，渲染压力降到 1/25。</p>
+
+  <h3>坑三：滚动位置被抢走</h3>
+
+  <p>内容在增长，容器高度在变。如果容器是「自动滚到底」，用户在生成过程中向上滚动查看前面的内容，会被强行拽回底部。这是 AI 产品里抱怨最多的问题之一。</p>
+
+  <p>规则很简单，但必须显式实现：<strong>只有用户本来就贴在底部时，才自动跟随。</strong></p>
+
+  <div class="exam">
+    <div class="h">例题 5-4　跟随与脱离</div>
+    <pre><span class="k">const</span> NEAR = <span class="s">48</span>;   <span class="c">// px，容差</span>
+<span class="k">let</span> stick = <span class="k">true</span>;
+
+box.addEventListener(<span class="s">'scroll'</span>, () =&gt; {
+  <span class="k">const</span> gap = box.scrollHeight - box.scrollTop - box.clientHeight;
+  stick = gap &lt; NEAR;         <span class="c">// 用户滚上去了 → 停止跟随</span>
+}, { passive: <span class="k">true</span> });
+
+<span class="k">function</span> onDelta(t) {
+  append(t);
+  <span class="k">if</span> (stick) box.scrollTop = box.scrollHeight;
+}</pre>
+    <div class="out">再加一个细节体验会好很多：脱离了跟随之后，右下角浮出「回到最新」按钮，点击后 <code>stick = true</code> 并滚到底。<br>
+    这一条不需要任何额外状态机，但用户会明确感觉到「它听我的」。</div>
+  </div>
+
+  <h2 id="s4">5.4　中断、失败与降级</h2>
+
+  <p>流式最容易被忽略的是失败路径，因为它「大部分时候是好用的」。而线上真正影响信任的就是那 3% 的失败：请求发出去了、字吐了一半、连接断了。用户看到的是半句话，而他不知道这半句话能不能用。</p>
+
+  <h3>中断要做两件事，缺一不可</h3>
+
+  <p>用户点「停止生成」时，前端的 <code>controller.abort()</code> 只断开了浏览器到你的服务；服务端到模型的请求可能还在跑，继续消耗 token。<strong>正确做法是前端 abort 后，服务端要能感知连接关闭并主动取消上游请求。</strong></p>
+
+  <div class="exam">
+    <div class="h">例题 5-5　服务端的取消传播</div>
+    <pre><span class="k">async def</span> gen():
+    <span class="k">try</span>:
+        stream = <span class="k">await</span> cli.chat.completions.create(..., stream=<span class="k">True</span>)
+        <span class="k">async for</span> chunk <span class="k">in</span> stream:
+            <span class="k">if await</span> request.is_disconnected():   <span class="c"># 客户端已断开</span>
+                <span class="k">await</span> stream.close()
+                <span class="k">return</span>
+            <span class="k">yield</span> <span class="s">'data: %s\n\n'</span> % json.dumps({<span class="s">'text'</span>: chunk.delta})
+    <span class="k">except</span> asyncio.CancelledError:
+        <span class="k">raise</span>                       <span class="c"># 不要吞掉，否则连接无法正确关闭</span></pre>
+    <div class="out">不做这件事的代价在账单上：一个坐席打断 5 次、每次浪费 1,200 token，每天 200 人就是 <b>120 万 token/天</b> 的纯浪费。<br>
+    而且这些请求会占着并发配额，让别人的首字时间变长。</div>
+  </div>
+
+  <p>第二件事是<strong>界面上的交代</strong>。半截内容不能就这么留在那里。合理的处理是：在半截文本后追加一行浅色的状态提示「已停止 · 内容不完整」，并保留一个「重新生成」的入口。<strong>不要清空已生成的内容</strong>——那会让用户觉得白等了，而实际上那半段往往是有用的。</p>
+
+  <h3>断线与重试</h3>
+
+  <p>网络断了，重试是最自然的想法，但流式的重试有一个特殊问题：<strong>你不能从断点续传。</strong>模型是无状态的，它不知道上次写到哪。所以重试只能整体重来，而整体重来意味着用户会看到开头重复一遍。</p>
+
+  <p>可接受的做法有三种，按体验排序：</p>
+
+  <table>
+    <tr><th>做法</th><th>体验</th><th>适用</th></tr>
+    <tr><td>清空重来</td><td>差，但清晰</td><td>刚开始就断了（&lt; 10% 内容）</td></tr>
+    <tr><td>保留旧内容，新内容另起一块并标注「重新生成」</td><td>中，会有点重复感</td><td>断在中间</td></tr>
+    <tr><td>用已生成的内容作为前缀，让模型「接着写」</td><td>好，但可能语义重复</td><td>长文，且断在明显的位置</td></tr>
+  </table>
+
+  <p>第三种听起来最聪明，实际上要慎用：模型看到「已有的半段」会倾向重复刚说过的内容，尤其在段落中间。如果要用，提示词里必须写清「以下内容已经生成，请直接续写，不要重复前文」，并且接受偶尔的重复。</p>
+
+  <h3>降级：流式失败后自动退回非流式</h3>
+
+  <p>有一个成本很低但很少有人做的策略：<strong>首字超时 6 秒仍未收到第一帧时，自动中止并以非流式重试一次。</strong></p>
+
+  <p>理由是这样：首字慢通常意味着上游排队或网络抖动，这时继续等下去大概率还是慢；而非流式请求走的是同一条链路，但只需一次往返，反而可能在 3 秒内拿到完整结果。用户看到的是「等了 6 秒，然后整段出现」，体验不算好，但比「等了 40 秒什么都没有」强得多。</p>
+
+  <p>这个策略要配一个指标：<strong>降级率</strong>。如果降级率超过 5%，说明链路有系统性问题，应该去查上游而不是继续优化前端。</p>
+
+  <h2 id="s5">5.5　密钥不能出现在浏览器里</h2>
+
+  <p>这一节短，但它是整本书里最不能妥协的一条。</p>
+
+  <p>很多教程的示例代码是直接在浏览器里 <code>new OpenAI({ apiKey: 'sk-...' })</code>。这个写法在演示里完全可用，因为浏览器确实能调通那个接口。<strong>但它等于把你的密钥公开发布了</strong>：任何人打开开发者工具就能拿到，然后以你的名义消费，账单记在你头上。</p>
+
+  <p>除了密钥，还有三件只有服务端才能做的事：</p>
+
+  <ul>
+    <li><strong>审计</strong>：谁在什么时候问了什么。合规要求留痕时，前端直连无法留。</li>
+    <li><strong>脱敏</strong>：请求出网前把手机号、身份证替换掉。前端做也能做，但用户可以绕过前端。</li>
+    <li><strong>限额</strong>：按人、按部门、按功能限流。前端做不到，因为它可被篡改。</li>
+  </ul>
+
+  <p>所以标准架构只有一个形状：<strong>浏览器 →（你的服务，做鉴权/脱敏/限流/审计）→ 模型</strong>。你的服务在这里是一个薄代理，但它承担的正是那些「必须可信」的职责。</p>
+
+  <div class="caution">
+    <div class="h">流式实现的四个红线</div>
+    <ol>
+      <li><strong>密钥进前端</strong>：等于公开。哪怕只用于内部系统，也会出现在截图和录屏里。</li>
+      <li><strong>不做跨帧缓冲</strong>：迟早会遇到半截 JSON 导致解析失败，而且只在弱网时出现，测试环境复现不了。</li>
+      <li><strong>不做取消传播</strong>：用户每次打断都在花你的钱，且占用并发。</li>
+      <li><strong>不处理半截 Markdown</strong>：界面会持续跳动，用户会认为「这个功能很粗糙」，而实际上只是渲染问题。</li>
+    </ol>
+  </div>
+
+  <div class="summary">
+    <div class="h">本章小结</div>
+    <ul>
+      <li>流式解决的是「等待有没有信息」，不是「快不快」。优化目标是 TTFT，不是总耗时。</li>
+      <li>SSE 解析必须有两样东西：<code>TextDecoder</code> 的 <code>stream:true</code>，以及跨帧缓冲。</li>
+      <li>服务端要发 <code>no-transform</code> / <code>X-Accel-Buffering: no</code>，否则代理会把流攒成大块。</li>
+      <li>增量渲染的三个坑：半截 Markdown、全量重解析、滚动被抢。三者都有低成本解法。</li>
+      <li>中断要做取消传播；断线不能续传，只能重来或续写；首字超时可降级为非流式。</li>
+      <li>密钥、审计、脱敏、限额——四件事决定了你必须有一个服务端代理。</li>
+    </ul>
+  </div>
+
+  <h3 id="ex">本章综合习题</h3>
+
+  <div class="qa">
+    <div class="q"><b>综合题一</b>上线后运营反馈「有些字显示成方块」。你在本地和测试环境都复现不了。最可能的原因是什么？给出两个验证方法。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>最可能的原因：UTF-8 多字节字符被分包截断，且解码时用了 <code>dec.decode(value)</code> 而没有 <code>{ stream: true }</code>。</strong>一个中文字占 3 字节，很可能被切在 1+2 或 2+1 的位置。没有 stream 选项时，<code>TextDecoder</code> 会把不完整的字节序列替换成 <code>U+FFFD</code>（显示为 � 或方块），并且这个替换是<strong>不可逆</strong>的——后续字节到达时，前面那两个字节已经丢了。</p>
+      <p>为什么本地复现不了：本地环回网络的 MTU 和分包方式与线上不同，服务端一次 write 往往正好是完整字符边界。加上本地通常没有反向代理，流不会被二次切分。</p>
+      <p><strong>验证方法一（最直接）：</strong>在 <code>dec.decode</code> 前打印 <code>value.byteLength</code> 和 <code>value</code> 的首尾字节。如果看到长度不是 3 的倍数、且首字节落在 <code>0xE4–0xE9</code>（中文三字节的首字节）区间，基本可以确认。</p>
+      <p><strong>验证方法二（不改代码）：</strong>用浏览器开发者工具的网络面板，把「流」响应导出，按字节查看。搜索 <code>EF BF BD</code>（U+FFFD 的 UTF-8 编码），如果出现，说明解码丢字节。</p>
+      <p>补充一个低成本防御：把所有流式文本在服务端做一次 <code>encode/decode</code> 往返测试，用一段纯中文长文本，按 1–7 字节随机切块喂给解析函数，断言输出与原文完全一致。<strong>这类测试能覆盖掉一整类只有在弱网才出现的 bug。</strong></p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题二</b>你要决定「工单自动分类」这个功能要不要做成流式。给出判断过程和结论。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>判断过程三步：</strong></p>
+      <p><strong>① 输出是给人读的，还是给程序消费的？</strong>分类结果是 JSON，交给下游路由逻辑，人不读。这是第一条否决理由——流式的前提是「有人在等着读」。</p>
+      <p><strong>② 中间状态有没有意义？</strong>流式只有在「部分结果也有价值」时才成立。摘要的前两句有用，因为坐席可以先读着；而分类的半个 JSON 没有任何价值，解析不了就不能用。</p>
+      <p><strong>③ 总耗时落在哪个区间？</strong>如果分类调用只需 0.8 秒，加流式纯属增加复杂度，而且首帧和完整结果几乎同时到达，用户不会感知到差别。</p>
+      <p><strong>结论：不做流式。</strong>但要做另一件事——<strong>把这段等待藏起来</strong>。分类应该在工单创建时异步触发，结果回写到工单字段，坐席打开工单时分类已经在了。这是「消除等待」而不是「优化等待」，成本更低、体验更好。</p>
+      <p><strong>这道题的真正考点</strong>是：流式是一个局部优化，而很多场景的正确答案是<strong>把等待挪到用户看不见的地方</strong>（预计算、异步、缓存）。当你发现自己在为一个 1 秒的操作设计流式时，先问一句「这个操作能不能不发生在他面前」。</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题三</b>用户点了「停止生成」，界面上应该发生哪四件事？</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>① 前端中断连接</strong>：<code>controller.abort()</code>，并把按钮状态从「停止」切回「发送」。</p>
+      <p><strong>② 服务端感知断开并取消上游</strong>：这是唯一能真正省下 token 的一步。只做 ① 的话，钱照花、并发照占。</p>
+      <p><strong>③ 保留已生成内容，并标注不完整</strong>：在后面加一行浅色状态「已停止 · 内容不完整」。不要清空——清空会让用户觉得前面的等待被作废了。同时把「重新生成」和「继续」两个入口都留着，因为用户停止的原因不同：有时是嫌慢，有时是发现方向错了。</p>
+      <p><strong>④ 记录一次埋点</strong>：记 <code>stop_at_token</code>（在第几个 token 停止）和 <code>stop_reason</code>（手动 / 超时 / 断线）。<strong>这个数据非常有用</strong>：如果大量停止发生在 50 token 以内，说明首句就没抓住需求；如果集中发生在 300 token 左右，说明输出太长，该压短；如果 <code>stop_reason</code> 里断线占比高，那是基础设施问题。</p>
+      <p>多数团队只做 ① 和 ③，所以既没省钱也说不清用户为什么不用。第 ④ 条是本章最便宜的一个改进：加一行埋点，下次讨论「要不要缩短输出」时就有证据了。</p>
+    </div>
+  </div>
+
+  <div class="pagefoot">
+    <a href="第04章-第一次评估实践.html">← 第 4 章　第一次评估实践</a>
+    <a href="第06章-生成中的状态管理.html">第 6 章　生成中的状态管理 →</a>
+  </div>
+
+</article>
+</main>
+
+
+<script>
+(function(){
+  var html = document.documentElement;
+
+  /* ---- 主题 ---- */
+  var KEY = 'aifs-theme';
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch(e){}
+  });
+
+  /* ---- 侧边栏开合 ---- */
+  function setNav(open){ html.classList.toggle('nav-open', open); }
+  document.getElementById('navToggle').addEventListener('click', function(){ setNav(true); });
+  document.getElementById('sideCollapse').addEventListener('click', function(){ setNav(false); });
+  document.getElementById('scrim').addEventListener('click', function(){ setNav(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setNav(false); });
+
+  /* ---- 篇分组展开 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.ng-btn'), function(btn){
+    btn.addEventListener('click', function(){ btn.parentNode.classList.toggle('open'); });
+  });
+
+  /* ---- 移动端点击锚点后收起 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.side-nav a'), function(a){
+    a.addEventListener('click', function(){ if (window.innerWidth < 1024) setNav(false); });
+  });
+
+  /* ---- 滚动高亮当前节 ---- */
+  var secs  = Array.prototype.slice.call(document.querySelectorAll('h2[id], h3[id="ex"]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sec-list a'));
+  function sync(){
+    var cur = null;
+    secs.forEach(function(s){
+      if (s.getBoundingClientRect().top <= 150) cur = s.id;
+    });
+    links.forEach(function(l){
+      l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ sync(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', function(){
+    if (window.innerWidth >= 1024) setNav(true);
+    sync();
+  });
+  sync();
+})();
+</script>
+
+</body>
+</html>

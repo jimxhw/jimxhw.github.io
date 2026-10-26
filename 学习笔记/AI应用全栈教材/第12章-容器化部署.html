@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 12 章 容器化部署 · AI 应用全栈开发</title>
+<meta name="description" content="AI 应用全栈开发教材第 12 章：多阶段 Dockerfile、密钥注入、流式服务的优雅退出、存活/就绪检查、上线清单与回滚。">
+<script>
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('aifs-theme'); } catch(e){}
+  if (!t) { t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+  if (window.innerWidth >= 1024) document.documentElement.classList.add('nav-open');
+})();
+</script>
+<style>
+
+  :root{
+    --paper:#FDFCF8; --card:#FFFFFF; --ink:#1C1B18; --ink2:#54524C; --ink3:#8A877E;
+    --line:rgba(0,0,0,0.13); --line2:rgba(0,0,0,0.07);
+    --accent:#1F4E4A; --accent-bg:#EAF1EF; --accent-line:#B9CFC9;
+    --warn:#7A4A12; --warn-bg:#FBF3E4; --warn-ink:#4A2E0A;
+    --code-bg:#F6F5F0; --code-line:rgba(0,0,0,0.06);
+    --obj-ink:#1a3d3a; --pre-ink:#2A2A26;
+    --ans-bg:#F2F7F5; --ans-ink:#22302D;
+    --k:#7A3E12; --s:#3A6B3A; --c:#91908A;
+    --side-bg:#F7F6F1; --side-line:rgba(0,0,0,0.09);
+    --side-hover:rgba(0,0,0,0.045); --side-active:#EAF1EF;
+    --shadow:0 6px 22px rgba(0,0,0,0.08);
+    --side-w:292px;
+  }
+  html[data-theme="dark"]{
+    --paper:#141518; --card:#1B1D21; --ink:#E7E5DE; --ink2:#A6A49B; --ink3:#7E7C74;
+    --line:rgba(255,255,255,0.15); --line2:rgba(255,255,255,0.07);
+    --accent:#7FB3A8; --accent-bg:#1A2A27; --accent-line:#35524C;
+    --warn:#D8A45E; --warn-bg:#251E14; --warn-ink:#D9C6A4;
+    --code-bg:#1A1C20; --code-line:rgba(255,255,255,0.06);
+    --obj-ink:#BBD3CD; --pre-ink:#D6D4CD;
+    --ans-bg:#1A2A27; --ans-ink:#C7D5D1;
+    --k:#D8A45E; --s:#93B98F; --c:#6F6D66;
+    --side-bg:#101114; --side-line:rgba(255,255,255,0.08);
+    --side-hover:rgba(255,255,255,0.055); --side-active:#1A2A27;
+    --shadow:0 6px 22px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",SimSun,serif;
+    font-size:16.5px; line-height:1.95; -webkit-font-smoothing:antialiased;
+    transition:background .22s ease, color .22s ease;
+  }
+  h1,h2,h3,h4,h5,.sans{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  a{color:var(--accent)}
+
+  /* ---------- 侧边栏 ---------- */
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:var(--side-w); z-index:60;
+    background:var(--side-bg); border-right:1px solid var(--side-line);
+    overflow-y:auto; overscroll-behavior:contain;
+    transform:translateX(-100%); visibility:hidden;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear .26s;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    padding-bottom:48px;
+  }
+  html.nav-open .sidebar{transform:none; visibility:visible;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s}
+  .side-top{
+    position:sticky; top:0; z-index:2; background:var(--side-bg);
+    padding:18px 40px 14px 18px; border-bottom:1px solid var(--side-line);
+  }
+  .side-title{display:block; font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.5; text-decoration:none; padding-right:6px}
+  .side-title:hover{color:var(--accent)}
+  .side-sub{font-size:11.5px; color:var(--ink3); margin-top:3px; letter-spacing:.01em}
+  .side-collapse{
+    position:absolute; top:17px; right:12px; width:24px; height:24px; border-radius:6px;
+    border:1px solid var(--line2); background:transparent; color:var(--ink3);
+    cursor:pointer; display:grid; place-items:center;
+  }
+  .side-collapse svg{width:13px; height:13px; display:block}
+  .side-collapse:hover{background:var(--side-hover); color:var(--ink2)}
+
+  .side-nav{padding:12px 10px 0}
+  .ng{margin-bottom:1px}
+  .ng-btn{
+    width:100%; display:flex; align-items:center; gap:6px; padding:9px 10px;
+    border:none; background:none; cursor:pointer; text-align:left; border-radius:6px;
+    font-family:inherit; font-size:11.5px; font-weight:600; color:var(--ink3);
+    letter-spacing:.06em; line-height:1.5;
+  }
+  .ng-btn:hover{background:var(--side-hover); color:var(--ink2)}
+  .ng-btn .cv{margin-left:auto; display:flex; align-items:center; opacity:.5; transition:transform .2s ease}
+  .ng-btn .cv svg{width:10px; height:10px; display:block}
+  .ng.open .ng-btn .cv{transform:rotate(90deg)}
+  .ng-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .24s ease}
+  .ng.open .ng-body{grid-template-rows:1fr}
+  .ng-body>div{overflow:hidden}
+
+  .ch{margin:1px 0}
+  .ch-link{
+    display:block; padding:6px 10px 6px 18px; font-size:12.8px; line-height:1.55;
+    color:var(--ink2); text-decoration:none; border-radius:6px;
+  }
+  .ch-link:hover{background:var(--side-hover); color:var(--ink)}
+  .ch-link.cur{color:var(--accent); font-weight:600; background:var(--side-active)}
+  .ch-link.soon{color:var(--ink3); opacity:.6; cursor:default}
+  .ch-link.soon:hover{background:none; color:var(--ink3)}
+
+  .sec-list{margin:1px 0 8px}
+  .sec-list a{
+    display:block; padding:5px 10px 5px 32px; font-size:12.2px; line-height:1.55;
+    color:var(--ink3); text-decoration:none; border-radius:5px;
+    border-left:2px solid transparent;
+  }
+  .sec-list a:hover{color:var(--ink2); background:var(--side-hover)}
+  .sec-list a.active{color:var(--accent); background:var(--side-active); border-left-color:var(--accent)}
+
+  /* ---------- 浮动按钮 ---------- */
+  .nav-toggle,.theme-toggle{
+    position:fixed; top:16px; z-index:70; width:38px; height:38px; cursor:pointer;
+    border:1px solid var(--line); background:var(--card); color:var(--ink2);
+    display:grid; place-items:center; box-shadow:var(--shadow);
+    transition:opacity .2s ease, transform .2s ease, background .2s ease;
+  }
+  .nav-toggle{left:16px; border-radius:10px; opacity:0; pointer-events:none; transform:translateX(-6px)}
+  html:not(.nav-open) .nav-toggle{opacity:1; pointer-events:auto; transform:none}
+  .nav-toggle:hover,.theme-toggle:hover{background:var(--accent-bg); color:var(--accent)}
+  .theme-toggle{right:18px; border-radius:50%}
+  .theme-toggle svg,.nav-toggle svg{width:17px; height:17px}
+  .i-sun{display:none}
+  html[data-theme="dark"] .i-sun{display:block}
+  html[data-theme="dark"] .i-moon{display:none}
+
+  .scrim{
+    position:fixed; inset:0; z-index:55; background:rgba(0,0,0,.42);
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+
+  /* ---------- 正文 ---------- */
+  .content{transition:margin-left .26s cubic-bezier(.4,0,.2,1)}
+  html.nav-open .content{margin-left:var(--side-w)}
+  .wrap{max-width:820px; margin:0 auto; padding:64px 36px 100px}
+
+  .chapter-head{border-bottom:2px solid var(--ink); padding-bottom:22px; margin-bottom:34px}
+  .ch-no{font-family:-apple-system,sans-serif; font-size:13px; color:var(--accent); letter-spacing:.14em; margin-bottom:10px}
+  .ch-title{font-family:-apple-system,sans-serif; font-size:32px; font-weight:600; line-height:1.35; letter-spacing:-.01em}
+  .ch-sub{font-family:-apple-system,sans-serif; font-size:15px; color:var(--ink2); margin-top:10px}
+
+  h2{font-family:-apple-system,sans-serif; font-size:23px; font-weight:600; margin:56px 0 4px; padding-left:14px; border-left:4px solid var(--accent); line-height:1.4; scroll-margin-top:28px}
+  h3{font-family:-apple-system,sans-serif; font-size:17px; font-weight:600; margin:34px 0 10px; scroll-margin-top:28px}
+  h4{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin:24px 0 8px; color:var(--accent)}
+  p{margin-bottom:17px}
+  .lead{color:var(--ink2)}
+
+  ul,ol{margin:0 0 18px 0; padding-left:24px}
+  li{margin-bottom:9px}
+  li::marker{color:var(--accent)}
+  strong{font-weight:600}
+
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13.8px; background:rgba(0,0,0,0.045); padding:1px 4px; border-radius:3px}
+  html[data-theme="dark"] code{background:rgba(255,255,255,0.08)}
+
+  .obj{background:var(--accent-bg); border-radius:5px; padding:16px 22px; margin:22px 0 26px; font-family:-apple-system,sans-serif; font-size:14px; color:var(--obj-ink); line-height:1.9}
+  .obj .h{font-weight:600; font-size:12.5px; letter-spacing:.05em; margin-bottom:7px}
+  .obj div{margin-bottom:2px}
+  .dep{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin:-14px 0 26px; letter-spacing:.02em}
+
+  .story{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:24px 28px; margin:22px 0; font-size:16px}
+  .story .tag{font-family:-apple-system,sans-serif; font-size:11.5px; color:var(--ink3); letter-spacing:.1em; margin-bottom:10px; display:block}
+  .story p:last-child{margin-bottom:0}
+
+  .exam{background:var(--code-bg); border-radius:6px; margin:22px 0; overflow:hidden; border:1px solid var(--code-line)}
+  .exam .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--accent); padding:12px 20px 0; letter-spacing:.03em}
+  .exam pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.8px; line-height:1.8; white-space:pre-wrap; padding:12px 20px 18px; color:var(--pre-ink)}
+  .exam .out{padding:12px 20px 16px; border-top:1px dashed var(--line); font-family:-apple-system,sans-serif; font-size:13px; color:var(--ink2); background:rgba(0,0,0,0.015)}
+  .exam .out b{color:var(--accent); font-weight:600}
+  html[data-theme="dark"] .exam .out{background:rgba(255,255,255,0.02)}
+  .k{color:var(--k); font-weight:500}
+  .s{color:var(--s)}
+  .c{color:var(--c); font-style:italic}
+
+  .caution{background:var(--warn-bg); border-radius:6px; padding:18px 22px; margin:24px 0; font-size:15.5px}
+  .caution .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--warn); margin-bottom:9px; letter-spacing:.05em}
+  .caution ol{margin:0; padding-left:20px; color:var(--warn-ink)}
+  .caution li{margin-bottom:9px}
+
+  .drill{margin:22px 0; font-size:15.5px}
+  .drill .g{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); font-weight:600; margin:16px 0 7px; letter-spacing:.05em}
+  .drill ol{padding-left:22px; margin-bottom:4px}
+
+  .qa{margin:20px 0 4px}
+  .qa .q{font-size:15.5px; margin-bottom:0}
+  .qa .q b{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); letter-spacing:.05em; margin-right:6px}
+  .ans{background:var(--ans-bg); border-left:3px solid var(--accent-line); border-radius:0 4px 4px 0; padding:13px 18px; margin:9px 0 20px; font-size:14.8px; line-height:1.85; color:var(--ans-ink)}
+  .ans .al{font-family:-apple-system,sans-serif; font-size:11.5px; font-weight:600; color:var(--accent); letter-spacing:.08em; display:block; margin-bottom:5px}
+  .ans p{margin-bottom:7px}
+  .ans p:last-child{margin-bottom:0}
+  .ans ul,.ans ol{margin:4px 0 6px; padding-left:20px}
+  .ans li{margin-bottom:4px}
+  .ans code{font-size:13px}
+  .ans .hl{color:var(--accent); font-weight:600}
+  .ans pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.5px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,0.04); padding:10px 12px; border-radius:4px; margin:8px 0; color:var(--pre-ink)}
+  html[data-theme="dark"] .ans pre{background:rgba(255,255,255,0.045)}
+
+  .note{border-left:2px solid var(--accent-line); padding:4px 0 4px 18px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px; margin:20px 0; font-family:-apple-system,sans-serif}
+  th{text-align:left; font-weight:600; font-size:12.5px; color:var(--ink3); padding:0 12px 9px 0; border-bottom:1px solid var(--line); letter-spacing:.02em}
+  td{padding:12px 12px 12px 0; border-bottom:1px solid var(--line2); vertical-align:top; line-height:1.7}
+  tr:last-child td{border-bottom:none}
+
+  .fig{margin:26px 0; text-align:center}
+  .fig svg{max-width:100%; height:auto}
+  .fig .cap{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin-top:10px; line-height:1.7}
+
+  /* SVG 深色适配：按原始 fill/stroke 值反相 */
+  html[data-theme="dark"] .fig svg [fill="#F2F7F5"]{fill:#16211F}
+  html[data-theme="dark"] .fig svg [fill="#EAF1EF"]{fill:#1A2927}
+  html[data-theme="dark"] .fig svg [fill="#DFEBE8"]{fill:#1E302D}
+  html[data-theme="dark"] .fig svg [fill="#B9CFC9"]{fill:#3A5F58}
+  html[data-theme="dark"] .fig svg [fill="#8FB3AA"]{fill:#4F8278}
+  html[data-theme="dark"] .fig svg [fill="#1F4E4A"]{fill:#7FB3A8}
+  html[data-theme="dark"] .fig svg [fill="#1C1B18"]{fill:#DCDAD3}
+  html[data-theme="dark"] .fig svg [fill="#54524C"]{fill:#A6A49B}
+  html[data-theme="dark"] .fig svg [fill="#8A877E"]{fill:#827F77}
+  html[data-theme="dark"] .fig svg [fill="#FBF3E4"]{fill:#241D13}
+  html[data-theme="dark"] .fig svg [fill="#D8BE92"]{fill:#6B5636}
+  html[data-theme="dark"] .fig svg [fill="#7A4A12"]{fill:#D8A45E}
+  html[data-theme="dark"] .fig svg [fill="#A8442A"]{fill:#E08866}
+  html[data-theme="dark"] .fig svg [stroke="#B9CFC9"]{stroke:#3A5F58}
+  html[data-theme="dark"] .fig svg [stroke="#8FB3AA"]{stroke:#4F8278}
+  html[data-theme="dark"] .fig svg [stroke="#1F4E4A"]{stroke:#7FB3A8}
+  html[data-theme="dark"] .fig svg [stroke="#D5D3CC"]{stroke:#4A4B44}
+  html[data-theme="dark"] .fig svg [stroke="#D8BE92"]{stroke:#6B5636}
+  html[data-theme="dark"] .fig svg [stroke="#B4B2A9"]{stroke:#4E4F49}
+
+  .summary{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:26px 30px; margin:34px 0}
+  .summary .h{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin-bottom:14px; color:var(--accent)}
+  .summary ul{margin-bottom:0}
+  .summary li{font-size:15.5px}
+
+  .pagefoot{margin-top:70px; padding-top:20px; border-top:1px solid var(--line); font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+  .pagefoot a{color:var(--ink2); text-decoration:none}
+  .pagefoot a:hover{color:var(--accent)}
+
+  @media (max-width:1023px){
+    html.nav-open .content{margin-left:0}
+    .sidebar{box-shadow:0 0 40px rgba(0,0,0,.25)}
+    html.nav-open .scrim{opacity:1; pointer-events:auto}
+    .wrap{padding:74px 26px 80px}
+  }
+  @media (max-width:680px){
+    .wrap{padding:70px 20px 70px}
+    body{font-size:16px}
+    .ch-title{font-size:25px}
+    h2{font-size:20px}
+    .story{padding:18px 20px}
+    .obj,.summary{padding:16px 18px}
+    table{font-size:13.5px}
+  }
+  @media print{
+    .sidebar,.nav-toggle,.theme-toggle,.scrim{display:none !important}
+    html.nav-open .content{margin-left:0}
+    .wrap{max-width:none; padding:0}
+  }
+
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" id="navToggle" aria-label="展开目录" title="展开目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换深色 / 浅色">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.8 6.8 0 0 0 11 11z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></svg>
+</button>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="side-top">
+      <a class="side-title" href="index.html" title="返回封面与目录">AI 应用全栈开发</a>
+      <div class="side-sub">从客服工作平台出发 · 20 章</div>
+      <button class="side-collapse" id="sideCollapse" aria-label="收起目录" title="收起目录"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    </div>
+
+    <nav class="side-nav">
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第一篇 · 模型与数据<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第01章-大模型应用的基本形态.html">第 1 章　大模型应用的基本形态</a></div>
+          <div class="ch"><a class="ch-link" href="第02章-提示工程的最小充分集.html">第 2 章　提示工程的最小充分集</a></div>
+          <div class="ch"><a class="ch-link" href="第03章-面向评估的数据处理.html">第 3 章　面向评估的数据处理</a></div>
+          <div class="ch"><a class="ch-link" href="第04章-第一次评估实践.html">第 4 章　第一次评估实践</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第二篇 · 界面<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第05章-流式输出.html">第 5 章　流式输出</a></div>
+          <div class="ch"><a class="ch-link" href="第06章-生成中的状态管理.html">第 6 章　生成中的状态管理</a></div>
+          <div class="ch"><a class="ch-link" href="第07章-人机协作界面.html">第 7 章　人机协作界面</a></div>
+          <div class="ch"><a class="ch-link" href="第08章-交互度量.html">第 8 章　交互度量</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng open">
+        <button class="ng-btn" type="button">第三篇 · 服务<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第09章-从脚本到服务.html">第 9 章　从脚本到服务</a></div>
+          <div class="ch"><a class="ch-link" href="第10章-异步与并发.html">第 10 章　异步与并发</a></div>
+          <div class="ch"><a class="ch-link" href="第11章-缓存与成本.html">第 11 章　缓存与成本</a></div>
+          <div class="ch">
+            <a class="ch-link cur" href="#top" aria-current="page">第 12 章　容器化部署</a>
+            <div class="sec-list">
+              <a href="#s1">12.1　Dockerfile</a>
+              <a href="#s2">12.2　配置与密钥</a>
+              <a href="#s3">12.3　优雅退出</a>
+              <a href="#s4">12.4　两个健康检查</a>
+              <a href="#s5">12.5　上线与回滚</a>
+              <a href="#ex">本章综合习题</a>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第四篇 · 检索与工具<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第13章-向量检索.html">第 13 章　向量检索</a></div>
+          <div class="ch"><a class="ch-link" href="第14章-RAG全链路.html">第 14 章　RAG 全链路</a></div>
+          <div class="ch"><a class="ch-link" href="第15章-工具调用.html">第 15 章　工具调用</a></div>
+          <div class="ch"><a class="ch-link" href="第16章-Agent编排.html">第 16 章　Agent 编排</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第五篇 · 评估与生产<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第17章-评估体系.html">第 17 章　评估体系</a></div>
+          <div class="ch"><a class="ch-link" href="第18章-可观测性.html">第 18 章　可观测性</a></div>
+          <div class="ch"><a class="ch-link" href="第19章-安全与合规.html">第 19 章　安全与合规</a></div>
+          <div class="ch"><a class="ch-link" href="第20章-把项目讲成能力.html">第 20 章　把项目讲成能力</a></div>
+          <div class="ch"><a class="ch-link" href="附录-Java够用版速查.html">附录　Java 够用版速查</a></div>
+        </div></div>
+      </div>
+
+    </nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+
+<main class="content">
+<article class="wrap">
+<span id="top"></span>
+<div class="chapter-head">
+    <div class="ch-no">第三篇 · 服务</div>
+    <div class="ch-title">第 12 章　容器化部署</div>
+    <div class="ch-sub">「在我机器上是好的」这句话，从此不再成立</div>
+  </div>
+
+  <p class="lead">前十一章的代码都在一个终端里跑。这一章把它放进容器、放到一台别人也能访问的机器上，并解决一个 AI 服务特有的难题：<strong>怎么在不切断用户长连接的前提下发布新版本。</strong></p>
+
+  <div class="obj">
+    <div class="h">本章学习目标</div>
+    <div><strong>掌握</strong>　写一个结构正确的 Dockerfile（多阶段、非 root、有健康检查）</div>
+    <div><strong>掌握</strong>　配置与密钥的注入方式，以及为什么不能打进镜像</div>
+    <div><strong>理解</strong>　流式服务的优雅退出：为什么普通 <code>docker stop</code> 会截断回答</div>
+    <div><strong>掌握</strong>　健康检查的两个端点（存活 / 就绪）的区别</div>
+    <div><strong>了解</strong>　上线清单与回滚判断标准</div>
+  </div>
+
+  <h2 id="s1">12.1　一个能用的 Dockerfile</h2>
+
+  <div class="exam">
+    <div class="h">例题 12-1　多阶段构建</div>
+    <pre><span class="c"># ---------- 构建阶段 ----------</span>
+FROM python:3.12-slim AS build
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+<span class="c"># ---------- 运行阶段 ----------</span>
+FROM python:3.12-slim
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+COPY --from=build /install /usr/local
+
+<span class="c"># 非 root 用户</span>
+RUN useradd -m -u 10001 app
+WORKDIR /app
+COPY --chown=app:app . .
+USER app
+
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 \
+  CMD python -c "import urllib.request,sys; \
+      sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=2).status==200 else 1)"
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", \
+     "--proxy-headers", "--forwarded-allow-ips=*"]</pre>
+    <div class="out">四个关键点：<b>多阶段</b>（编译工具不进最终镜像）、<b>非 root</b>（被攻破时损失最小）、<br>
+    <b>PYTHONUNBUFFERED=1</b>（否则日志会被缓冲，出问题时看不到最后几行）、<br>
+    <b>start-period</b>（启动要加载模型和连接池，给 15 秒宽限，否则会被健康检查误杀）。</div>
+  </div>
+
+  <p><code>PYTHONUNBUFFERED</code> 这一行值得单独说。它看起来只是日志细节，实际上是很常见的排查障碍：容器崩溃时，<strong>最后几行日志通常就在缓冲区里，随进程一起消失了</strong>。而最后几行恰好是「为什么崩」的唯一线索。</p>
+
+  <p>多阶段构建的效果也很直接：单阶段镜像往往 1.2GB（带 gcc、头文件、pip 缓存），多阶段通常 200–300MB。镜像小的好处不只是拉取快——<strong>它是每次扩容、每次回滚的时间</strong>。在需要快速回滚的场合，从 3 分钟降到 20 秒是有意义的差别。</p>
+
+  <h2 id="s2">12.2　配置与密钥不能进镜像</h2>
+
+  <p>镜像一旦构建，里面的每一层都可以被 <code>docker history</code> 看到，包括被后续层删除的文件。<strong>把密钥写进 Dockerfile，即使下一行删掉，它仍然在镜像历史里</strong>，任何拿到镜像的人都能取出来。</p>
+
+  <table>
+    <tr><th>做法</th><th>是否可取</th><th>说明</th></tr>
+    <tr><td>写在 Dockerfile 的 <code>ENV</code> 里</td><td>不可</td><td>进镜像层，可被导出</td></tr>
+    <tr><td><code>COPY .env</code> 再删除</td><td>不可</td><td>历史层里还在</td></tr>
+    <tr><td>运行时 <code>-e</code> 传入</td><td>勉强</td><td>会出现在 <code>docker inspect</code> 和进程环境里</td></tr>
+    <tr><td>挂载文件 / 密钥管理服务</td><td>推荐</td><td>运行时注入，不进镜像，便于轮换</td></tr>
+  </table>
+
+  <p>还有一个实战细节：<strong>配置缺失必须让容器启动失败。</strong>如果服务能带着空密钥启动，它会正常响应 <code>/healthz</code>，看起来部署成功，但所有业务请求都失败。这种「健康但不工作」的状态，比直接崩溃难查得多。第 9 章的启动校验就是为这件事准备的。</p>
+
+  <h2 id="s3">12.3　优雅退出：流式服务的特殊难题</h2>
+
+  <p>发布新版本时，容器要停掉。默认行为是发 <code>SIGTERM</code>，等 10 秒，然后 <code>SIGKILL</code> 强杀。对一个 0.2 秒的普通接口，这没问题；对一条正在输出第 300 个字的流，<strong>它会在用户眼前断掉。</strong></p>
+
+  <p>用户看到的是「回答说到一半消失了」，而且刷新后也找不回来——因为那次生成已经丢了。这类问题在发布日集中出现，但很少有人把它和发布联系起来。</p>
+
+  <div class="fig">
+    <svg viewBox="0 0 700 260" width="700" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>发布时的流量切换</title>
+      <desc>正常退出流程：停止接新请求、等待存量流结束、再退出；对比直接强杀的后果</desc>
+      <rect x="8" y="14" width="240" height="86" rx="5" fill="#F2F7F5" stroke="#A8442A"/>
+      <text x="24" y="34" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#A8442A">直接强杀</text>
+      <text x="24" y="54" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#54524C">t=0　SIGTERM</text>
+      <text x="24" y="72" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#54524C">t=10　SIGKILL</text>
+      <text x="24" y="90" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#A8442A">正在输出的流被截断</text>
+
+      <rect x="440" y="14" width="252" height="86" rx="5" fill="#EAF1EF" stroke="#8FB3AA"/>
+      <text x="456" y="34" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#1F4E4A">优雅退出</text>
+      <text x="456" y="54" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#54524C">t=0　从负载均衡摘除</text>
+      <text x="456" y="72" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#54524C">t=0→　等存量请求结束</text>
+      <text x="456" y="90" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#1F4E4A">t=最多 60s　主动退出</text>
+
+      <path d="M256 56 H436" stroke="#8FB3AA" stroke-width="1.1" stroke-dasharray="4 3"/>
+      <path d="M436 56 l-8 -4 v8 z" fill="#8FB3AA"/>
+
+      <rect x="8" y="118" width="684" height="62" rx="5" fill="#FBF3E4" stroke="#D8BE92"/>
+      <text x="24" y="138" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#7A4A12">三个配置必须一起改，只改一个没用</text>
+      <text x="24" y="156" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#7A4A12">① 容器 stop_grace_period ≥ 最长流时长（不是默认 10s）</text>
+      <text x="24" y="172" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#7A4A12">② 应用捕获 SIGTERM：停止接新请求，等待在途请求，再退出　③ 网关摘除后再发 SIGTERM（有延迟）</text>
+
+      <text x="8" y="204" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#8A877E">顺序错了最典型的症状：网关还在往这个实例转流量，容器已经收到 SIGTERM 并停止接收 → 新请求 502。</text>
+      <text x="8" y="226" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#8A877E">所以退出流程应当是：先从注册中心/网关下线 → 等待注册刷新（5–10s）→ 再 SIGTERM → 应用停止接新、等在途 → 退出。</text>
+      <text x="8" y="248" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#A8442A">发布日的「偶发 502」几乎都是这个顺序问题，而不是代码问题。</text>
+    </svg>
+    <div class="cap">图 12-1　优雅退出：三步顺序不能颠倒</div>
+  </div>
+
+  <p>应用侧的实现要点：</p>
+
+  <div class="exam">
+    <div class="h">例题 12-2　捕获 SIGTERM，等在途请求</div>
+    <pre><span class="k">import</span> asyncio, signal
+<span class="k">from</span> contextlib <span class="k">import</span> asynccontextmanager
+
+inflight = <span class="s">0</span>
+stopping = <span class="k">False</span>
+
+<span class="k">@asynccontextmanager</span>
+<span class="k">async def</span> lifespan(app):
+    loop = asyncio.get_running_loop()
+    <span class="k">def</span> on_term():
+        <span class="k">global</span> stopping
+        stopping = <span class="k">True</span>          <span class="c"># /readyz 立刻开始返回 503</span>
+    loop.add_signal_handler(signal.SIGTERM, on_term)
+    <span class="k">yield</span>
+    <span class="c"># 关停阶段：给在途请求最多 60 秒</span>
+    <span class="k">for</span> _ <span class="k">in</span> range(<span class="s">120</span>):
+        <span class="k">if</span> inflight == <span class="s">0</span>:
+            <span class="k">break</span>
+        <span class="k">await</span> asyncio.sleep(<span class="s">0.5</span>)</pre>
+    <div class="out"><code>stopping</code> 这个标志的关键作用：<b>让就绪检查先失败</b>，把新流量挡在外面，<br>
+    而监听端口仍然开着，好让在途的流跑完。<b>「不接新的」和「不服务旧的」是两件事。</b></div>
+  </div>
+
+  <h2 id="s4">12.4　两个健康检查端点</h2>
+
+  <p>一个 <code>/healthz</code> 是不够的，因为「活着」和「能干活」是两件事。</p>
+
+  <table>
+    <tr><th>端点</th><th>回答的问题</th><th>失败时的动作</th><th>检查什么</th></tr>
+    <tr><td><code>/healthz</code>（存活）</td><td>进程还活着吗</td><td><strong>重启</strong>容器</td><td>只检查进程本身，不查任何外部依赖</td></tr>
+    <tr><td><code>/readyz</code>（就绪）</td><td>能接流量吗</td><td><strong>摘除</strong>流量，不重启</td><td>数据库连通、配置齐全、未在关停</td></tr>
+  </table>
+
+  <p>把外部依赖写进存活检查（<code>/healthz</code>）是一个常见但严重的错误：数据库抖动 → <code>/healthz</code> 失败 → 编排系统重启全部容器 → 重启后仍然连不上 → 循环重启 → <strong>一次数据库抖动变成全站不可用</strong>。</p>
+
+  <p>规则很简单：<strong>存活检查只能检查自己，就绪检查才能检查依赖。</strong>依赖挂了应该摘流量（等它恢复），而不是杀进程（它没做错什么）。</p>
+
+  <p>就绪检查还有一个细节：它应该有<strong>缓存</strong>。如果每个请求都去 ping 一次数据库，检查本身会变成负载。通常的做法是每 5 秒刷新一次状态，检查端点只读缓存值。</p>
+
+  <h2 id="s5">12.5　上线清单与回滚</h2>
+
+  <p>发布 AI 功能比发布普通功能多两件事：<strong>模型和提示词也有版本</strong>，以及<strong>质量可能悄悄退化</strong>。所以清单要覆盖这三层。</p>
+
+  <div class="exam">
+    <div class="h">例题 12-3　上线清单（可打印）</div>
+    <pre>□ 代码版本：commit ______　镜像 digest ______
+□ 提示词版本：p___（与代码同级管理，不是热改）
+□ 模型版本：______（记录到请求日志，便于归因）
+□ 评估：holdout 集准确率 ___%（基线 ___%，下降 &gt;3 点则不上）
+□ 索引：知识库版本 ______，重建完成时间 ______
+□ 配置：新增环境变量 ______，已在目标环境设置
+□ 容量：预估峰值并发 ___，当前并发上限 ___
+□ 回滚：上一版镜像 digest ______，回滚命令 ______
+□ 观察窗口：发布后 30 分钟盯 4 个指标（错误率/429/TTFT P95/采纳率）</pre>
+    <div class="out">两行最容易被跳过：<b>提示词版本</b> 和 <b>索引版本</b>。<br>
+    「代码回滚了但提示词没回滚」会造成一个很难解释的状态：行为还是新的，代码是旧的。</div>
+  </div>
+
+  <p>回滚的判断标准要提前定，不能临场讨论。建议三条硬指标，任一触发就回滚：</p>
+
+  <ol>
+    <li><strong>错误率超过基线 2 倍</strong>，持续 5 分钟。</li>
+    <li><strong>TTFT P95 超过 8 秒</strong>，持续 5 分钟（用户已经开始放弃）。</li>
+    <li><strong>采纳率下降超过 30%</strong>，持续 30 分钟（说明内容变差了，而这不会报错）。</li>
+  </ol>
+
+  <p>第三条最容易被忽略，因为它是「沉默的退化」：接口 200、延迟正常、没有异常日志，但内容质量掉了。<strong>没有采纳率这个业务指标，你只能等用户投诉。</strong></p>
+
+  <p>还有一条经验：<strong>回滚要演练。</strong>发布前真的回滚一次到上一版，确认命令可用、镜像还在、数据兼容。很多团队的回滚方案从未被执行过，等到真需要时才发现「上一版镜像被清理了」。</p>
+
+  <div class="caution">
+    <div class="h">四个部署期的高频故障</div>
+    <ol>
+      <li><strong>grace period 用默认 10 秒。</strong>长流被截断，表现为「发布日回答总是说一半」。</li>
+      <li><strong>存活检查查数据库。</strong>一次抖动触发全量重启，把小故障放大成全站事故。</li>
+      <li><strong>密钥打进镜像。</strong><code>docker history</code> 可导出，且轮换密钥时必须重新构建。</li>
+      <li><strong>提示词热改没版本。</strong>出问题时无法复现，因为「当时的提示词」已经不存在了。</li>
+    </ol>
+  </div>
+
+  <div class="summary">
+    <div class="h">本章小结</div>
+    <ul>
+      <li>Dockerfile 四要点：多阶段、非 root、<code>PYTHONUNBUFFERED</code>、健康检查带 <code>start-period</code>。</li>
+      <li>镜像小不是洁癖，它是扩容和回滚的时间。</li>
+      <li>密钥只能运行时注入；配置缺失必须启动失败，不能「健康但不工作」。</li>
+      <li>流式服务要延长 <code>stop_grace_period</code>，捕获 SIGTERM，并让就绪检查先失败。</li>
+      <li>退出顺序：网关下线 → 等待刷新 → SIGTERM → 停止接新、等在途 → 退出。顺序错就会有发布日 502。</li>
+      <li>存活只查自己，就绪才查依赖。混用会把小故障放大成全站事故。</li>
+      <li>上线清单要覆盖代码、提示词、模型、索引四层版本；回滚标准提前定，且要演练。</li>
+    </ul>
+  </div>
+
+  <h3 id="ex">本章综合习题</h3>
+
+  <div class="qa">
+    <div class="q"><b>综合题一</b>每次发布新版本，都有用户反馈「AI 回答说到一半就没了」。平时没有这个问题。给出三个可能原因和验证方法。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>原因一：容器 grace period 太短（默认 10 秒）。</strong>一条流 9 秒，加上建连和排队，很容易超过 10 秒，于是被 SIGKILL。<br>
+      <strong>验证：</strong>看被截断的请求，其持续时间是否集中在 9.5–10.5 秒之间。如果是，就是这个原因——这个「整齐的 10 秒」是决定性证据。</p>
+      <p><strong>原因二：退出顺序错，网关还在转发。</strong>容器已收到 SIGTERM 并停止接收，但网关的注册还没刷新，新请求打到它身上 → 502 或空响应。<br>
+      <strong>验证：</strong>统计截断请求的时间分布。如果集中在发布开始后的 0–15 秒内（而不是发布全程），说明是切换窗口问题，不是 grace period。同时查网关日志有没有 502。</p>
+      <p><strong>原因三：多副本滚动更新时，旧副本被摘除但连接没有 drain。</strong>负载均衡把连接关掉了，而应用侧还在往里写。<br>
+      <strong>验证：</strong>在服务端记录「写入时连接已断」的次数（写 <code>yield</code> 时捕获 <code>BrokenPipeError</code> / <code>ClientDisconnect</code>）。这个数字在发布期间上升就是它。</p>
+      <p><strong>三者的修法完全不同：</strong>改 <code>stop_grace_period</code>、改退出顺序、改负载均衡的 drain 配置。<strong>而它们的症状一模一样</strong>——所以必须靠时间分布来区分，不能靠猜。这也是为什么第 9 章强调每个请求要有 <code>trace_id</code>：没有它，你连「哪些请求被截断了」都统计不出来。</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题二</b>为什么存活检查不能查数据库？如果已经这么写了，怎么安全地改过来？</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>为什么不能：</strong>存活检查失败会触发<strong>重启容器</strong>。如果它检查数据库，那么数据库一抖动，所有容器同时健康检查失败、同时被重启。重启期间服务完全不可用，而数据库那边的小抖动本该只是「慢一点」。</p>
+      <p>更糟的是循环：容器重启需要 15–30 秒（加载依赖、建连接池），这段时间里它仍然连不上数据库，于是下次检查又失败，又被重启。<strong>一次 5 秒的数据库抖动，会变成 10 分钟的完全不可用。</strong></p>
+      <p>核心区别是：<strong>存活检查判断的是「进程是否陷入死锁或崩溃」，这类问题只能用重启解决；依赖不可用不属于这类问题</strong>，它应该表现为「暂时不接流量」，等依赖恢复后自动回来。</p>
+      <p><strong>安全改造的三步：</strong></p>
+      <p>① <strong>先加就绪检查，不改存活检查。</strong>让 <code>/readyz</code> 承担依赖检查，并从网关/编排配置里启用它。观察一周，确认摘流量机制工作正常。</p>
+      <p>② <strong>把存活检查改成只查进程。</strong>最简单的实现是返回一个常量 <code>{"ok": true}</code>——它只证明「事件循环还能响应请求」。这一步要在低峰期做。</p>
+      <p>③ <strong>观察重启次数。</strong>改造后容器重启次数应该降到接近 0（除了真实崩溃）。如果还有周期性重启，说明有别的东西在导致进程退出，需要单独查。</p>
+      <p><strong>一个额外收益：</strong>改完之后，你的服务在数据库维护窗口内可以「优雅降级」——返回 503 提示而不是整个不可用。<strong>这是可用性上的实质提升，而不只是配置更规范。</strong></p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题三</b>你要发布一版新提示词。写出你的发布与回滚方案，要求能回答「如果质量变差了，多久能发现、多久能恢复」。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>发布方式：提示词按版本号管理，与代码同一套发布流程，不做热改。</strong></p>
+      <pre>准备
+  p13 写入配置中心，状态 draft（不被读取）
+  用 holdout 60 条跑一次：准确率 ___%（基线 84%，门槛 81%）
+发布
+  灰度：按 agent_id 哈希 10% → 30% → 100%，每档观察 2 小时
+  请求日志带 prompt_ver，指标可按版本切分
+观察（4 个指标）
+  ① 准确率代理：人工抽检 20 条/小时
+  ② 净采纳率（实时埋点）
+  ③ 「插入后全删」比例
+  ④ 转人工率
+回滚
+  配置中心把 p13 状态改为 disabled，p12 立刻生效（无需重启）
+  预计恢复时间：< 1 分钟
+  数据：已产生的 p13 输出保留，标记版本，用于事后分析</pre>
+      <p><strong>「多久能发现」：</strong>准确率这种指标有滞后，靠抽检最快也要 1 小时。但<strong>「插入后全删」比例是实时信号</strong>——它不需要人工判断，只要用户行为变化就能看出来。经验上质量下降 5 个点，这个比例会在 20 分钟内明显上升。所以把它作为主告警指标，能发现得最快。</p>
+      <p><strong>「多久能恢复」：</strong>关键是<strong>提示词不打包进镜像</strong>。如果提示词在镜像里，回滚要走一次完整发布（构建 + 推送 + 滚动更新），最快 10 分钟；如果放在配置中心且支持热切换，回滚是秒级。<strong>这一个设计决定，把 MTTR 从 10 分钟降到 1 分钟。</strong></p>
+      <p><strong>为什么灰度按人而不按请求：</strong>按请求灰度会让同一个坐席今天用新版明天用旧版，他的反馈无法归因，而且行为会被两版混淆。按人固定分组，才能得到干净的分组对比。<strong>这是第 8 章「学习效应」的直接应用。</strong></p>
+    </div>
+  </div>
+
+  <div class="pagefoot">
+    <a href="第11章-缓存与成本.html">← 第 11 章　缓存与成本</a>
+    <a href="第13章-向量检索.html">第 13 章　向量检索 →</a>
+  </div>
+
+</article>
+</main>
+
+
+<script>
+(function(){
+  var html = document.documentElement;
+
+  /* ---- 主题 ---- */
+  var KEY = 'aifs-theme';
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch(e){}
+  });
+
+  /* ---- 侧边栏开合 ---- */
+  function setNav(open){ html.classList.toggle('nav-open', open); }
+  document.getElementById('navToggle').addEventListener('click', function(){ setNav(true); });
+  document.getElementById('sideCollapse').addEventListener('click', function(){ setNav(false); });
+  document.getElementById('scrim').addEventListener('click', function(){ setNav(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setNav(false); });
+
+  /* ---- 篇分组展开 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.ng-btn'), function(btn){
+    btn.addEventListener('click', function(){ btn.parentNode.classList.toggle('open'); });
+  });
+
+  /* ---- 移动端点击锚点后收起 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.side-nav a'), function(a){
+    a.addEventListener('click', function(){ if (window.innerWidth < 1024) setNav(false); });
+  });
+
+  /* ---- 滚动高亮当前节 ---- */
+  var secs  = Array.prototype.slice.call(document.querySelectorAll('h2[id], h3[id="ex"]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sec-list a'));
+  function sync(){
+    var cur = null;
+    secs.forEach(function(s){
+      if (s.getBoundingClientRect().top <= 150) cur = s.id;
+    });
+    links.forEach(function(l){
+      l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ sync(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', function(){
+    if (window.innerWidth >= 1024) setNav(true);
+    sync();
+  });
+  sync();
+})();
+</script>
+
+</body>
+</html>

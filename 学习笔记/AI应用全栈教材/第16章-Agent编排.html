@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 16 章 Agent 编排 · AI 应用全栈开发</title>
+<meta name="description" content="AI 应用全栈开发教材第 16 章：四种编排形态的选择、手写状态机、确认节点位置、死循环四种形态与终止条件。">
+<script>
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('aifs-theme'); } catch(e){}
+  if (!t) { t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+  if (window.innerWidth >= 1024) document.documentElement.classList.add('nav-open');
+})();
+</script>
+<style>
+
+  :root{
+    --paper:#FDFCF8; --card:#FFFFFF; --ink:#1C1B18; --ink2:#54524C; --ink3:#8A877E;
+    --line:rgba(0,0,0,0.13); --line2:rgba(0,0,0,0.07);
+    --accent:#1F4E4A; --accent-bg:#EAF1EF; --accent-line:#B9CFC9;
+    --warn:#7A4A12; --warn-bg:#FBF3E4; --warn-ink:#4A2E0A;
+    --code-bg:#F6F5F0; --code-line:rgba(0,0,0,0.06);
+    --obj-ink:#1a3d3a; --pre-ink:#2A2A26;
+    --ans-bg:#F2F7F5; --ans-ink:#22302D;
+    --k:#7A3E12; --s:#3A6B3A; --c:#91908A;
+    --side-bg:#F7F6F1; --side-line:rgba(0,0,0,0.09);
+    --side-hover:rgba(0,0,0,0.045); --side-active:#EAF1EF;
+    --shadow:0 6px 22px rgba(0,0,0,0.08);
+    --side-w:292px;
+  }
+  html[data-theme="dark"]{
+    --paper:#141518; --card:#1B1D21; --ink:#E7E5DE; --ink2:#A6A49B; --ink3:#7E7C74;
+    --line:rgba(255,255,255,0.15); --line2:rgba(255,255,255,0.07);
+    --accent:#7FB3A8; --accent-bg:#1A2A27; --accent-line:#35524C;
+    --warn:#D8A45E; --warn-bg:#251E14; --warn-ink:#D9C6A4;
+    --code-bg:#1A1C20; --code-line:rgba(255,255,255,0.06);
+    --obj-ink:#BBD3CD; --pre-ink:#D6D4CD;
+    --ans-bg:#1A2A27; --ans-ink:#C7D5D1;
+    --k:#D8A45E; --s:#93B98F; --c:#6F6D66;
+    --side-bg:#101114; --side-line:rgba(255,255,255,0.08);
+    --side-hover:rgba(255,255,255,0.055); --side-active:#1A2A27;
+    --shadow:0 6px 22px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",SimSun,serif;
+    font-size:16.5px; line-height:1.95; -webkit-font-smoothing:antialiased;
+    transition:background .22s ease, color .22s ease;
+  }
+  h1,h2,h3,h4,h5,.sans{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  a{color:var(--accent)}
+
+  /* ---------- 侧边栏 ---------- */
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:var(--side-w); z-index:60;
+    background:var(--side-bg); border-right:1px solid var(--side-line);
+    overflow-y:auto; overscroll-behavior:contain;
+    transform:translateX(-100%); visibility:hidden;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear .26s;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    padding-bottom:48px;
+  }
+  html.nav-open .sidebar{transform:none; visibility:visible;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s}
+  .side-top{
+    position:sticky; top:0; z-index:2; background:var(--side-bg);
+    padding:18px 40px 14px 18px; border-bottom:1px solid var(--side-line);
+  }
+  .side-title{display:block; font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.5; text-decoration:none; padding-right:6px}
+  .side-title:hover{color:var(--accent)}
+  .side-sub{font-size:11.5px; color:var(--ink3); margin-top:3px; letter-spacing:.01em}
+  .side-collapse{
+    position:absolute; top:17px; right:12px; width:24px; height:24px; border-radius:6px;
+    border:1px solid var(--line2); background:transparent; color:var(--ink3);
+    cursor:pointer; display:grid; place-items:center;
+  }
+  .side-collapse svg{width:13px; height:13px; display:block}
+  .side-collapse:hover{background:var(--side-hover); color:var(--ink2)}
+
+  .side-nav{padding:12px 10px 0}
+  .ng{margin-bottom:1px}
+  .ng-btn{
+    width:100%; display:flex; align-items:center; gap:6px; padding:9px 10px;
+    border:none; background:none; cursor:pointer; text-align:left; border-radius:6px;
+    font-family:inherit; font-size:11.5px; font-weight:600; color:var(--ink3);
+    letter-spacing:.06em; line-height:1.5;
+  }
+  .ng-btn:hover{background:var(--side-hover); color:var(--ink2)}
+  .ng-btn .cv{margin-left:auto; display:flex; align-items:center; opacity:.5; transition:transform .2s ease}
+  .ng-btn .cv svg{width:10px; height:10px; display:block}
+  .ng.open .ng-btn .cv{transform:rotate(90deg)}
+  .ng-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .24s ease}
+  .ng.open .ng-body{grid-template-rows:1fr}
+  .ng-body>div{overflow:hidden}
+
+  .ch{margin:1px 0}
+  .ch-link{
+    display:block; padding:6px 10px 6px 18px; font-size:12.8px; line-height:1.55;
+    color:var(--ink2); text-decoration:none; border-radius:6px;
+  }
+  .ch-link:hover{background:var(--side-hover); color:var(--ink)}
+  .ch-link.cur{color:var(--accent); font-weight:600; background:var(--side-active)}
+  .ch-link.soon{color:var(--ink3); opacity:.6; cursor:default}
+  .ch-link.soon:hover{background:none; color:var(--ink3)}
+
+  .sec-list{margin:1px 0 8px}
+  .sec-list a{
+    display:block; padding:5px 10px 5px 32px; font-size:12.2px; line-height:1.55;
+    color:var(--ink3); text-decoration:none; border-radius:5px;
+    border-left:2px solid transparent;
+  }
+  .sec-list a:hover{color:var(--ink2); background:var(--side-hover)}
+  .sec-list a.active{color:var(--accent); background:var(--side-active); border-left-color:var(--accent)}
+
+  /* ---------- 浮动按钮 ---------- */
+  .nav-toggle,.theme-toggle{
+    position:fixed; top:16px; z-index:70; width:38px; height:38px; cursor:pointer;
+    border:1px solid var(--line); background:var(--card); color:var(--ink2);
+    display:grid; place-items:center; box-shadow:var(--shadow);
+    transition:opacity .2s ease, transform .2s ease, background .2s ease;
+  }
+  .nav-toggle{left:16px; border-radius:10px; opacity:0; pointer-events:none; transform:translateX(-6px)}
+  html:not(.nav-open) .nav-toggle{opacity:1; pointer-events:auto; transform:none}
+  .nav-toggle:hover,.theme-toggle:hover{background:var(--accent-bg); color:var(--accent)}
+  .theme-toggle{right:18px; border-radius:50%}
+  .theme-toggle svg,.nav-toggle svg{width:17px; height:17px}
+  .i-sun{display:none}
+  html[data-theme="dark"] .i-sun{display:block}
+  html[data-theme="dark"] .i-moon{display:none}
+
+  .scrim{
+    position:fixed; inset:0; z-index:55; background:rgba(0,0,0,.42);
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+
+  /* ---------- 正文 ---------- */
+  .content{transition:margin-left .26s cubic-bezier(.4,0,.2,1)}
+  html.nav-open .content{margin-left:var(--side-w)}
+  .wrap{max-width:820px; margin:0 auto; padding:64px 36px 100px}
+
+  .chapter-head{border-bottom:2px solid var(--ink); padding-bottom:22px; margin-bottom:34px}
+  .ch-no{font-family:-apple-system,sans-serif; font-size:13px; color:var(--accent); letter-spacing:.14em; margin-bottom:10px}
+  .ch-title{font-family:-apple-system,sans-serif; font-size:32px; font-weight:600; line-height:1.35; letter-spacing:-.01em}
+  .ch-sub{font-family:-apple-system,sans-serif; font-size:15px; color:var(--ink2); margin-top:10px}
+
+  h2{font-family:-apple-system,sans-serif; font-size:23px; font-weight:600; margin:56px 0 4px; padding-left:14px; border-left:4px solid var(--accent); line-height:1.4; scroll-margin-top:28px}
+  h3{font-family:-apple-system,sans-serif; font-size:17px; font-weight:600; margin:34px 0 10px; scroll-margin-top:28px}
+  h4{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin:24px 0 8px; color:var(--accent)}
+  p{margin-bottom:17px}
+  .lead{color:var(--ink2)}
+
+  ul,ol{margin:0 0 18px 0; padding-left:24px}
+  li{margin-bottom:9px}
+  li::marker{color:var(--accent)}
+  strong{font-weight:600}
+
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13.8px; background:rgba(0,0,0,0.045); padding:1px 4px; border-radius:3px}
+  html[data-theme="dark"] code{background:rgba(255,255,255,0.08)}
+
+  .obj{background:var(--accent-bg); border-radius:5px; padding:16px 22px; margin:22px 0 26px; font-family:-apple-system,sans-serif; font-size:14px; color:var(--obj-ink); line-height:1.9}
+  .obj .h{font-weight:600; font-size:12.5px; letter-spacing:.05em; margin-bottom:7px}
+  .obj div{margin-bottom:2px}
+  .dep{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin:-14px 0 26px; letter-spacing:.02em}
+
+  .story{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:24px 28px; margin:22px 0; font-size:16px}
+  .story .tag{font-family:-apple-system,sans-serif; font-size:11.5px; color:var(--ink3); letter-spacing:.1em; margin-bottom:10px; display:block}
+  .story p:last-child{margin-bottom:0}
+
+  .exam{background:var(--code-bg); border-radius:6px; margin:22px 0; overflow:hidden; border:1px solid var(--code-line)}
+  .exam .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--accent); padding:12px 20px 0; letter-spacing:.03em}
+  .exam pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.8px; line-height:1.8; white-space:pre-wrap; padding:12px 20px 18px; color:var(--pre-ink)}
+  .exam .out{padding:12px 20px 16px; border-top:1px dashed var(--line); font-family:-apple-system,sans-serif; font-size:13px; color:var(--ink2); background:rgba(0,0,0,0.015)}
+  .exam .out b{color:var(--accent); font-weight:600}
+  html[data-theme="dark"] .exam .out{background:rgba(255,255,255,0.02)}
+  .k{color:var(--k); font-weight:500}
+  .s{color:var(--s)}
+  .c{color:var(--c); font-style:italic}
+
+  .caution{background:var(--warn-bg); border-radius:6px; padding:18px 22px; margin:24px 0; font-size:15.5px}
+  .caution .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--warn); margin-bottom:9px; letter-spacing:.05em}
+  .caution ol{margin:0; padding-left:20px; color:var(--warn-ink)}
+  .caution li{margin-bottom:9px}
+
+  .drill{margin:22px 0; font-size:15.5px}
+  .drill .g{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); font-weight:600; margin:16px 0 7px; letter-spacing:.05em}
+  .drill ol{padding-left:22px; margin-bottom:4px}
+
+  .qa{margin:20px 0 4px}
+  .qa .q{font-size:15.5px; margin-bottom:0}
+  .qa .q b{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); letter-spacing:.05em; margin-right:6px}
+  .ans{background:var(--ans-bg); border-left:3px solid var(--accent-line); border-radius:0 4px 4px 0; padding:13px 18px; margin:9px 0 20px; font-size:14.8px; line-height:1.85; color:var(--ans-ink)}
+  .ans .al{font-family:-apple-system,sans-serif; font-size:11.5px; font-weight:600; color:var(--accent); letter-spacing:.08em; display:block; margin-bottom:5px}
+  .ans p{margin-bottom:7px}
+  .ans p:last-child{margin-bottom:0}
+  .ans ul,.ans ol{margin:4px 0 6px; padding-left:20px}
+  .ans li{margin-bottom:4px}
+  .ans code{font-size:13px}
+  .ans .hl{color:var(--accent); font-weight:600}
+  .ans pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.5px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,0.04); padding:10px 12px; border-radius:4px; margin:8px 0; color:var(--pre-ink)}
+  html[data-theme="dark"] .ans pre{background:rgba(255,255,255,0.045)}
+
+  .note{border-left:2px solid var(--accent-line); padding:4px 0 4px 18px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px; margin:20px 0; font-family:-apple-system,sans-serif}
+  th{text-align:left; font-weight:600; font-size:12.5px; color:var(--ink3); padding:0 12px 9px 0; border-bottom:1px solid var(--line); letter-spacing:.02em}
+  td{padding:12px 12px 12px 0; border-bottom:1px solid var(--line2); vertical-align:top; line-height:1.7}
+  tr:last-child td{border-bottom:none}
+
+  .fig{margin:26px 0; text-align:center}
+  .fig svg{max-width:100%; height:auto}
+  .fig .cap{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin-top:10px; line-height:1.7}
+
+  /* SVG 深色适配：按原始 fill/stroke 值反相 */
+  html[data-theme="dark"] .fig svg [fill="#F2F7F5"]{fill:#16211F}
+  html[data-theme="dark"] .fig svg [fill="#EAF1EF"]{fill:#1A2927}
+  html[data-theme="dark"] .fig svg [fill="#DFEBE8"]{fill:#1E302D}
+  html[data-theme="dark"] .fig svg [fill="#B9CFC9"]{fill:#3A5F58}
+  html[data-theme="dark"] .fig svg [fill="#8FB3AA"]{fill:#4F8278}
+  html[data-theme="dark"] .fig svg [fill="#1F4E4A"]{fill:#7FB3A8}
+  html[data-theme="dark"] .fig svg [fill="#1C1B18"]{fill:#DCDAD3}
+  html[data-theme="dark"] .fig svg [fill="#54524C"]{fill:#A6A49B}
+  html[data-theme="dark"] .fig svg [fill="#8A877E"]{fill:#827F77}
+  html[data-theme="dark"] .fig svg [fill="#FBF3E4"]{fill:#241D13}
+  html[data-theme="dark"] .fig svg [fill="#D8BE92"]{fill:#6B5636}
+  html[data-theme="dark"] .fig svg [fill="#7A4A12"]{fill:#D8A45E}
+  html[data-theme="dark"] .fig svg [fill="#A8442A"]{fill:#E08866}
+  html[data-theme="dark"] .fig svg [stroke="#B9CFC9"]{stroke:#3A5F58}
+  html[data-theme="dark"] .fig svg [stroke="#8FB3AA"]{stroke:#4F8278}
+  html[data-theme="dark"] .fig svg [stroke="#1F4E4A"]{stroke:#7FB3A8}
+  html[data-theme="dark"] .fig svg [stroke="#D5D3CC"]{stroke:#4A4B44}
+  html[data-theme="dark"] .fig svg [stroke="#D8BE92"]{stroke:#6B5636}
+  html[data-theme="dark"] .fig svg [stroke="#B4B2A9"]{stroke:#4E4F49}
+
+  .summary{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:26px 30px; margin:34px 0}
+  .summary .h{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin-bottom:14px; color:var(--accent)}
+  .summary ul{margin-bottom:0}
+  .summary li{font-size:15.5px}
+
+  .pagefoot{margin-top:70px; padding-top:20px; border-top:1px solid var(--line); font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+  .pagefoot a{color:var(--ink2); text-decoration:none}
+  .pagefoot a:hover{color:var(--accent)}
+
+  @media (max-width:1023px){
+    html.nav-open .content{margin-left:0}
+    .sidebar{box-shadow:0 0 40px rgba(0,0,0,.25)}
+    html.nav-open .scrim{opacity:1; pointer-events:auto}
+    .wrap{padding:74px 26px 80px}
+  }
+  @media (max-width:680px){
+    .wrap{padding:70px 20px 70px}
+    body{font-size:16px}
+    .ch-title{font-size:25px}
+    h2{font-size:20px}
+    .story{padding:18px 20px}
+    .obj,.summary{padding:16px 18px}
+    table{font-size:13.5px}
+  }
+  @media print{
+    .sidebar,.nav-toggle,.theme-toggle,.scrim{display:none !important}
+    html.nav-open .content{margin-left:0}
+    .wrap{max-width:none; padding:0}
+  }
+
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" id="navToggle" aria-label="展开目录" title="展开目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换深色 / 浅色">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.8 6.8 0 0 0 11 11z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></svg>
+</button>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="side-top">
+      <a class="side-title" href="index.html" title="返回封面与目录">AI 应用全栈开发</a>
+      <div class="side-sub">从客服工作平台出发 · 20 章</div>
+      <button class="side-collapse" id="sideCollapse" aria-label="收起目录" title="收起目录"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    </div>
+
+    <nav class="side-nav">
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第一篇 · 模型与数据<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第01章-大模型应用的基本形态.html">第 1 章　大模型应用的基本形态</a></div>
+          <div class="ch"><a class="ch-link" href="第02章-提示工程的最小充分集.html">第 2 章　提示工程的最小充分集</a></div>
+          <div class="ch"><a class="ch-link" href="第03章-面向评估的数据处理.html">第 3 章　面向评估的数据处理</a></div>
+          <div class="ch"><a class="ch-link" href="第04章-第一次评估实践.html">第 4 章　第一次评估实践</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第二篇 · 界面<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第05章-流式输出.html">第 5 章　流式输出</a></div>
+          <div class="ch"><a class="ch-link" href="第06章-生成中的状态管理.html">第 6 章　生成中的状态管理</a></div>
+          <div class="ch"><a class="ch-link" href="第07章-人机协作界面.html">第 7 章　人机协作界面</a></div>
+          <div class="ch"><a class="ch-link" href="第08章-交互度量.html">第 8 章　交互度量</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第三篇 · 服务<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第09章-从脚本到服务.html">第 9 章　从脚本到服务</a></div>
+          <div class="ch"><a class="ch-link" href="第10章-异步与并发.html">第 10 章　异步与并发</a></div>
+          <div class="ch"><a class="ch-link" href="第11章-缓存与成本.html">第 11 章　缓存与成本</a></div>
+          <div class="ch"><a class="ch-link" href="第12章-容器化部署.html">第 12 章　容器化部署</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng open">
+        <button class="ng-btn" type="button">第四篇 · 检索与工具<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第13章-向量检索.html">第 13 章　向量检索</a></div>
+          <div class="ch"><a class="ch-link" href="第14章-RAG全链路.html">第 14 章　RAG 全链路</a></div>
+          <div class="ch"><a class="ch-link" href="第15章-工具调用.html">第 15 章　工具调用</a></div>
+          <div class="ch">
+            <a class="ch-link cur" href="#top" aria-current="page">第 16 章　Agent 编排</a>
+            <div class="sec-list">
+              <a href="#s1">16.1　真的需要 Agent 吗</a>
+              <a href="#s2">16.2　四种形态</a>
+              <a href="#s3">16.3　手写状态机</a>
+              <a href="#s4">16.4　确认节点</a>
+              <a href="#s5">16.5　死循环</a>
+              <a href="#ex">本章综合习题</a>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第五篇 · 评估与生产<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第17章-评估体系.html">第 17 章　评估体系</a></div>
+          <div class="ch"><a class="ch-link" href="第18章-可观测性.html">第 18 章　可观测性</a></div>
+          <div class="ch"><a class="ch-link" href="第19章-安全与合规.html">第 19 章　安全与合规</a></div>
+          <div class="ch"><a class="ch-link" href="第20章-把项目讲成能力.html">第 20 章　把项目讲成能力</a></div>
+          <div class="ch"><a class="ch-link" href="附录-Java够用版速查.html">附录　Java 够用版速查</a></div>
+        </div></div>
+      </div>
+
+    </nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+
+<main class="content">
+<article class="wrap">
+<span id="top"></span>
+<div class="chapter-head">
+    <div class="ch-no">第四篇 · 检索与工具</div>
+    <div class="ch-title">第 16 章　Agent 编排</div>
+    <div class="ch-sub">「让模型自己决定下一步」，是能力也是风险</div>
+  </div>
+
+  <p class="lead">第 15 章给了模型工具，但没说谁决定「什么时候用哪个」。这个决定权放在哪，就是编排的全部内容。这一章的核心主张可能和你在别处读到的不一样：<strong>大多数被叫做「Agent」的东西，其实应该是状态机</strong>；真正的自由规划只适合很窄的场景，而且必须配上严格的终止条件。</p>
+
+  <div class="obj">
+    <div class="h">本章学习目标</div>
+    <div><strong>理解</strong>　三种编排形态的边界：固定流程、状态机、自由规划</div>
+    <div><strong>掌握</strong>　判断一个场景该用哪种形态的三个问题</div>
+    <div><strong>掌握</strong>　手写一个可用的状态机编排（含工具调用与确认）</div>
+    <div><strong>掌握</strong>　死循环的四种形态与终止条件设计</div>
+    <div><strong>了解</strong>　风险分级与人工确认节点的位置</div>
+  </div>
+
+  <h2 id="s1">16.1　先问：真的需要 Agent 吗</h2>
+
+  <p>业内的「Agent」这个词已经膨胀到失去定义。本书用它指一件具体的事：<strong>由模型自主决定调用哪个工具、调几次、什么时候停。</strong>这个能力很强，但它有三个代价：不可预测、难评估、贵。</p>
+
+  <p>所以先问三个问题，只要有一个答案是「否」，就不该用自主编排：</p>
+
+  <table>
+    <tr><th>问题</th><th>答案是「否」意味着</th><th>该用什么</th></tr>
+    <tr><td><strong>① 步骤数量是否不固定？</strong></td><td>步骤固定（查订单→判断→回答）</td><td>固定流程，甚至一个提示词就够</td></tr>
+    <tr><td><strong>② 下一步是否依赖上一步的<em>内容</em>，而不只是结果？</strong></td><td>只是数据传递，判断逻辑确定</td><td>状态机（分支写死）</td></tr>
+    <tr><td><strong>③ 错误是否可以承受并被发现？</strong></td><td>错了不可挽回，或很难发现</td><td>状态机 + 人工确认</td></tr>
+  </table>
+
+  <p>举个具体的对照。客服场景里 90% 的需求长这样：</p>
+
+  <ul>
+    <li>「订单到哪了」→ 查订单 → 回答。一步，固定。</li>
+    <li>「我要退款」→ 查订单 → 判断是否满足条件 → 满足则确认后执行 → 回答。四步，固定。</li>
+    <li>「我这耳机左耳没声音，买了 5 天，能退吗，顺便看看有没有别的颜色可以换」→ 这是一个<strong>复合诉求</strong>：判断退款条件 + 查库存 + 可能还要改单。步骤数不定，且下一步依赖上一步结果。<strong>这才是 Agent 的场景。</strong></li>
+  </ul>
+
+  <p>第三种的共同特征是：<strong>客户一次说了多件事，而这几件事之间有依赖。</strong>用固定流程做，你要穷举所有组合（退款+换货、退款+查物流、换货+查库存……），组合数爆炸；用 Agent，模型自己排顺序。</p>
+
+  <div class="note"><strong>一个实用的判断标准：如果你的流程图能画完，就不要用 Agent。</strong>画不完（因为分支取决于语义而不是数据），才考虑自主编排。而「画不完」这种情况，在客服场景里大概占 10%。</div>
+
+  <h2 id="s2">16.2　四种形态，从确定到自由</h2>
+
+  <div class="fig">
+    <svg viewBox="0 0 700 320" width="700" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>四种编排形态</title>
+      <desc>从单一提示词到自由规划，控制力递减、灵活度递增、成本递增</desc>
+      <rect x="8" y="34" width="150" height="112" rx="5" fill="#F2F7F5" stroke="#B9CFC9"/>
+      <text x="24" y="54" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#1F4E4A">① 单一提示词</text>
+      <text x="24" y="74" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#54524C">一次调用，无工具</text>
+      <text x="24" y="92" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#54524C">覆盖：问答、摘要</text>
+      <text x="24" y="114" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#8A877E">可预测 ★★★★★</text>
+      <text x="24" y="132" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#8A877E">成本 ★☆☆☆☆</text>
+
+      <rect x="178" y="34" width="150" height="112" rx="5" fill="#EAF1EF" stroke="#8FB3AA"/>
+      <text x="194" y="54" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#1F4E4A">② 固定流程</text>
+      <text x="194" y="74" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#54524C">步骤写死，工具按序</text>
+      <text x="194" y="92" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#54524C">覆盖：退款、改地址</text>
+      <text x="194" y="114" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#8A877E">可预测 ★★★★☆</text>
+      <text x="194" y="132" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#8A877E">成本 ★★☆☆☆</text>
+
+      <rect x="348" y="34" width="150" height="112" rx="5" fill="#EAF1EF" stroke="#8FB3AA"/>
+      <text x="364" y="54" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#1F4E4A">③ 状态机</text>
+      <text x="364" y="74" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#54524C">分支由模型判断，</text>
+      <text x="364" y="88" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#54524C">路径由代码枚举</text>
+      <text x="364" y="114" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#1F4E4A">可预测 ★★★★☆</text>
+      <text x="364" y="132" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#8A877E">成本 ★★★☆☆</text>
+
+      <rect x="518" y="34" width="174" height="112" rx="5" fill="#FBF3E4" stroke="#D8BE92"/>
+      <text x="534" y="54" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#7A4A12">④ 自由规划</text>
+      <text x="534" y="74" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#7A4A12">模型决定工具顺序与次数</text>
+      <text x="534" y="92" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#7A4A12">覆盖：复合诉求、排查</text>
+      <text x="534" y="114" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#A8442A">可预测 ★★☆☆☆</text>
+      <text x="534" y="132" font-family="-apple-system,PingFang SC,sans-serif" font-size="10.5" fill="#A8442A">成本 ★★★★☆</text>
+
+      <path d="M8 172 H692" stroke="#D5D3CC" stroke-width="1"/>
+      <text x="8" y="192" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#8A877E">控制力 ←</text>
+      <text x="600" y="192" font-family="-apple-system,PingFang SC,sans-serif" font-size="11" fill="#8A877E">→ 灵活度</text>
+
+      <rect x="8" y="206" width="684" height="104" rx="5" fill="#F2F7F5" stroke="#B9CFC9"/>
+      <text x="24" y="226" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" font-weight="600" fill="#1F4E4A">实践中正确的比例（客服场景）</text>
+      <text x="24" y="246" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#54524C">① 单一提示词　60%（摘要、建议、分类、问答）</text>
+      <text x="24" y="264" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#54524C">② 固定流程　25%（退款、改地址、开工单——步骤本来就固定）</text>
+      <text x="24" y="282" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#54524C">③ 状态机　12%（需要按客户情况分支，但分支可枚举）</text>
+      <text x="24" y="300" font-family="-apple-system,PingFang SC,sans-serif" font-size="11.5" fill="#A8442A">④ 自由规划　3%（复合诉求）、且必须挂在状态机内部，受终止条件约束</text>
+    </svg>
+    <div class="cap">图 16-1　四种形态：控制力递减、灵活度与成本递增</div>
+  </div>
+
+  <p>第四种「自由规划」在图里被画成黄色，是有意的。它的问题不是「不好用」，而是<strong>在它出错时你很难解释为什么</strong>——同样的输入，它这次调了两个工具，下次调了三个，你无法预先知道，也无法在测试里覆盖。</p>
+
+  <p>所以实践中的正确做法是<strong>嵌套</strong>：外层是状态机（保证主流程可控），内层某一个状态是「自由规划」（处理复合诉求）。这样即使内层跑偏，外层也能兜住——超时、超步数、需要确认时就打断。</p>
+
+  <h2 id="s3">16.3　手写一个状态机</h2>
+
+  <p>下面这段代码是整个第四篇的核心。它不长，但包含了编排需要的全部要素：状态、转移、工具、确认、终止。</p>
+
+  <div class="exam">
+    <div class="h">例题 16-1　一个可用的编排循环</div>
+    <pre><span class="k">from</span> enum <span class="k">import</span> Enum
+
+<span class="k">class</span> S(Enum):
+    UNDERSTAND = <span class="s">'understand'</span>      <span class="c"># 判断客户要做什么</span>
+    PLAN       = <span class="s">'plan'</span>            <span class="c"># 选下一步</span>
+    ACT        = <span class="s">'act'</span>             <span class="c"># 调工具</span>
+    CONFIRM    = <span class="s">'confirm'</span>         <span class="c"># 等人工确认</span>
+    ANSWER     = <span class="s">'answer'</span>          <span class="c"># 组织最终回答</span>
+    ABORT      = <span class="s">'abort'</span>           <span class="c"># 终止（超步数/超时/异常）</span>
+
+<span class="k">async def</span> run(ticket, ctx, budget=<span class="s">6</span>):
+    st, steps, trace = S.UNDERSTAND, <span class="s">0</span>, []
+    <span class="k">while</span> st <span class="k">not in</span> (S.ANSWER, S.ABORT):
+        steps += <span class="s">1</span>
+        <span class="k">if</span> steps &gt; budget:                       <span class="c"># 终止条件一：步数</span>
+            st = S.ABORT; <span class="k">break</span>
+
+        <span class="k">if</span> st <span class="k">is</span> S.UNDERSTAND:
+            ctx.intent = <span class="k">await</span> classify(ticket)
+            st = S.ABORT <span class="k">if</span> ctx.intent <span class="k">is</span> <span class="k">None</span> <span class="k">else</span> S.PLAN
+
+        <span class="k">elif</span> st <span class="k">is</span> S.PLAN:
+            step = <span class="k">await</span> plan_next(ctx)                <span class="c"># 模型决定下一步</span>
+            <span class="k">if</span> step.kind == <span class="s">'tool'</span>:
+                ctx.next_tool = step; st = S.ACT
+            <span class="k">elif</span> step.kind == <span class="s">'confirm'</span>:
+                ctx.next_tool = step; st = S.CONFIRM
+            <span class="k">else</span>:
+                st = S.ANSWER
+
+        <span class="k">elif</span> st <span class="k">is</span> S.ACT:
+            res = <span class="k">await</span> execute(ctx.next_tool, ctx)      <span class="c"># 第 15 章的三层校验</span>
+            trace.append((ctx.next_tool, res))
+            ctx.observe(res)
+            st = S.PLAN                                  <span class="c"># 回到规划</span>
+
+        <span class="k">elif</span> st <span class="k">is</span> S.CONFIRM:
+            ok = <span class="k">await</span> wait_confirm(ctx)               <span class="c"># 不超时，见第 6 章</span>
+            st = S.ACT <span class="k">if</span> ok <span class="k">else</span> S.ANSWER
+
+    <span class="k">return</span> <span class="k">await</span> answer(ctx, trace) <span class="k">if</span> st <span class="k">is</span> S.ANSWER <span class="k">else</span> handoff(ctx)</pre>
+    <div class="out">三个设计点：<br>
+    <b>①</b> <code>ACT</code> 之后<b>一定回到 <code>PLAN</code></b>，不直接跳到 <code>ANSWER</code>——因为工具结果可能引出下一步。<br>
+    <b>②</b> <code>ABORT</code> 不是错误，是一种正常出口，它走 <code>handoff</code>（转人工），而不是抛异常。<br>
+    <b>③</b> <code>budget=6</code> 是硬约束，和模型无关——即使模型想继续，也不让它继续。</div>
+  </div>
+
+  <p>第 ② 点值得展开。<strong>「转人工」是 Agent 最重要的能力，而它经常被实现成异常路径。</strong>如果超步数时抛一个异常，用户体验是「系统出错了」；如果走 <code>handoff</code>，用户体验是「这个问题有点复杂，我帮你转给同事」——同样的技术事实，完全不同的感受。</p>
+
+  <p>而且 <code>handoff</code> 必须带上上下文：客户说了什么、已经查了什么、卡在哪一步。没有这些，接手的人工坐席要从头问一遍，客户会重复描述——这是最伤体验的环节。</p>
+
+  <h2 id="s4">16.4　确认节点放在哪</h2>
+
+  <p>判断标准只有一条：<strong>这一步的后果，是否可以由发起人在事后完全承担。</strong></p>
+
+  <table>
+    <tr><th>动作</th><th>后果可逆吗</th><th>影响范围</th><th>是否需要确认</th></tr>
+    <tr><td>查订单、查物流</td><td>无后果</td><td>无</td><td>不需要</td></tr>
+    <tr><td>生成回复草稿</td><td>可逆（不发送就没影响）</td><td>无</td><td>不需要（发送前有一次确认）</td></tr>
+    <tr><td>改地址、加备注</td><td>可逆（30 分钟内）</td><td>单个订单</td><td><strong>需要</strong></td></tr>
+    <tr><td>发短信/通知客户</td><td><strong>不可逆</strong></td><td>客户感知</td><td><strong>需要</strong>，且要展示文案全文</td></tr>
+    <tr><td>退款</td><td>不可逆</td><td>资金</td><td><strong>需要</strong> + 额度判断</td></tr>
+    <tr><td>批量操作</td><td>不可逆</td><td>多单</td><td><strong>需要</strong> + 二次确认（输入数量）</td></tr>
+  </table>
+
+  <p>「发短信」这一行容易被低估。它技术上只是调一个接口，但<strong>一旦发出去就无法收回</strong>，而客户会把它当作正式承诺。所以它必须确认，而且确认卡片上要显示完整文案——不是「发送通知」，而是「向 138****5678 发送：『您的订单已…』」。</p>
+
+  <p>批量操作那一行的「二次确认」也有讲究：不要用「确定要执行吗」这种确认，它会被无脑点掉。要用<strong>输入数量</strong>的方式：「请输入要退款的订单数（共 37 单）」。这个动作无法被肌肉记忆完成，必须真的看一眼。</p>
+
+  <h2 id="s5">16.5　死循环的四种形态</h2>
+
+  <p>自主编排最现实的工程问题不是「答得不好」，是「停不下来」。四种形态，每一种都需要独立的防护：</p>
+
+  <h3>形态一：同一个工具反复调，参数不变</h3>
+
+  <p>模型没读懂返回结果，于是再调一次。防护是<strong>检查重复</strong>：如果 <code>(tool_name, args_hash)</code> 在本次会话里出现过，第二次就直接返回「这个查询已经做过了，结果是 …」，不再执行。</p>
+
+  <h3>形态二：两个工具互相触发</h3>
+
+  <p>查订单发现地址异常 → 查地址服务 → 地址服务提示「请先确认订单状态」→ 又查订单。这种循环的周期是 2，重复检测抓不到（因为参数略有不同）。防护是<strong>步数上限 + 状态访问计数</strong>：同一个工具被调用超过 3 次就终止。</p>
+
+  <h3>形态三：模型不断「再确认一下」</h3>
+
+  <p>每一步都调一个查询工具，永远不进入 <code>ANSWER</code>。这在模型不确定时很常见。防护是<strong>预算递减 + 强制收敛</strong>：步数用掉 2/3 时，在提示词里加一句「你必须在剩余 N 步内给出答案，信息不足就说明不足」。</p>
+
+  <h3>形态四：确认节点被反复触发</h3>
+
+  <p>模型每次都请求同一个写操作，用户每次都拒绝，模型再请求。防护是<strong>拒绝即终止</strong>：一次拒绝之后，这个工具在本次会话里被禁用，并直接走 <code>ANSWER</code>。</p>
+
+  <div class="exam">
+    <div class="h">例题 16-2　四道闸一起上</div>
+    <pre>GUARDS = {
+  <span class="s">'max_steps'</span>: <span class="s">6</span>,              <span class="c"># 总步数</span>
+  <span class="s">'max_same_tool'</span>: <span class="s">3</span>,          <span class="c"># 同一工具最多调 3 次</span>
+  <span class="s">'dedup'</span>: <span class="k">True</span>,               <span class="c"># (tool, args_hash) 去重</span>
+  <span class="s">'deny_blocks_tool'</span>: <span class="k">True</span>,     <span class="c"># 拒绝后禁用该工具</span>
+  <span class="s">'wall_clock_s'</span>: <span class="s">45</span>,          <span class="c"># 总时长（含等待工具）</span>
+}</pre>
+    <div class="out">五个参数里 <code>wall_clock_s</code> 最容易被忘，但它防的是最坏情况：<br>
+    每个工具都 3 秒超时、调了 6 次、中间还等了两次确认——总时长可能到 60 秒，用户早就走了。</div>
+  </div>
+
+  <p>还有一件事：<strong>所有触发终止的情况都要记日志</strong>，并带上「终止原因」。原因分布本身就是最有价值的调优依据——如果 60% 的终止是「超步数」，说明任务对你的模型太难，应该拆小；如果 40% 是「同工具重复」，说明某个工具的描述或返回格式有问题。</p>
+
+  <div class="caution">
+    <div class="h">四个编排上的错误决定</div>
+    <ol>
+      <li><strong>能用流程图画的场景用了自由规划。</strong>得到的是不可测试、不可解释、成本更高的系统，而收益接近零。</li>
+      <li><strong>终止时抛异常而不是转人工。</strong>技术上是同一个结果，体验上差一个量级，而且用户会重复描述问题。</li>
+      <li><strong>只设步数上限，不设时长上限。</strong>步数到 6 但每步 8 秒，总时长 48 秒，用户早走了。</li>
+      <li><strong>批量操作只做「确定吗」的确认。</strong>会被肌肉记忆点掉，要改成输入数量。</li>
+    </ol>
+  </div>
+
+  <div class="summary">
+    <div class="h">本章小结</div>
+    <ul>
+      <li>Agent 的三个代价：不可预测、难评估、贵。三个问题里有一个「否」就不该用。</li>
+      <li>判断标准：流程图能画完 → 不用 Agent；画不完（分支取决于语义）→ 才用。</li>
+      <li>四种形态：单一提示词 60%、固定流程 25%、状态机 12%、自由规划 3%。</li>
+      <li>正确做法是嵌套：外层状态机兜底，内层某个状态做自由规划。</li>
+      <li>状态机三要点：ACT 后必回 PLAN、ABORT 是正常出口走转人工、budget 与模型无关。</li>
+      <li>确认节点看「后果能否事后完全承担」；批量操作用输入数量而非「确定吗」。</li>
+      <li>死循环四种形态，四道闸一起上：步数、同工具次数、参数去重、拒绝即禁用、总时长。</li>
+      <li>终止原因要记日志，它的分布直接告诉你下一步该改什么。</li>
+    </ul>
+  </div>
+
+  <h3 id="ex">本章综合习题</h3>
+
+  <div class="qa">
+    <div class="q"><b>综合题一</b>给出三个客服场景，分别说明该用固定流程、状态机、自由规划，并写出判断依据。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>场景 A：客户要退款（固定流程）。</strong></p>
+      <p>步骤恒定：查订单 → 判断是否满足退款条件（7 天无理由 / 15 天质量问题）→ 计算金额 → 确认 → 执行 → 告知时效。六步，没有分支能改变顺序，只有「是否满足条件」这一个二元分支，而它是数据判断不是语义判断。</p>
+      <p><strong>依据：</strong>流程图能完整画出，且分支由字段决定（签收日期、商品类别），不由模型判断。用自由规划只会带来「有时多查一次」的浪费和不可预测性。</p>
+      <p><strong>场景 B：客户说「耳机坏了，想退，但我想先看看能不能换别的颜色」（状态机）。</strong></p>
+      <p>这里有两个诉求，顺序不定（先退还是先看颜色），而且「能不能换」取决于库存和是否在换货期内。分支可以枚举：<code>可换货 → 查库存 → 有货 → 换货 / 无货 → 退款</code>，<code>不可换货 → 退款</code>。</p>
+      <p><strong>依据：</strong>路径依赖客户回答，但所有路径可枚举（大概 5–6 条）。用状态机既能覆盖，又能在每条路径上做明确的校验和确认。</p>
+      <p><strong>场景 C：客户说「我上周买的耳机左耳没声音，你们说可以退，但我朋友说他退了三个月才到账，你帮我看看我这单到底怎么回事，还有我另一单也一直没发货」（自由规划）。</strong></p>
+      <p>这是复合诉求：既有一个具体问题（左耳无声）、一个质疑（退款时效）、还有一个独立问题（另一单未发货）。<strong>步骤数不定</strong>——可能要查两三张订单、查退款流水、查物流，而且下一步取决于上一步查到什么（如果发现退款已到账，就不用查流水了）。</p>
+      <p><strong>依据：</strong>穷举组合不现实，且顺序需要根据中间结果调整。但即使这样，它也应当<strong>嵌在一个状态机里</strong>：外层控制步数、控制写操作必须确认、控制超时转人工。</p>
+      <p><strong>三个场景的共同规律：</strong>判据不是「难不难」，而是「路径是否可枚举」。难的但可枚举 → 状态机；简单的但组合爆炸 → 自由规划。</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题二</b>你的 Agent 在生产上偶发「卡住 40 秒后返回一句无关的回答」。列出四个可能原因和对应的防护。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>原因一：工具超时后模型继续尝试。</strong>某个工具卡了 10 秒超时，模型不死心又调了两次，最后步数耗尽走了兜底回答。<br>
+      <strong>防护：</strong>工具超时返回时带 <code>retryable: false</code> 和明确的 <code>hint</code>（「该查询暂时不可用，请直接告知客户稍后重试」），禁止模型重试。<strong>关键是把「不可重试」明确告诉模型</strong>，否则它会自己判断「再试一次也许行」。</p>
+      <p><strong>原因二：确认节点等待时间长。</strong>模型请求了写操作，坐席在忙没点，等了 30 秒后超时，走了兜底。<br>
+      <strong>防护：</strong>确认不该有 40 秒超时（第 6 章说过不允许超时）。正确做法是把它挂起并转入待办，同时立刻给用户一个「已提交，待确认」的回复，而不是让整个会话卡住。</p>
+      <p><strong>原因三：模型在 PLAN 状态反复犹豫。</strong>它每一步都想「再确认一下」，调了 4–5 个查询工具，最后预算耗尽。<br>
+      <strong>防护：</strong>预算递减提示（「你还剩 2 步，必须给出答案」）+ 同工具次数上限。并且记录「每个会话的工具调用序列」，看是否有固定的犹豫模式。</p>
+      <p><strong>原因四：上下文过长导致模型忽略了已有信息。</strong>前面查到的结果在上下文中间，被「中间遗忘」了，于是它重新查一遍——这既慢又贵，最后还可能给出与已查结果矛盾的答案。<br>
+      <strong>防护：</strong>把已获得的关键事实<strong>结构化地重述</strong>在每轮提示词末尾（「已查到：订单 20260312008 已发货，物流单号 SF123」），而不是指望模型从历史消息里翻。这一步成本很低，效果很明显。</p>
+      <p><strong>为什么必须先分类：</strong>四种原因的修法完全不同（改工具错误信息 / 改确认流程 / 改预算策略 / 改上下文组织）。而它们的症状都是「慢 + 答非所问」。<strong>区分方法是看日志里的状态序列</strong>——如果能看到「ACT 出现了 5 次」，就是原因三；如果「CONFIRM 停留了 30 秒」，就是原因二。<strong>这就是为什么要记录状态转移，而不只记录最终结果。</strong></p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题三</b>设计一个「批量退款」的确认流程，要求既不会误操作，又不会因为流程太重而没人用。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>核心设计：分层确认 + 可预演 + 可中断。</strong></p>
+      <p><strong>① 预演（Dry run）。</strong>Agent 先输出一张表：将要退款的 37 单、每单金额、总计金额、以及<strong>被排除的 5 单及原因</strong>（已退款 / 超期 / 金额异常）。这一步不执行任何操作，只是一次「模拟」。</p>
+      <p><strong>排除项必须显示</strong>，因为它是用户判断「这个批量是否符合预期」的最重要依据。只显示「将退款 37 单」而不显示「排除了哪 5 单」，用户无法确认逻辑是否正确。</p>
+      <p><strong>② 分级确认。</strong>按总金额分三档：<code>&lt; 500 元</code> 单次确认；<code>500–5000 元</code> 确认 + 输入总金额；<code>&gt; 5000 元</code> 需主管审批（转审批流，Agent 只负责准备材料）。</p>
+      <p>输入总金额而不是「点确定」，是因为它无法被肌肉记忆完成——你要看着表格把 3,847 输进去，这个过程会强迫你核对。</p>
+      <p><strong>③ 分批执行 + 可中断。</strong>不要一次性提交 37 单，而是每批 5 单，每批完成后显示进度（「已完成 15/37，已退 1,240 元」），并提供「暂停」按钮。</p>
+      <p>这个设计解决了一个真实痛点：如果第 3 单就发现异常，用户可以停下来，而不是等 37 单全部跑完再想办法撤回。而且它给了用户「我随时能停」的安全感，这直接影响他敢不敢用这个功能。</p>
+      <p><strong>④ 失败处理要具体。</strong>某一单失败不能中断整个批次，但必须汇总展示：「32 单成功，3 单失败：T…001（余额不足）、T…018（订单状态异常）、T…025（超权限）」，每单带可执行的处理建议。</p>
+      <p><strong>⑤ 完整回执。</strong>执行完成后生成一份可下载的回执，包含每单的订单号、金额、时间、操作人、确认人。这份回执是财务对账和事后审计的唯一凭据。</p>
+      <p><strong>为什么这样设计不算「重」：</strong>整个流程里用户只做三件事——看预演表、输入总金额、点执行。加起来不到 30 秒，而它替代的是「37 次手工操作」。</p>
+      <p><strong>关键的取舍：</strong>预演和分批是「增加系统复杂度」换取「用户的操作确定性」；分级确认是「增加一次交互」换取「风险与金额匹配」。<strong>三者都不是为了防 AI，而是为了让用户敢用——这是所有高风险自动化功能的真正门槛。</strong></p>
+    </div>
+  </div>
+
+  <div class="pagefoot">
+    <a href="第15章-工具调用.html">← 第 15 章　工具调用</a>
+    <a href="第17章-评估体系.html">第 17 章　评估体系 →</a>
+  </div>
+
+</article>
+</main>
+
+
+<script>
+(function(){
+  var html = document.documentElement;
+
+  /* ---- 主题 ---- */
+  var KEY = 'aifs-theme';
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch(e){}
+  });
+
+  /* ---- 侧边栏开合 ---- */
+  function setNav(open){ html.classList.toggle('nav-open', open); }
+  document.getElementById('navToggle').addEventListener('click', function(){ setNav(true); });
+  document.getElementById('sideCollapse').addEventListener('click', function(){ setNav(false); });
+  document.getElementById('scrim').addEventListener('click', function(){ setNav(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setNav(false); });
+
+  /* ---- 篇分组展开 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.ng-btn'), function(btn){
+    btn.addEventListener('click', function(){ btn.parentNode.classList.toggle('open'); });
+  });
+
+  /* ---- 移动端点击锚点后收起 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.side-nav a'), function(a){
+    a.addEventListener('click', function(){ if (window.innerWidth < 1024) setNav(false); });
+  });
+
+  /* ---- 滚动高亮当前节 ---- */
+  var secs  = Array.prototype.slice.call(document.querySelectorAll('h2[id], h3[id="ex"]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sec-list a'));
+  function sync(){
+    var cur = null;
+    secs.forEach(function(s){
+      if (s.getBoundingClientRect().top <= 150) cur = s.id;
+    });
+    links.forEach(function(l){
+      l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ sync(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', function(){
+    if (window.innerWidth >= 1024) setNav(true);
+    sync();
+  });
+  sync();
+})();
+</script>
+
+</body>
+</html>

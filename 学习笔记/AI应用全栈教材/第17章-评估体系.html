@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 17 章 评估体系 · AI 应用全栈开发</title>
+<meta name="description" content="AI 应用全栈开发教材第 17 章：三层评估、模型裁判校准、上线门禁四判、数据飞轮三个免费来源、体系腐化检查。">
+<script>
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('aifs-theme'); } catch(e){}
+  if (!t) { t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+  if (window.innerWidth >= 1024) document.documentElement.classList.add('nav-open');
+})();
+</script>
+<style>
+
+  :root{
+    --paper:#FDFCF8; --card:#FFFFFF; --ink:#1C1B18; --ink2:#54524C; --ink3:#8A877E;
+    --line:rgba(0,0,0,0.13); --line2:rgba(0,0,0,0.07);
+    --accent:#1F4E4A; --accent-bg:#EAF1EF; --accent-line:#B9CFC9;
+    --warn:#7A4A12; --warn-bg:#FBF3E4; --warn-ink:#4A2E0A;
+    --code-bg:#F6F5F0; --code-line:rgba(0,0,0,0.06);
+    --obj-ink:#1a3d3a; --pre-ink:#2A2A26;
+    --ans-bg:#F2F7F5; --ans-ink:#22302D;
+    --k:#7A3E12; --s:#3A6B3A; --c:#91908A;
+    --side-bg:#F7F6F1; --side-line:rgba(0,0,0,0.09);
+    --side-hover:rgba(0,0,0,0.045); --side-active:#EAF1EF;
+    --shadow:0 6px 22px rgba(0,0,0,0.08);
+    --side-w:292px;
+  }
+  html[data-theme="dark"]{
+    --paper:#141518; --card:#1B1D21; --ink:#E7E5DE; --ink2:#A6A49B; --ink3:#7E7C74;
+    --line:rgba(255,255,255,0.15); --line2:rgba(255,255,255,0.07);
+    --accent:#7FB3A8; --accent-bg:#1A2A27; --accent-line:#35524C;
+    --warn:#D8A45E; --warn-bg:#251E14; --warn-ink:#D9C6A4;
+    --code-bg:#1A1C20; --code-line:rgba(255,255,255,0.06);
+    --obj-ink:#BBD3CD; --pre-ink:#D6D4CD;
+    --ans-bg:#1A2A27; --ans-ink:#C7D5D1;
+    --k:#D8A45E; --s:#93B98F; --c:#6F6D66;
+    --side-bg:#101114; --side-line:rgba(255,255,255,0.08);
+    --side-hover:rgba(255,255,255,0.055); --side-active:#1A2A27;
+    --shadow:0 6px 22px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",SimSun,serif;
+    font-size:16.5px; line-height:1.95; -webkit-font-smoothing:antialiased;
+    transition:background .22s ease, color .22s ease;
+  }
+  h1,h2,h3,h4,h5,.sans{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  a{color:var(--accent)}
+
+  /* ---------- 侧边栏 ---------- */
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:var(--side-w); z-index:60;
+    background:var(--side-bg); border-right:1px solid var(--side-line);
+    overflow-y:auto; overscroll-behavior:contain;
+    transform:translateX(-100%); visibility:hidden;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear .26s;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    padding-bottom:48px;
+  }
+  html.nav-open .sidebar{transform:none; visibility:visible;
+    transition:transform .26s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s}
+  .side-top{
+    position:sticky; top:0; z-index:2; background:var(--side-bg);
+    padding:18px 40px 14px 18px; border-bottom:1px solid var(--side-line);
+  }
+  .side-title{display:block; font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.5; text-decoration:none; padding-right:6px}
+  .side-title:hover{color:var(--accent)}
+  .side-sub{font-size:11.5px; color:var(--ink3); margin-top:3px; letter-spacing:.01em}
+  .side-collapse{
+    position:absolute; top:17px; right:12px; width:24px; height:24px; border-radius:6px;
+    border:1px solid var(--line2); background:transparent; color:var(--ink3);
+    cursor:pointer; display:grid; place-items:center;
+  }
+  .side-collapse svg{width:13px; height:13px; display:block}
+  .side-collapse:hover{background:var(--side-hover); color:var(--ink2)}
+
+  .side-nav{padding:12px 10px 0}
+  .ng{margin-bottom:1px}
+  .ng-btn{
+    width:100%; display:flex; align-items:center; gap:6px; padding:9px 10px;
+    border:none; background:none; cursor:pointer; text-align:left; border-radius:6px;
+    font-family:inherit; font-size:11.5px; font-weight:600; color:var(--ink3);
+    letter-spacing:.06em; line-height:1.5;
+  }
+  .ng-btn:hover{background:var(--side-hover); color:var(--ink2)}
+  .ng-btn .cv{margin-left:auto; display:flex; align-items:center; opacity:.5; transition:transform .2s ease}
+  .ng-btn .cv svg{width:10px; height:10px; display:block}
+  .ng.open .ng-btn .cv{transform:rotate(90deg)}
+  .ng-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .24s ease}
+  .ng.open .ng-body{grid-template-rows:1fr}
+  .ng-body>div{overflow:hidden}
+
+  .ch{margin:1px 0}
+  .ch-link{
+    display:block; padding:6px 10px 6px 18px; font-size:12.8px; line-height:1.55;
+    color:var(--ink2); text-decoration:none; border-radius:6px;
+  }
+  .ch-link:hover{background:var(--side-hover); color:var(--ink)}
+  .ch-link.cur{color:var(--accent); font-weight:600; background:var(--side-active)}
+  .ch-link.soon{color:var(--ink3); opacity:.6; cursor:default}
+  .ch-link.soon:hover{background:none; color:var(--ink3)}
+
+  .sec-list{margin:1px 0 8px}
+  .sec-list a{
+    display:block; padding:5px 10px 5px 32px; font-size:12.2px; line-height:1.55;
+    color:var(--ink3); text-decoration:none; border-radius:5px;
+    border-left:2px solid transparent;
+  }
+  .sec-list a:hover{color:var(--ink2); background:var(--side-hover)}
+  .sec-list a.active{color:var(--accent); background:var(--side-active); border-left-color:var(--accent)}
+
+  /* ---------- 浮动按钮 ---------- */
+  .nav-toggle,.theme-toggle{
+    position:fixed; top:16px; z-index:70; width:38px; height:38px; cursor:pointer;
+    border:1px solid var(--line); background:var(--card); color:var(--ink2);
+    display:grid; place-items:center; box-shadow:var(--shadow);
+    transition:opacity .2s ease, transform .2s ease, background .2s ease;
+  }
+  .nav-toggle{left:16px; border-radius:10px; opacity:0; pointer-events:none; transform:translateX(-6px)}
+  html:not(.nav-open) .nav-toggle{opacity:1; pointer-events:auto; transform:none}
+  .nav-toggle:hover,.theme-toggle:hover{background:var(--accent-bg); color:var(--accent)}
+  .theme-toggle{right:18px; border-radius:50%}
+  .theme-toggle svg,.nav-toggle svg{width:17px; height:17px}
+  .i-sun{display:none}
+  html[data-theme="dark"] .i-sun{display:block}
+  html[data-theme="dark"] .i-moon{display:none}
+
+  .scrim{
+    position:fixed; inset:0; z-index:55; background:rgba(0,0,0,.42);
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+
+  /* ---------- 正文 ---------- */
+  .content{transition:margin-left .26s cubic-bezier(.4,0,.2,1)}
+  html.nav-open .content{margin-left:var(--side-w)}
+  .wrap{max-width:820px; margin:0 auto; padding:64px 36px 100px}
+
+  .chapter-head{border-bottom:2px solid var(--ink); padding-bottom:22px; margin-bottom:34px}
+  .ch-no{font-family:-apple-system,sans-serif; font-size:13px; color:var(--accent); letter-spacing:.14em; margin-bottom:10px}
+  .ch-title{font-family:-apple-system,sans-serif; font-size:32px; font-weight:600; line-height:1.35; letter-spacing:-.01em}
+  .ch-sub{font-family:-apple-system,sans-serif; font-size:15px; color:var(--ink2); margin-top:10px}
+
+  h2{font-family:-apple-system,sans-serif; font-size:23px; font-weight:600; margin:56px 0 4px; padding-left:14px; border-left:4px solid var(--accent); line-height:1.4; scroll-margin-top:28px}
+  h3{font-family:-apple-system,sans-serif; font-size:17px; font-weight:600; margin:34px 0 10px; scroll-margin-top:28px}
+  h4{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin:24px 0 8px; color:var(--accent)}
+  p{margin-bottom:17px}
+  .lead{color:var(--ink2)}
+
+  ul,ol{margin:0 0 18px 0; padding-left:24px}
+  li{margin-bottom:9px}
+  li::marker{color:var(--accent)}
+  strong{font-weight:600}
+
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13.8px; background:rgba(0,0,0,0.045); padding:1px 4px; border-radius:3px}
+  html[data-theme="dark"] code{background:rgba(255,255,255,0.08)}
+
+  .obj{background:var(--accent-bg); border-radius:5px; padding:16px 22px; margin:22px 0 26px; font-family:-apple-system,sans-serif; font-size:14px; color:var(--obj-ink); line-height:1.9}
+  .obj .h{font-weight:600; font-size:12.5px; letter-spacing:.05em; margin-bottom:7px}
+  .obj div{margin-bottom:2px}
+  .dep{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin:-14px 0 26px; letter-spacing:.02em}
+
+  .story{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:24px 28px; margin:22px 0; font-size:16px}
+  .story .tag{font-family:-apple-system,sans-serif; font-size:11.5px; color:var(--ink3); letter-spacing:.1em; margin-bottom:10px; display:block}
+  .story p:last-child{margin-bottom:0}
+
+  .exam{background:var(--code-bg); border-radius:6px; margin:22px 0; overflow:hidden; border:1px solid var(--code-line)}
+  .exam .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--accent); padding:12px 20px 0; letter-spacing:.03em}
+  .exam pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.8px; line-height:1.8; white-space:pre-wrap; padding:12px 20px 18px; color:var(--pre-ink)}
+  .exam .out{padding:12px 20px 16px; border-top:1px dashed var(--line); font-family:-apple-system,sans-serif; font-size:13px; color:var(--ink2); background:rgba(0,0,0,0.015)}
+  .exam .out b{color:var(--accent); font-weight:600}
+  html[data-theme="dark"] .exam .out{background:rgba(255,255,255,0.02)}
+  .k{color:var(--k); font-weight:500}
+  .s{color:var(--s)}
+  .c{color:var(--c); font-style:italic}
+
+  .caution{background:var(--warn-bg); border-radius:6px; padding:18px 22px; margin:24px 0; font-size:15.5px}
+  .caution .h{font-family:-apple-system,sans-serif; font-size:12.5px; font-weight:600; color:var(--warn); margin-bottom:9px; letter-spacing:.05em}
+  .caution ol{margin:0; padding-left:20px; color:var(--warn-ink)}
+  .caution li{margin-bottom:9px}
+
+  .drill{margin:22px 0; font-size:15.5px}
+  .drill .g{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); font-weight:600; margin:16px 0 7px; letter-spacing:.05em}
+  .drill ol{padding-left:22px; margin-bottom:4px}
+
+  .qa{margin:20px 0 4px}
+  .qa .q{font-size:15.5px; margin-bottom:0}
+  .qa .q b{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--accent); letter-spacing:.05em; margin-right:6px}
+  .ans{background:var(--ans-bg); border-left:3px solid var(--accent-line); border-radius:0 4px 4px 0; padding:13px 18px; margin:9px 0 20px; font-size:14.8px; line-height:1.85; color:var(--ans-ink)}
+  .ans .al{font-family:-apple-system,sans-serif; font-size:11.5px; font-weight:600; color:var(--accent); letter-spacing:.08em; display:block; margin-bottom:5px}
+  .ans p{margin-bottom:7px}
+  .ans p:last-child{margin-bottom:0}
+  .ans ul,.ans ol{margin:4px 0 6px; padding-left:20px}
+  .ans li{margin-bottom:4px}
+  .ans code{font-size:13px}
+  .ans .hl{color:var(--accent); font-weight:600}
+  .ans pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.5px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,0.04); padding:10px 12px; border-radius:4px; margin:8px 0; color:var(--pre-ink)}
+  html[data-theme="dark"] .ans pre{background:rgba(255,255,255,0.045)}
+
+  .note{border-left:2px solid var(--accent-line); padding:4px 0 4px 18px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px; margin:20px 0; font-family:-apple-system,sans-serif}
+  th{text-align:left; font-weight:600; font-size:12.5px; color:var(--ink3); padding:0 12px 9px 0; border-bottom:1px solid var(--line); letter-spacing:.02em}
+  td{padding:12px 12px 12px 0; border-bottom:1px solid var(--line2); vertical-align:top; line-height:1.7}
+  tr:last-child td{border-bottom:none}
+
+  .fig{margin:26px 0; text-align:center}
+  .fig svg{max-width:100%; height:auto}
+  .fig .cap{font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); margin-top:10px; line-height:1.7}
+
+  /* SVG 深色适配：按原始 fill/stroke 值反相 */
+  html[data-theme="dark"] .fig svg [fill="#F2F7F5"]{fill:#16211F}
+  html[data-theme="dark"] .fig svg [fill="#EAF1EF"]{fill:#1A2927}
+  html[data-theme="dark"] .fig svg [fill="#DFEBE8"]{fill:#1E302D}
+  html[data-theme="dark"] .fig svg [fill="#B9CFC9"]{fill:#3A5F58}
+  html[data-theme="dark"] .fig svg [fill="#8FB3AA"]{fill:#4F8278}
+  html[data-theme="dark"] .fig svg [fill="#1F4E4A"]{fill:#7FB3A8}
+  html[data-theme="dark"] .fig svg [fill="#1C1B18"]{fill:#DCDAD3}
+  html[data-theme="dark"] .fig svg [fill="#54524C"]{fill:#A6A49B}
+  html[data-theme="dark"] .fig svg [fill="#8A877E"]{fill:#827F77}
+  html[data-theme="dark"] .fig svg [fill="#FBF3E4"]{fill:#241D13}
+  html[data-theme="dark"] .fig svg [fill="#D8BE92"]{fill:#6B5636}
+  html[data-theme="dark"] .fig svg [fill="#7A4A12"]{fill:#D8A45E}
+  html[data-theme="dark"] .fig svg [fill="#A8442A"]{fill:#E08866}
+  html[data-theme="dark"] .fig svg [stroke="#B9CFC9"]{stroke:#3A5F58}
+  html[data-theme="dark"] .fig svg [stroke="#8FB3AA"]{stroke:#4F8278}
+  html[data-theme="dark"] .fig svg [stroke="#1F4E4A"]{stroke:#7FB3A8}
+  html[data-theme="dark"] .fig svg [stroke="#D5D3CC"]{stroke:#4A4B44}
+  html[data-theme="dark"] .fig svg [stroke="#D8BE92"]{stroke:#6B5636}
+  html[data-theme="dark"] .fig svg [stroke="#B4B2A9"]{stroke:#4E4F49}
+
+  .summary{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:26px 30px; margin:34px 0}
+  .summary .h{font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; margin-bottom:14px; color:var(--accent)}
+  .summary ul{margin-bottom:0}
+  .summary li{font-size:15.5px}
+
+  .pagefoot{margin-top:70px; padding-top:20px; border-top:1px solid var(--line); font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+  .pagefoot a{color:var(--ink2); text-decoration:none}
+  .pagefoot a:hover{color:var(--accent)}
+
+  @media (max-width:1023px){
+    html.nav-open .content{margin-left:0}
+    .sidebar{box-shadow:0 0 40px rgba(0,0,0,.25)}
+    html.nav-open .scrim{opacity:1; pointer-events:auto}
+    .wrap{padding:74px 26px 80px}
+  }
+  @media (max-width:680px){
+    .wrap{padding:70px 20px 70px}
+    body{font-size:16px}
+    .ch-title{font-size:25px}
+    h2{font-size:20px}
+    .story{padding:18px 20px}
+    .obj,.summary{padding:16px 18px}
+    table{font-size:13.5px}
+  }
+  @media print{
+    .sidebar,.nav-toggle,.theme-toggle,.scrim{display:none !important}
+    html.nav-open .content{margin-left:0}
+    .wrap{max-width:none; padding:0}
+  }
+
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" id="navToggle" aria-label="展开目录" title="展开目录">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换深色 / 浅色">
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.8 6.8 0 0 0 11 11z"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></svg>
+</button>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="side-top">
+      <a class="side-title" href="index.html" title="返回封面与目录">AI 应用全栈开发</a>
+      <div class="side-sub">从客服工作平台出发 · 20 章</div>
+      <button class="side-collapse" id="sideCollapse" aria-label="收起目录" title="收起目录"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    </div>
+
+    <nav class="side-nav">
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第一篇 · 模型与数据<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第01章-大模型应用的基本形态.html">第 1 章　大模型应用的基本形态</a></div>
+          <div class="ch"><a class="ch-link" href="第02章-提示工程的最小充分集.html">第 2 章　提示工程的最小充分集</a></div>
+          <div class="ch"><a class="ch-link" href="第03章-面向评估的数据处理.html">第 3 章　面向评估的数据处理</a></div>
+          <div class="ch"><a class="ch-link" href="第04章-第一次评估实践.html">第 4 章　第一次评估实践</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第二篇 · 界面<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第05章-流式输出.html">第 5 章　流式输出</a></div>
+          <div class="ch"><a class="ch-link" href="第06章-生成中的状态管理.html">第 6 章　生成中的状态管理</a></div>
+          <div class="ch"><a class="ch-link" href="第07章-人机协作界面.html">第 7 章　人机协作界面</a></div>
+          <div class="ch"><a class="ch-link" href="第08章-交互度量.html">第 8 章　交互度量</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第三篇 · 服务<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第09章-从脚本到服务.html">第 9 章　从脚本到服务</a></div>
+          <div class="ch"><a class="ch-link" href="第10章-异步与并发.html">第 10 章　异步与并发</a></div>
+          <div class="ch"><a class="ch-link" href="第11章-缓存与成本.html">第 11 章　缓存与成本</a></div>
+          <div class="ch"><a class="ch-link" href="第12章-容器化部署.html">第 12 章　容器化部署</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng">
+        <button class="ng-btn" type="button">第四篇 · 检索与工具<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch"><a class="ch-link" href="第13章-向量检索.html">第 13 章　向量检索</a></div>
+          <div class="ch"><a class="ch-link" href="第14章-RAG全链路.html">第 14 章　RAG 全链路</a></div>
+          <div class="ch"><a class="ch-link" href="第15章-工具调用.html">第 15 章　工具调用</a></div>
+          <div class="ch"><a class="ch-link" href="第16章-Agent编排.html">第 16 章　Agent 编排</a></div>
+        </div></div>
+      </div>
+
+      <div class="ng open">
+        <button class="ng-btn" type="button">第五篇 · 评估与生产<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
+        <div class="ng-body"><div>
+          <div class="ch">
+            <a class="ch-link cur" href="#top" aria-current="page">第 17 章　评估体系</a>
+            <div class="sec-list">
+              <a href="#s1">17.1　三层评估</a>
+              <a href="#s2">17.2　模型裁判</a>
+              <a href="#s3">17.3　门禁</a>
+              <a href="#s4">17.4　数据飞轮</a>
+              <a href="#s5">17.5　体系的腐化</a>
+              <a href="#ex">本章综合习题</a>
+            </div>
+          </div>
+          <div class="ch"><a class="ch-link" href="第18章-可观测性.html">第 18 章　可观测性</a></div>
+          <div class="ch"><a class="ch-link" href="第19章-安全与合规.html">第 19 章　安全与合规</a></div>
+          <div class="ch"><a class="ch-link" href="第20章-把项目讲成能力.html">第 20 章　把项目讲成能力</a></div>
+          <div class="ch"><a class="ch-link" href="附录-Java够用版速查.html">附录　Java 够用版速查</a></div>
+        </div></div>
+      </div>
+
+    </nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+
+<main class="content">
+<article class="wrap">
+<span id="top"></span>
+<div class="chapter-head">
+    <div class="ch-no">第五篇 · 评估与生产</div>
+    <div class="ch-title">第 17 章　评估体系</div>
+    <div class="ch-sub">一次体检没有意义，一张长期跑的回归集才有</div>
+  </div>
+
+  <p class="lead">第 3、4 章做了一次体检。这一章把它变成一套<strong>能持续运行、能拦住退步、能支撑决策</strong>的体系。区别在自动化和门禁：体检是你主动去做的，体系是每次改动都会自动跑、跑不过就不许上线的。</p>
+
+  <div class="obj">
+    <div class="h">本章学习目标</div>
+    <div><strong>理解</strong>　为什么必须分三层测：单元、链路、端到端</div>
+    <div><strong>掌握</strong>　模型裁判的校准方法，以及三种系统性偏差</div>
+    <div><strong>掌握</strong>　上线门禁的设计：阈值、对比方式、失败处理</div>
+    <div><strong>掌握</strong>　把生产数据回流成评估样本的三个来源</div>
+    <div><strong>了解</strong>　评估体系的维护成本与腐化</div>
+  </div>
+
+  <h2 id="s1">17.1　三层评估，各管一段</h2>
+
+  <p>端到端准确率是最容易测的，也是最没用的——它只告诉你「不行」，不告诉你「哪里不行」。所以要分层。</p>
+
+  <table>
+    <tr><th>层</th><th>测什么</th><th>样本</th><th>频率</th><th>失败时</th></tr>
+    <tr><td><strong>单元</strong></td><td>单个环节：分类准确、检索 recall、工具参数正确率、格式合法率</td><td>20–50 条/环节</td><td>每次改动</td><td>直接定位到环节</td></tr>
+    <tr><td><strong>链路</strong></td><td>两三个环节串起来：检索+生成、工具+组装</td><td>50–100 条</td><td>每天</td><td>定位到接口</td></tr>
+    <tr><td><strong>端到端</strong></td><td>完整用户场景，含前端交互</td><td>100–200 条</td><td>每次发布</td><td>只作门禁，不作诊断</td></tr>
+  </table>
+
+  <p>分层的价值在于<strong>成本与灵敏度</strong>。单元层几十条样本、几秒钟跑完，可以在每次改提示词时都跑；端到端要 200 条、几分钟、还可能涉及真人和界面，只能发布前跑。</p>
+
+  <div class="exam">
+    <div class="h">例题 17-1　三层各自的指标与阈值</div>
+    <pre>单元层（每次改动，&lt; 30s）
+  分类准确率　　　≥ 0.90
+  检索 recall@5　 ≥ 0.85
+  工具参数合法率　≥ 0.98
+  JSON 解析成功率 ≥ 0.995
+
+链路层（每天，&lt; 3min）
+  引用正确率　　　≥ 0.90
+  越界率（幻觉）　≤ 0.02
+  误拒率　　　　　≤ 0.08
+
+端到端（每次发布，&lt; 10min）
+  任务准确率　　　≥ 基线 − 3 个点
+  采纳率（离线模拟不可得）→ 用人工评分代替
+  P95 延迟　　　　≤ 8s</pre>
+    <div class="out">「≥ 基线 − 3 个点」这个写法很重要：<strong>门禁不该是绝对值，而是「不许变差」</strong>。<br>
+    绝对阈值会随着业务变化变得不合适（比如新增了难类别），而「相对基线」永远成立。</div>
+  </div>
+
+  <h2 id="s2">17.2　模型裁判：能省钱，但必须校准</h2>
+
+  <p>端到端评估如果有 200 条开放式回答，人工判要 10 小时以上。模型裁判能压到 20 分钟，代价是引入偏差。</p>
+
+  <h3>三种系统性偏差</h3>
+
+  <table>
+    <tr><th>偏差</th><th>表现</th><th>对策</th></tr>
+    <tr><td><strong>同源偏好</strong></td><td>用 A 判 A 的输出，评分偏高</td><td>裁判模型选不同族；或至少不同版本</td></tr>
+    <tr><td><strong>长度偏好</strong></td><td>更长的回答得分更高，即使内容相同</td><td>rubric 里明确「冗余扣分」；或按长度分组比较</td></tr>
+    <tr><td><strong>位置偏好</strong></td><td>A/B 对比时前位胜率更高</td><td>交换顺序各跑一次，取平均</td></tr>
+  </table>
+
+  <h3>校准：用 30 条人工标注对齐</h3>
+
+  <p>校准的做法很朴素：人工标 30 条，让裁判模型也标这 30 条，算一致性。如果一致率低于 85%，说明 rubric 写得不够具体，要先改 rubric，而不是直接用。</p>
+
+  <div class="exam">
+    <div class="h">例题 17-2　一个可用的 rubric</div>
+    <pre><span class="c"># 判「回答是否可用于客服场景」，输出 pass / fail / unsure</span>
+
+<span class="k">pass</span>  需同时满足：
+  1. 结论正确（与【知识】一致，无越界事实）
+  2. 回应了客户的真实诉求（不是只回答字面问题）
+  3. 不含未经知识支持的承诺（时限、金额、赔付）
+  4. 长度 ≤ 120 字，无冗余客套
+
+fail  满足任一：
+  1. 事实与【知识】冲突，或出现【知识】中没有的具体数字/条款
+  2. 未回应核心诉求
+  3. 含有"一定""保证""肯定可以"等绝对化承诺
+  4. 推诿（只让客户自己去看，未给可行下一步）
+
+unsure  仅在【知识】本身存在冲突或缺失时使用</pre>
+    <div class="out">关键是<b>把标准写成可判定的条件</b>，而不是「是否专业」「是否友好」。<br>
+    后者会让裁判模型退回自己的偏好，而它的偏好和你的业务不一致。</div>
+  </div>
+
+  <p>注意 <code>unsure</code> 这个出口。没有它，裁判模型会被迫在「对」和「错」之间选，而遇到模糊情况它会随机选一个，制造噪声。有了出口，这些样本会被单独拎出来，由人工处理——而它们往往恰好是最有价值的那批（暴露知识冲突或缺失）。</p>
+
+  <h2 id="s3">17.3　门禁：让退步无法上线</h2>
+
+  <p>门禁的核心不是「跑测试」，而是<strong>「跑不过就不许上」这个机制真的被执行</strong>。多数团队有测试但没有门禁，因为它们被当成建议。</p>
+
+  <div class="exam">
+    <div class="h">例题 17-3　门禁的四个判断</div>
+    <pre><span class="k">def</span> gate(new, base, items):
+    <span class="c"># ① 总体不许退步超过 3 个点</span>
+    <span class="k">if</span> new.acc &lt; base.acc - <span class="s">0.03</span>: <span class="k">return</span> <span class="s">'BLOCK: 总体退步'</span>
+
+    <span class="c"># ② 关键类别不许退步超过 5 个点（退款、赔付）</span>
+    <span class="k">for</span> c <span class="k">in</span> CRITICAL:
+        <span class="k">if</span> new.by_cat[c] &lt; base.by_cat[c] - <span class="s">0.05</span>:
+            <span class="k">return</span> f<span class="s">'BLOCK: {c} 退步'</span>
+
+    <span class="c"># ③ 新增的「从对变错」不许超过 5 条</span>
+    regress = [i <span class="k">for</span> i <span class="k">in</span> items <span class="k">if</span> i.was_ok <span class="k">and not</span> i.now_ok]
+    <span class="k">if</span> len(regress) &gt; <span class="s">5</span>: <span class="k">return</span> <span class="s">'BLOCK: 回归过多'</span>
+
+    <span class="c"># ④ 幻觉率不许上升</span>
+    <span class="k">if</span> new.halluc &gt; base.halluc + <span class="s">0.005</span>: <span class="k">return</span> <span class="s">'BLOCK: 幻觉上升'</span>
+    <span class="k">return</span> <span class="s">'PASS'</span></pre>
+    <div class="out">四条里第 ③ 条最关键，也最容易被漏。<br>
+    只看总体，30 条改进 + 25 条退步 = 净 +5，看起来是进步；<br>
+    但那 25 条退步里通常包含最不能错的场景（退款金额、时效承诺）。</div>
+  </div>
+
+  <p>「关键类别」这个概念要说清：它由<strong>错误代价</strong>决定，不由样本量决定。退款、赔付、时效承诺、隐私相关——这些类别的错误会造成真实损失，所以它们的阈值要更严（5 个点），而且必须单独看，不能被平均。</p>
+
+  <h3>被 BLOCK 时怎么办</h3>
+
+  <p>门禁的意义在于它会产生摩擦，而摩擦必须有人处理。三种处理方式，按顺序：</p>
+
+  <ol>
+    <li><strong>修。</strong>如果退步来自真实问题（新提示词丢了某个约束），修完再跑。</li>
+    <li><strong>确认是标注错误。</strong>评估集也会错。如果某条样本的标注本身有问题，走「标注修正」流程：记录原因、双人确认、生成 v2 版本。<strong>但不能为了通过门禁而改标注</strong>——这个界限要写进流程。</li>
+    <li><strong>豁免。</strong>如果退步是有意的权衡（牺牲某类换取另一类），需要产品和技术共同签字，并在发布说明里记下。豁免必须有记录，且要有期限（比如「观察两周，如投诉上升则回滚」）。</li>
+  </ol>
+
+  <h2 id="s4">17.4　数据飞轮：三个免费来源</h2>
+
+  <p>评估集最大的问题是会腐化：三个月后它不再代表真实分布（业务变了、客户变了、问题变了）。持续补充的成本很高，但有三个来源是免费的。</p>
+
+  <h3>来源一：用户纠正（第 7 章的 edit_ops）</h3>
+
+  <p>「改后插入」的编辑对是最干净的标注：它直接告诉你「模型写的」和「人想要的」差在哪。每周汇总一次，把出现频次最高的编辑对转成评估样本（<code>before</code> 作为输入，<code>after</code> 作为期望输出）。</p>
+
+  <h3>来源二：低置信与拒答样本</h3>
+
+  <p>被判为「不建议采用」的、以及模型自己拒答的样本，是模型最不确定的区域。这些样本人工标一遍，能直接暴露两类问题：系统性地缺少知识，或者系统性地缺少能力。</p>
+
+  <h3>来源三：投诉与返工</h3>
+
+  <p>客户投诉的工单、坐席返工的工单，是最有价值的负样本。它们代表真实损失。这类样本量不大（一个月可能几十条），但它们的权重应该更高——建议在评估集里单独成组，报告时单独列出。</p>
+
+  <div class="exam">
+    <div class="h">例题 17-4　评估集的版本演进</div>
+    <pre>v1（第 3 章）　　200 条，分层抽样，手工标注
+v2（+1 月）　　 +40 条来自 edit_ops 高频编辑对
+v3（+2 月）　　 +25 条来自低置信样本；标注 8 条错误已修正
+v4（+3 月）　　 拆分：core 180 条（冻结，永不改动，用于跨月对比）
+　　　　　　　　　　live 120 条（每季度轮换 1/3，跟踪分布漂移）
+
+报告口径：core 上 84.2%（与上月 84.0% 可比）
+　　　　　live 上 79.5%（与上月 81.0% 不可比，因为样本换了）
+　　　　　投诉组 12 条中 7 条失败（单独列出，不进平均）</pre>
+    <div class="out">core / live 分开是关键设计：<br>
+    <b>core 保证纵向可比</b>（同一批题，永远不变），<b>live 保证横向代表</b>（跟上真实分布）。<br>
+    只有 core，你会脱离现实；只有 live，你无法判断「是变差了还是题变难了」。</div>
+  </div>
+
+  <h2 id="s5">17.5　体系本身也会腐化</h2>
+
+  <p>评估体系跑起来之后，有三种腐化方式，都要定期检查：</p>
+
+  <ul>
+    <li><strong>过拟合。</strong>团队反复在 core 上试，最终 core 的分数越来越高，而线上没变。检测方法：留一份 holdout（第 3 章），一个季度跑一次。如果 core 上升而 holdout 不动，说明过拟合了。</li>
+    <li><strong>标注漂移。</strong>三个月后新标的人对标准的理解和当初不同。检测方法：定期重标 30 条老样本，看和原始标注的一致率。低于 0.85 就要重新对齐。</li>
+    <li><strong>样本失效。</strong>业务变了，某些样本已经没有意义（比如「跨境税费」这个业务下线了）。检测方法：按类别统计失败率，长期 0 失败且业务已下线的类别应当移除。</li>
+  </ul>
+
+  <p>这三项检查的成本大约是每季度半天，而它们能防止一个更糟的情况：<strong>你有一个看起来很专业的评估体系，但它测的东西和真实世界已经无关了。</strong>这比没有评估更危险，因为它给了你虚假的信心。</p>
+
+  <div class="caution">
+    <div class="h">四个让评估体系失效的做法</div>
+    <ol>
+      <li><strong>门禁只是建议。</strong>「这次先上了，下次补」——一旦有过一次，门禁就永久失效了。</li>
+      <li><strong>为了过门禁改标注。</strong>这等于把尺子改了去适应身高。改动必须走独立流程并留痕。</li>
+      <li><strong>只看端到端。</strong>失败了不知道改哪，于是每次都是「全量重试一遍」，效率极低。</li>
+      <li><strong>core 和 live 混在一起报。</strong>你会得到一个既不可纵向比较、也不代表当下的数字。</li>
+    </ol>
+  </div>
+
+  <div class="summary">
+    <div class="h">本章小结</div>
+    <ul>
+      <li>三层评估：单元（每次改动）、链路（每天）、端到端（每次发布）。分层是为了定位，不是为了全面。</li>
+      <li>阈值用「基线 − N 个点」而不是绝对值，因为绝对值会随业务变化失效。</li>
+      <li>模型裁判三种偏差：同源、长度、位置。用 30 条人工标注校准，一致率 &lt; 85% 先改 rubric。</li>
+      <li>门禁四判：总体、关键类别、新增回归条数、幻觉率。第三条最容易被漏，也最重要。</li>
+      <li>被 BLOCK 只能修 / 修标注（走流程）/ 豁免（签字 + 有期限），不能「下次补」。</li>
+      <li>三个免费样本来源：编辑对、低置信与拒答、投诉返工。</li>
+      <li>core（冻结、纵向可比）与 live（轮换、跟随分布）分开维护、分开报告。</li>
+      <li>体系会腐化：过拟合、标注漂移、样本失效。每季度半天检查。</li>
+    </ul>
+  </div>
+
+  <h3 id="ex">本章综合习题</h3>
+
+  <div class="qa">
+    <div class="q"><b>综合题一</b>门禁显示「总体 +2 个点，但 17 条从对变错」。你会放行吗？给出你的判断过程和需要的额外信息。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>不会直接放行。</strong>总体 +2 掩盖了 17 条退步，而这 17 条的性质决定了一切。</p>
+      <p><strong>需要的第一项信息：这 17 条落在哪些类别。</strong></p>
+      <p>如果集中在「投诉建议」这类低风险类别（错了只是答得不够好），放行合理；如果落在退款、赔付、时效承诺上，即使只有 3 条也应当拦住——因为每一条都对应真实的钱或承诺。</p>
+      <p><strong>需要的第二项信息：这 17 条是怎么错的。</strong>三种情况区别很大：</p>
+      <ul>
+        <li><strong>变短了、漏了细节</strong> → 可能是新版本更简洁，属于有意权衡，但要确认漏掉的不是关键信息。</li>
+        <li><strong>引用了错误条款</strong> → 危险信号，说明改动影响了检索/组装，不是单纯的提示词调整。</li>
+        <li><strong>变成拒答了</strong> → 说明新版本更保守。这在合规上可能是好事，但会拉低可用性，需要业务方确认。</li>
+      </ul>
+      <p><strong>需要的第三项信息：净 +2 是从哪来的。</strong>如果是「30 条改进 + 17 条退步」净 +13 条（约 +6 个点），那和「+2 个点」对不上——说明还有别的变化（比如某些样本从错变成另一种错，或者样本数不一致）。<strong>数字对不上时，先查数据，不要先解释。</strong></p>
+      <p><strong>我的实际决定会是：</strong>如果 17 条里有关键类别，先修；如果全在低风险类别且净改进稳定，可以放行但要记录，并在两周内观察「插入后全删」比例（第 8 章）是否上升——那是线上版的回归信号。</p>
+      <p><strong>这道题的方法论：</strong>净值的正负不能作为放行依据，因为<strong>错误的代价不对称</strong>。+2 个点的收益可能是「多答对了几个无关紧要的问题」，而 17 条退步里只要有一条是「多承诺了一次赔付」，净值就是负的。</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题二</b>模型裁判和人工的一致率只有 78%。列出三种可能原因，以及你会先改哪一个。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>原因一：rubric 太抽象（最常见）。</strong>如果 rubric 写的是「回答是否专业、是否友好」，裁判模型只能按自己的偏好判，而它的偏好和你的业务标准不一致。<strong>先改这个。</strong></p>
+      <p><strong>改法：</strong>把每条标准写成可判定的条件。比如「专业」改成「不含口语词（啊、呢、吧）、不含夸张表述（超级、绝对）、使用完整句」。「友好」改成「开头有一句承接客户情绪的表述，且不超过一句」。</p>
+      <p><strong>原因二：样本本身模糊。</strong>30 条里有 5–8 条连人都判不一致（第 3 章的 kappa 问题）。这种情况下，78% 已经是上限——不是裁判不行，是任务本身没有唯一答案。</p>
+      <p><strong>验证：</strong>让两个人分别标这 30 条，算他们之间的一致率。如果也只有 80%，说明是样本问题，该做的是把这些样本移到 <code>unsure</code> 组或剔除，而不是调裁判。</p>
+      <p><strong>原因三：裁判模型不理解业务术语。</strong>比如「无理由退货」和「质量问题退换」的区别，通用模型可能混淆，于是把正确答案判成错。</p>
+      <p><strong>改法：</strong>在裁判的提示词里加一个小术语表（5–8 条），只解释容易混的概念。不要加太多——裁判的上下文越长，它对每条标准的注意力越弱。</p>
+      <p><strong>我会先改哪一个：</strong>先做原因二的验证（成本 20 分钟，两个人标 30 条）。因为如果一致率上限就是 80%，改 rubric 是白费功夫。<strong>先确认「这个任务是否可判定」，再优化判定者</strong>——这个顺序和第 2 章「提示词的效果上限由任务是否可判定决定」是同一条道理。</p>
+      <p><strong>补充一个判断：</strong>一致率不需要到 95%。85%–90% 就够用了，因为裁判的作用是「批量初筛」，不是「最终裁决」。把它当成一个高召回率的过滤器，人工只复核它判错的，整体效率仍然提升 10 倍。</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><b>综合题三</b>设计一个「每周自动跑、结果发到群里」的评估方案。写出跑什么、怎么报、异常怎么触发。</div>
+    <div class="ans">
+      <span class="al">答案</span>
+      <p><strong>跑什么（三组，总耗时 &lt; 15 分钟）：</strong></p>
+      <p><strong>① core 集 180 条</strong>（每周固定跑）：产出准确率、幻觉率、误拒率、P95 延迟。</p>
+      <p><strong>② 本周新增的编辑对 30 条</strong>（从 edit_ops 抽）：用 <code>before</code> 作输入、<code>after</code> 作参考，看新版本能否复现人想要的写法。这一组测的是「有没有学到上周的反馈」。</p>
+      <p><strong>③ 本周投诉工单里的 AI 相关样本</strong>（通常 5–15 条）：只报告不计算入总分，作为「真实损失」的证据。</p>
+      <p><strong>怎么报（一条消息，四段）：</strong></p>
+      <pre>【AI 评估周报 10-26】
+core 180 条：准确 84.2%（上周 84.0%）　幻觉 1.7%（1.7%）
+  关键类别：退款 91%（持平）　时效 86%（−2）
+  最差类别：发票重开 62%（15 条错 6）
+
+编辑对 30 条：复现率 57%（上周 44%）
+  高频未复现：退货→换新（9 次）
+
+投诉样本 12 条：7 条与 AI 回答相关
+  其中 3 条涉及「时效承诺」（见 thread）
+
+结论：整体持平；时效类退步 2 点需关注；编辑对复现率上升说明改动有效。</pre>
+      <p><strong>异常怎么触发（三档）：</strong></p>
+      <p><strong>P1（立刻 @ 所有人）：</strong>关键类别下降 &gt; 5 点，或幻觉率 &gt; 3%。</p>
+      <p><strong>P2（当天跟进）：</strong>总体下降 &gt; 3 点，或某类别失败率 &gt; 30% 且样本 ≥ 10。</p>
+      <p><strong>P3（记录观察）：</strong>任何单项指标连续三周同方向变化（即使每周都在阈值内）——趋势比单点更重要。</p>
+      <p><strong>三个设计要点：</strong></p>
+      <p>① <strong>报「最差类别」比报总分有用。</strong>总分不变时，某个类别可能已经崩了（发票重开 62%），而这才是下周要做的事。</p>
+      <p>② <strong>编辑对那一组是「闭环验证」。</strong>没有它，你不知道团队根据用户反馈做的改动有没有效果——而这恰恰是最该被验证的事。</p>
+      <p>③ <strong>投诉样本不进平均，但要出现在报告里。</strong>它是唯一带真实损失权重的信号，虽然量少、不具统计意义，但它的存在感能防止团队只看「84% 还不错」。</p>
+    </div>
+  </div>
+
+  <div class="pagefoot">
+    <a href="第16章-Agent编排.html">← 第 16 章　Agent 编排</a>
+    <a href="第18章-可观测性.html">第 18 章　可观测性 →</a>
+  </div>
+
+</article>
+</main>
+
+
+<script>
+(function(){
+  var html = document.documentElement;
+
+  /* ---- 主题 ---- */
+  var KEY = 'aifs-theme';
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch(e){}
+  });
+
+  /* ---- 侧边栏开合 ---- */
+  function setNav(open){ html.classList.toggle('nav-open', open); }
+  document.getElementById('navToggle').addEventListener('click', function(){ setNav(true); });
+  document.getElementById('sideCollapse').addEventListener('click', function(){ setNav(false); });
+  document.getElementById('scrim').addEventListener('click', function(){ setNav(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setNav(false); });
+
+  /* ---- 篇分组展开 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.ng-btn'), function(btn){
+    btn.addEventListener('click', function(){ btn.parentNode.classList.toggle('open'); });
+  });
+
+  /* ---- 移动端点击锚点后收起 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.side-nav a'), function(a){
+    a.addEventListener('click', function(){ if (window.innerWidth < 1024) setNav(false); });
+  });
+
+  /* ---- 滚动高亮当前节 ---- */
+  var secs  = Array.prototype.slice.call(document.querySelectorAll('h2[id], h3[id="ex"]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sec-list a'));
+  function sync(){
+    var cur = null;
+    secs.forEach(function(s){
+      if (s.getBoundingClientRect().top <= 150) cur = s.id;
+    });
+    links.forEach(function(l){
+      l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ sync(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', function(){
+    if (window.innerWidth >= 1024) setNav(true);
+    sync();
+  });
+  sync();
+})();
+</script>
+
+</body>
+</html>
