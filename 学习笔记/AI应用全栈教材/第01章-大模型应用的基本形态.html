@@ -200,6 +200,8 @@
   .ans li{margin-bottom:4px}
   .ans code{font-size:13px}
   .ans .hl{color:var(--accent); font-weight:600}
+  .ans pre{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12.5px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,0.04); padding:10px 12px; border-radius:4px; margin:8px 0; color:var(--pre-ink)}
+  html[data-theme="dark"] .ans pre{background:rgba(255,255,255,0.045)}
 
   .note{border-left:2px solid var(--accent-line); padding:4px 0 4px 18px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
 
@@ -239,6 +241,8 @@
   .summary li{font-size:15.5px}
 
   .pagefoot{margin-top:70px; padding-top:20px; border-top:1px solid var(--line); font-family:-apple-system,sans-serif; font-size:12.5px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+  .pagefoot a{color:var(--ink2); text-decoration:none}
+  .pagefoot a:hover{color:var(--accent)}
 
   @media (max-width:1023px){
     html.nav-open .content{margin-left:0}
@@ -253,6 +257,7 @@
     h2{font-size:20px}
     .story{padding:18px 20px}
     .obj,.summary{padding:16px 18px}
+    table{font-size:13.5px}
   }
   @media print{
     .sidebar,.nav-toggle,.theme-toggle,.scrim{display:none !important}
@@ -272,7 +277,6 @@
   <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></svg>
 </button>
 
-
   <aside class="sidebar" id="sidebar">
     <div class="side-top">
       <div class="side-title">AI 应用全栈开发</div>
@@ -286,7 +290,7 @@
         <button class="ng-btn" type="button">第一篇 · 模型与数据<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
         <div class="ng-body"><div>
           <div class="ch">
-            <a class="ch-link cur" href="#top">第 1 章　大模型应用的基本形态</a>
+            <a class="ch-link cur" href="#top" aria-current="page">第 1 章　大模型应用的基本形态</a>
             <div class="sec-list">
               <a href="#s1">1.1　三类 AI 应用</a>
               <a href="#s2">1.2　token 与上下文窗口</a>
@@ -296,7 +300,7 @@
               <a href="#ex">本章综合习题</a>
             </div>
           </div>
-          <div class="ch"><span class="ch-link soon" title="尚未编写">第 2 章　提示工程的最小充分集</span></div>
+          <div class="ch"><a class="ch-link" href="第02章-提示工程的最小充分集.html">第 2 章　提示工程的最小充分集</a></div>
           <div class="ch"><span class="ch-link soon" title="尚未编写">第 3 章　面向评估的数据处理</span></div>
           <div class="ch"><span class="ch-link soon" title="尚未编写">第 4 章　第一次评估实践</span></div>
         </div></div>
@@ -305,41 +309,41 @@
       <div class="ng">
         <button class="ng-btn" type="button">第二篇 · 界面<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
         <div class="ng-body"><div>
-          <div class="ch"><span class="ch-link soon">第 5 章　流式输出</span></div>
-          <div class="ch"><span class="ch-link soon">第 6 章　生成中的状态管理</span></div>
-          <div class="ch"><span class="ch-link soon">第 7 章　人机协作界面</span></div>
-          <div class="ch"><span class="ch-link soon">第 8 章　交互度量</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 5 章　流式输出</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 6 章　生成中的状态管理</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 7 章　人机协作界面</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 8 章　交互度量</span></div>
         </div></div>
       </div>
 
       <div class="ng">
         <button class="ng-btn" type="button">第三篇 · 服务<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
         <div class="ng-body"><div>
-          <div class="ch"><span class="ch-link soon">第 9 章　从脚本到服务</span></div>
-          <div class="ch"><span class="ch-link soon">第 10 章　异步与并发</span></div>
-          <div class="ch"><span class="ch-link soon">第 11 章　缓存与成本</span></div>
-          <div class="ch"><span class="ch-link soon">第 12 章　容器化部署</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 9 章　从脚本到服务</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 10 章　异步与并发</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 11 章　缓存与成本</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 12 章　容器化部署</span></div>
         </div></div>
       </div>
 
       <div class="ng">
         <button class="ng-btn" type="button">第四篇 · 检索与工具<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
         <div class="ng-body"><div>
-          <div class="ch"><span class="ch-link soon">第 13 章　向量检索</span></div>
-          <div class="ch"><span class="ch-link soon">第 14 章　RAG 全链路</span></div>
-          <div class="ch"><span class="ch-link soon">第 15 章　工具调用</span></div>
-          <div class="ch"><span class="ch-link soon">第 16 章　Agent 编排</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 13 章　向量检索</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 14 章　RAG 全链路</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 15 章　工具调用</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 16 章　Agent 编排</span></div>
         </div></div>
       </div>
 
       <div class="ng">
         <button class="ng-btn" type="button">第五篇 · 评估与生产<span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button>
         <div class="ng-body"><div>
-          <div class="ch"><span class="ch-link soon">第 17 章　评估体系</span></div>
-          <div class="ch"><span class="ch-link soon">第 18 章　可观测性</span></div>
-          <div class="ch"><span class="ch-link soon">第 19 章　安全与合规</span></div>
-          <div class="ch"><span class="ch-link soon">第 20 章　把项目讲成能力</span></div>
-          <div class="ch"><span class="ch-link soon">附录　Java 够用版速查</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 17 章　评估体系</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 18 章　可观测性</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 19 章　安全与合规</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">第 20 章　把项目讲成能力</span></div>
+          <div class="ch"><span class="ch-link soon" title="尚未编写">附录　Java 够用版速查</span></div>
         </div></div>
       </div>
 
@@ -351,8 +355,7 @@
 <main class="content">
 <article class="wrap">
 <span id="top"></span>
-
-  <div class="chapter-head">
+<div class="chapter-head">
     <div class="ch-no">第一篇 · 模型与数据</div>
     <div class="ch-title">第 1 章　大模型应用的基本形态</div>
     <div class="ch-sub">在写第一行代码之前，先分清你要造的是哪一种东西</div>
@@ -1107,10 +1110,9 @@ print(f<span class="s">"优化后 {m3:.0f} 元，降幅 {(1-m3/monthly)*100:.0f}
   </div>
 
   <div class="pagefoot">
-    <span>第 1 章 · 大模型应用的基本形态</span>
-    <span>下一章：提示工程的最小充分集</span>
+    <span>第 1 章　大模型应用的基本形态</span>
+    <a href="第02章-提示工程的最小充分集.html">第 2 章　提示工程的最小充分集 →</a>
   </div>
-
 
 </article>
 </main>
@@ -1118,12 +1120,11 @@ print(f<span class="s">"优化后 {m3:.0f} 元，降幅 {(1-m3/monthly)*100:.0f}
 
 <script>
 (function(){
-  var html = document.documentElement, body = document.body;
+  var html = document.documentElement;
 
   /* ---- 主题 ---- */
   var KEY = 'aifs-theme';
-  var tBtn = document.getElementById('themeToggle');
-  tBtn.addEventListener('click', function(){
+  document.getElementById('themeToggle').addEventListener('click', function(){
     var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     try { localStorage.setItem(KEY, next); } catch(e){}
@@ -1134,7 +1135,7 @@ print(f<span class="s">"优化后 {m3:.0f} 元，降幅 {(1-m3/monthly)*100:.0f}
   document.getElementById('navToggle').addEventListener('click', function(){ setNav(true); });
   document.getElementById('sideCollapse').addEventListener('click', function(){ setNav(false); });
   document.getElementById('scrim').addEventListener('click', function(){ setNav(false); });
-
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setNav(false); });
 
   /* ---- 篇分组展开 ---- */
   Array.prototype.forEach.call(document.querySelectorAll('.ng-btn'), function(btn){
